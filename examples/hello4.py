@@ -1,9 +1,12 @@
+""" Another Hello World example for guitk showing how to use the event handler """
+
 import guitk
 import tkinter as tk
 
 
 class HelloWorld(guitk.Window):
     # Define the window's contents
+    # use variables to define rows to make your layout more readable
     label_frame = guitk.LabelFrame(
         "Label Frame",
         labelanchor=tk.N,
@@ -42,6 +45,7 @@ class HelloWorld(guitk.Window):
 
         if event.key == "Ok":
             # set the output Label to the value of the Entry box
+            # the Window class acts like a dictionary for looking up guitk element objects by key
             name = event.values["ENTRY_NAME"]
             self["OUTPUT"].value = f"Hello {name}! Thanks for trying guitk."
 
@@ -52,6 +56,8 @@ class HelloWorld(guitk.Window):
 
         if event.key == "CHECK_GREEN":
             # change label text color to green if needed
+            # use .element to access the underlying ttk element for each object
+            # tkinter is not abstracted -- you can easily use tkinter methods and properties if needed
             if event.values["CHECK_GREEN"]:
                 # checked
                 self["OUTPUT"].element["foreground"] = "green"
@@ -61,4 +67,5 @@ class HelloWorld(guitk.Window):
 
 
 if __name__ == "__main__":
+    # add some padding around GUI elements to make it prettier
     HelloWorld("Hello, World", padx=5, pady=5).run()

@@ -56,17 +56,205 @@ No. You definitely should not. At best, this is currently a pre-alpha experiment
 * `cd guitk`
 * `python3 setup.py install`
 
-## API Reference
+## A Few More Examples
 
-TODO
+```python
+"""Hello World example using guitk """
 
-## Tests
+import guitk
 
-None yet
+
+# subclass guitk.Window as the starting point for your app's main window
+class HelloWorld(guitk.Window):
+    # Define the window's contents
+    # you must have a class variable named `layout` or you'll get an empty window
+    # guitk.Label corresponds to a tkinter.ttk.Label, etc.
+    # optionally provide a unique key to each element to easily reference the element later
+    # layouts are lists of lists where each list corresponds to a row in the GUI
+    layout = [
+        [guitk.Label("What's your name?")],
+        [guitk.Entry(key="ENTRY_NAME")],
+        [guitk.Label("", width=40, key="OUTPUT", columnspan=2)],
+        [guitk.Button("Ok"), guitk.Button("Quit")],
+    ]
+
+    # Interact with the Window using an event Loop
+    # every guitk.Window will call self.handle_event to handle GUI events
+    # event is a guitk.Event object
+    def handle_event(self, event):
+        if event.key == "Quit":
+            self.quit()
+
+        if event.key == "Ok":
+            # set the output Label to the value of the Entry box
+            name = event.values["ENTRY_NAME"]
+            self["OUTPUT"].value = f"Hello {name}! Thanks for trying guitk."
+
+
+if __name__ == "__main__":
+    # instantiate your Window class with a title and run it
+    HelloWorld("Hello, World").run()
+```
+
+![hello2.py example](examples/hello2.py.png "Hello World example")
+
+
+guitk GUIs are created using a lists of lists where each element in the lists corresponds to a ttk or tk element.  This design pattern is borrowed from PySimpleGUI.
+
+```python
+""" Example for guitk showing how to use lists of lists for creating GUI layout """
+
+import guitk
+
+
+class LayoutDemo(guitk.Window):
+
+    layout = [
+        [guitk.Label("Row 1"), guitk.Label("What's your name?")],
+        [guitk.Label("Row 2"), guitk.Entry()],
+        [guitk.Label("Row 3"), guitk.Button("Ok")],
+    ]
+
+    def handle_event(self, event):
+        if event.key == "Ok":
+            print("Ok!")
+
+
+if __name__ == "__main__":
+    LayoutDemo("Layouts are Lists of Lists", padx=5, pady=5).run()
+```
+
+![layout_lol.py example](examples/layouts_lol.py.png "Layout using lists of lists example")
+
+Because layouts are simply lists of lists, you can use python to create layouts programmatically, for example using list comprehensions.
+
+```python
+""" Example for guitk showing how to use list comprehensions to create a GUI """
+
+import guitk
+
+
+class LayoutDemo(guitk.Window):
+
+    # use list comprehension to generate 4x4 grid of buttons with tooltips
+    # use the tooltip named argument to add tooltip text to any element
+    layout = [
+        [
+            guitk.Button(f"{row}, {col}", padx=0, pady=0, tooltip=f"Tooltip: {row},{col}")
+            for col in range(4)
+        ]
+        for row in range(4)
+    ]
+
+    # Interact with the Window using an event Loop
+    def handle_event(self, event):
+        if event.event == guitk.EventType.BUTTON_PRESS:
+            # print the key for the button that was pressed
+            print(event.values[event.key])
+
+
+if __name__ == "__main__":
+    LayoutDemo("List Comprehension", padx=5, pady=5).run()
+```
+
+![layout2.py example](examples/layout2.py.png "Layout using list comprehensions, with tooltips!")
+
+A more complex example showing how to use the event handler to react to events and change the value of other GUI elements.
+
+```python
+""" Another Hello World example for guitk showing how to use the event handler """
+
+import guitk
+import tkinter as tk
+
+
+class HelloWorld(guitk.Window):
+    # Define the window's contents
+    # use variables to define rows to make your layout more readable
+    label_frame = guitk.LabelFrame(
+        "Label Frame",
+        labelanchor=tk.N,
+        layout=[
+            [
+                guitk.Frame(
+                    layout=[
+                        [guitk.Output(width=20, height=10)],
+                        [guitk.Label("Output", key="LABEL_OUTPUT", sticky=tk.S)],
+                    ],
+                    padx=0,
+                ),
+                guitk.Frame(
+                    layout=[
+                        [None, guitk.CheckButton("Upper case", key="CHECK_UPPER")],
+                        [None, guitk.CheckButton("Green text", key="CHECK_GREEN")],
+                    ],
+                    padx=0,
+                    sticky="n",
+                ),
+            ]
+        ],
+    )
+
+    layout = [
+        [guitk.Label("What's your name?")],
+        [guitk.Entry(key="ENTRY_NAME")],
+        [guitk.Label("", width=40, key="OUTPUT")],
+        [label_frame],
+        [guitk.Frame(layout=[[guitk.Button("Ok"), guitk.Button("Quit")]])],
+    ]
+    # Interact with the Window using an event Loop
+    def handle_event(self, event):
+        if event.key == "Quit":
+            self.quit()
+
+        if event.key == "Ok":
+            # set the output Label to the value of the Entry box
+            # the Window class acts like a dictionary for looking up guitk element objects by key
+            name = event.values["ENTRY_NAME"]
+            self["OUTPUT"].value = f"Hello {name}! Thanks for trying guitk."
+
+        if event.key == "CHECK_UPPER" and event.values["CHECK_UPPER"]:
+            # True if checked
+            # "Upper case" check button is checked, so make text upper case
+            self["OUTPUT"].value = self["OUTPUT"].value.upper()
+
+        if event.key == "CHECK_GREEN":
+            # change label text color to green if needed
+            # use .element to access the underlying ttk element for each object
+            # tkinter is not abstracted -- you can easily use tkinter methods and properties if needed
+            if event.values["CHECK_GREEN"]:
+                # checked
+                self["OUTPUT"].element["foreground"] = "green"
+            else:
+                # not checked
+                self["OUTPUT"].element["foreground"] = ""
+
+
+if __name__ == "__main__":
+    # add some padding around GUI elements to make it prettier
+    HelloWorld("Hello, World", padx=5, pady=5).run()
+```
+
+![hello4.py example](examples/hello4.py.png "A more complex example showing how to use the event handler.")
 
 ## Contributors
 
 Contributions welcome! If this project interests you, open an Issue or send a PR!
+
+## TODO
+
+- [x] Basic prototype
+- [x] Frame
+- [x] Label
+- [x] Entry
+- [x] Button
+- [x] Checkbutton
+- [x] Text
+- [x] ScrolledText
+- [ ] Other widgets
+- [x] Tooltips
+- [ ] Documentation
+- [ ] Tests
 
 ## License
 

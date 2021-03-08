@@ -1,3 +1,5 @@
+""" Example for guitk showing how to use lists of lists for creating GUI layout """
+
 import guitk
 
 
@@ -9,7 +11,6 @@ class LayoutDemo(guitk.Window):
         [guitk.Label("Row 3"), guitk.Button("Ok")],
     ]
 
-    # Interact with the Window using an event Loop
     def handle_event(self, event):
         if event.key == "Ok":
             print("Ok!")
