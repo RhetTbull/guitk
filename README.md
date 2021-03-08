@@ -50,7 +50,7 @@ No. You definitely should not. At best, this is currently a pre-alpha experiment
 
 ## Installation
 
-* `git clone XX`
+* `git clone git@github.com:RhetTbull/guitk.git`
 * `cd guitk`
 * `python3 setup.py install`
 
