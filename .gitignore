@@ -1,0 +1,13 @@
+.metrics
+.DS_store
+__pycache__
+.coverage
+.condaauto
+.vscode/
+.tox/
+dist/
+build/
+working/
+*.egg-info/
+.mypy_cache/
+*.pyc
