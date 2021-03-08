@@ -254,6 +254,9 @@ Contributions welcome! If this project interests you, open an Issue or send a PR
 - [ ] Other widgets
 - [x] Tooltips
 - [ ] Documentation
+- [ ] Add docstrings
+- [ ] Add typehints to public API
+- [ ] Add properties for public class attributes
 - [ ] Tests
 
 ## License
