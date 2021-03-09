@@ -21,15 +21,18 @@ class HelloWorld(guitk.Window):
     # every guitk.Window will call self.handle_event to handle GUI events
     # event is a guitk.Event object
     def handle_event(self, event):
+        name = event.values["ENTRY_NAME"]
+
         if event.key == "Quit":
-            self.quit()
+            # value passed to quit will be returned by HelloWorld.run()
+            self.quit(name)
 
         if event.key == "Ok":
             # set the output Label to the value of the Entry box
-            name = event.values["ENTRY_NAME"]
             self["OUTPUT"].value = f"Hello {name}! Thanks for trying guitk."
 
 
 if __name__ == "__main__":
     # instantiate your Window class with a title and run it
-    HelloWorld("Hello, World").run()
+    name = HelloWorld("Hello, World").run()
+    print(f"HelloWorld: {name}")

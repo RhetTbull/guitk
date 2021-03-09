@@ -144,6 +144,7 @@ class Window(Layout):
         self.window.title(title)
         self._elements = []
         self._element_by_key = {}
+        self._return_value = None
 
         self.mainframe = ttk.Frame(self.window, padding="3 3 12 12")
         self.mainframe.grid(column=0, row=0, sticky=(tk.N, tk.W, tk.E, tk.S))
@@ -196,8 +197,9 @@ class Window(Layout):
         """
         pass
 
-    def quit(self):
+    def quit(self, return_value=None):
         """ Close the window """
+        self._return_value = return_value
         self._destroy()
 
     def _destroy(self):
@@ -235,6 +237,7 @@ class Window(Layout):
 
     def run(self):
         self.tk.run_mainloop()
+        return self._return_value
 
     def __getitem__(self, key):
         try:
@@ -711,6 +714,9 @@ class ScrolledText(Text):
 
         if self.disabled:
             self.element["state"] = "disabled"
+
+        self.value = self._value
+
         return self.element
 
     @property
