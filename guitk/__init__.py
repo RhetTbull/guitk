@@ -15,6 +15,7 @@ import sys
 import tkinter as tk
 from enum import Enum, auto
 from tkinter import filedialog, ttk
+import time
 
 from .tooltips import Hovertip
 
@@ -31,6 +32,7 @@ class EventType(Enum):
 
     BUTTON_PRESS = auto()
     CHECK_BUTTON = auto()
+    VIRTUAL_EVENT = auto()
 
 
 class TKRoot:
@@ -144,7 +146,12 @@ class Window(Layout):
         self.window.title(title)
         self._elements = []
         self._element_by_key = {}
+
+        self._timer_events = {}
+        """ timer events that have been set by bind_timer_event, stores most recent after() id for event"""
+
         self._return_value = None
+        """ value returned from run() if set in quit() """
 
         self.mainframe = ttk.Frame(self.window, padding="3 3 12 12")
         self.mainframe.grid(column=0, row=0, sticky=(tk.N, tk.W, tk.E, tk.S))
@@ -201,6 +208,33 @@ class Window(Layout):
         """ Close the window """
         self._return_value = return_value
         self._destroy()
+
+    def bind_timer_event(self, delay, event_name, repeat=False):
+        """ Create a new virtual event `event_name` that fires after `delay` ms, 
+        repeats every `delay` ms if repeat=True, otherwise fires once """
+
+        # create a unique name for the timer
+        timer_id = f"{event_name}_{time.time_ns()}"
+
+        def _generate_event():
+            self.tk.root.event_generate(event_name)
+            if repeat:
+                self._timer_events[timer_id] = self.tk.root.after(
+                    delay, _generate_event
+                )
+
+        event = Event(self, self, event_name, EventType.VIRTUAL_EVENT)
+        self.tk.root.bind(event_name, self._make_callback(event))
+        self._timer_events[timer_id] = self.tk.root.after(delay, _generate_event)
+        return timer_id
+
+    def cancel_timer_event(self, timer_id):
+        """ Cancel a timer event created with bind_timer_event """
+        try:
+            after_id = self._timer_events[timer_id]
+            self.tk.root.after_cancel(after_id)
+        except Exception:
+            pass
 
     def _destroy(self):
         # disable any stdout/stderr redirection
