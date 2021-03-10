@@ -47,6 +47,7 @@ class HelloWorld(guitk.Window):
             # set the output Label to the value of the Entry box
             # the Window class acts like a dictionary for looking up guitk element objects by key
             name = event.values["ENTRY_NAME"]
+            print(name)
             self["OUTPUT"].value = f"Hello {name}! Thanks for trying guitk."
 
         if event.key == "CHECK_UPPER" and event.values["CHECK_UPPER"]:

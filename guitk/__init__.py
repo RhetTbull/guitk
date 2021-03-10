@@ -17,6 +17,7 @@ from enum import Enum, auto
 from tkinter import filedialog, ttk
 import time
 
+from .redirect import StdOutRedirect, StdErrRedirect
 from .tooltips import Hovertip
 
 
@@ -308,6 +309,7 @@ class Element:
         events=True,
         sticky=None,
         tooltip=None,
+        anchor=None,
     ):
         self.key = key
         self.disabled = disabled
@@ -318,6 +320,7 @@ class Element:
         self.events = events
         self.sticky = sticky or ""
         self.tooltip = tooltip
+        self.anchor = anchor
 
         self.element_type = None
         self._tk = TKRoot()
@@ -428,6 +431,7 @@ class Label(Element):
         events=False,
         sticky=None,
         tooltip=None,
+        anchor=None,
     ):
         super().__init__(
             key=key,
@@ -439,6 +443,7 @@ class Label(Element):
             events=events,
             sticky=sticky,
             tooltip=tooltip,
+            anchor=anchor,
         )
         self.element_type = "ttk.Label"
         self.text = text
@@ -450,7 +455,9 @@ class Label(Element):
     def create_element(self, parent, window, row, col):
         self.window = window
         self.parent = parent
-        self.element = ttk.Label(parent, text=self.text, width=self.width)
+        self.element = ttk.Label(
+            parent, text=self.text, width=self.width, anchor=self.anchor
+        )
         self.element["textvariable"] = self._value
         self._value.set(self.text)
         self._grid(
@@ -482,6 +489,7 @@ class Button(Element):
         events=True,
         sticky=None,
         tooltip=None,
+        anchor=None,
     ):
         super().__init__(
             key=key,
@@ -493,6 +501,7 @@ class Button(Element):
             events=events,
             sticky=sticky,
             tooltip=tooltip,
+            anchor=anchor,
         )
         self.element_type = "ttk.Button"
         self.title = title
@@ -516,7 +525,10 @@ class Button(Element):
         self.parent = parent
         event = Event(self, window, self.key, EventType.BUTTON_PRESS)
         self.element = ttk.Button(
-            parent, text=self.title, command=window._make_callback(event)
+            parent,
+            text=self.title,
+            anchor=self.anchor,
+            command=window._make_callback(event),
         )
         self._grid(
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
@@ -548,6 +560,7 @@ class CheckButton(Element):
         events=True,
         sticky=None,
         tooltip=None,
+        anchor=None,
     ):
         super().__init__(
             key=key,
@@ -559,6 +572,7 @@ class CheckButton(Element):
             events=events,
             sticky=sticky,
             tooltip=tooltip,
+            anchor=anchor,
         )
         self.element_type = "ttk.CheckButton"
         self.title = title
@@ -576,6 +590,7 @@ class CheckButton(Element):
         self.element = ttk.Checkbutton(
             parent,
             text=self.title,
+            anchor=self.anchor,
             command=window._make_callback(event),
             variable=self._value,
             onvalue=True,
@@ -729,7 +744,7 @@ class ScrolledText(Text):
         self.key = key or "ScrolledText"
         self.width = width
         self.height = height
-        self._value = text
+        self._value = text if text is not None else ""
         self.columnspan = columnspan
         self.rowspan = rowspan
         if command is not None:
@@ -783,6 +798,8 @@ class Output(ScrolledText):
         events=False,
         sticky=None,
         tooltip=None,
+        stdout=True,
+        stderr=True,
     ):
         super().__init__(
             text=text,
@@ -799,7 +816,16 @@ class Output(ScrolledText):
             sticky=sticky,
             tooltip=tooltip,
         )
-        self.echo = echo
+        self._echo = echo
+        self._redirect = []
+        self._redirect_id = {}
+        if stdout:
+            self._redirect.append(StdOutRedirect())
+        if stderr:
+            self._redirect.append(StdErrRedirect())
+        for r in self._redirect:
+            r.echo = self._echo
+            self._redirect_id[r] = r.register(self._write)
 
     def create_element(self, parent, window, row, col):
         super().create_element(parent, window, row, col)
@@ -807,23 +833,31 @@ class Output(ScrolledText):
         self.element.unbind("<KeyRelease>")
         return self.element
 
-    def write(self, line):
+    def _write(self, line):
         self.text.insert(tk.END, line)
         self.text.yview(tk.END)
-        if self.echo:
-            sys.__stdout__.write(line)
+
+    @property
+    def echo(self):
+        return self._echo
+
+    @echo.setter
+    def echo(self, echo):
+        self._echo = echo
+        for r in self._redirect:
+            r.echo = echo
 
     def disable_redirect(self):
-        sys.stdout = sys.__stdout__
-        sys.stderr = sys.__stderr__
+        for r in self._redirect:
+            r.disable_redirect()
 
     def enable_redirect(self):
-        sys.stdout = self
-        sys.stderr = self
+        for r in self._redirect:
+            r.enable_redirect()
 
     def __del__(self):
-        sys.stdout = sys.__stdout__
-        sys.stderr = sys.__stderr__
+        for r, id_ in self._redirect_id.items():
+            r.deregister(id_)
 
 
 class _Frame(Element, Layout):
