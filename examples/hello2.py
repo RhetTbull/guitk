@@ -34,5 +34,5 @@ class HelloWorld(guitk.Window):
 
 if __name__ == "__main__":
     # instantiate your Window class with a title and run it
-    name = HelloWorld("Hello, World").run()
+    name = HelloWorld("Hello, World", padx=5, pady=5).run()
     print(f"HelloWorld: {name}")

@@ -94,13 +94,17 @@ class Layout:
     def __init__(self, *args, **kwargs):
         pass
 
-    def _layout(self, parent, window):
+    def _layout(self, parent, window, autoframe):
         # as this is a mixin, make sure class being mixed into has necessary attributes
 
         row_offset = 0
         for row_count, row in enumerate(self.layout):
             col_offset = 0
-            for col_count, widget in enumerate(row):
+            if autoframe and len(row) > 1:
+                row_ = [Frame(layout=[row], padx=0, pady=0, autoframe=False)]
+            else:
+                row_ = row
+            for col_count, widget in enumerate(row_):
                 if widget is None:
                     # add blank label to maintain column spacing
                     widget = Label("", disabled=True, events=False)
@@ -133,7 +137,9 @@ class Window(Layout):
     layout = []
     """Every class that inherits from Window must define it's own class level layout """
 
-    def __init__(self, title, parent=None, padx=None, pady=None, topmost=None):
+    def __init__(
+        self, title, parent=None, padx=None, pady=None, topmost=None, autoframe=True
+    ):
         self.title = title
         self.id = id(self)
         self.tk = TKRoot()
@@ -176,7 +182,7 @@ class Window(Layout):
                 ]
             ]
 
-        self._layout(self.mainframe, self)
+        self._layout(self.mainframe, self, autoframe=autoframe)
 
         # apply padding, element padding takes precedent over window
         for element in self._elements:
@@ -883,6 +889,7 @@ class _Frame(Element, Layout):
         pady=None,
         sticky=None,
         tooltip=None,
+        autoframe=False,
     ):
         super().__init__(
             key=key,
@@ -894,6 +901,7 @@ class _Frame(Element, Layout):
             sticky=sticky,
             tooltip=tooltip,
         )
+        self._autoframe = autoframe
 
         if frametype not in [GUITK.ELEMENT_FRAME, GUITK.ELEMENT_LABEL_FRAME]:
             raise ValueError(f"bad frametype: {frametype}")
@@ -958,7 +966,7 @@ class _Frame(Element, Layout):
         )
 
         if self.layout:
-            self._layout(self.element, self.window)
+            self._layout(self.element, self.window, autoframe=self._autoframe)
 
         if self.width or self.height:
             self.element.grid_propagate(0)
@@ -999,6 +1007,7 @@ class Frame(_Frame):
         pady=None,
         sticky=None,
         tooltip=None,
+        autoframe=False,
     ):
         super().__init__(
             frametype=GUITK.ELEMENT_FRAME,
@@ -1017,6 +1026,7 @@ class Frame(_Frame):
             pady=pady,
             sticky=sticky,
             tooltip=tooltip,
+            autoframe=autoframe,
         )
 
 
@@ -1040,6 +1050,7 @@ class LabelFrame(_Frame):
         pady=None,
         sticky=None,
         tooltip=None,
+        autoframe=False,
     ):
         super().__init__(
             frametype=GUITK.ELEMENT_LABEL_FRAME,
@@ -1060,4 +1071,5 @@ class LabelFrame(_Frame):
             pady=pady,
             sticky=sticky,
             tooltip=tooltip,
+            autoframe=autoframe,
         )
