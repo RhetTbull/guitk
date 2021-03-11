@@ -889,7 +889,7 @@ class _Frame(Element, Layout):
         pady=None,
         sticky=None,
         tooltip=None,
-        autoframe=False,
+        autoframe=True,
     ):
         super().__init__(
             key=key,
@@ -992,10 +992,10 @@ class _Frame(Element, Layout):
 class Frame(_Frame):
     def __init__(
         self,
+        layout=None,
         key=None,
         width=None,
         height=None,
-        layout=None,
         style=None,
         borderwidth=None,
         padding=None,
@@ -1007,7 +1007,7 @@ class Frame(_Frame):
         pady=None,
         sticky=None,
         tooltip=None,
-        autoframe=False,
+        autoframe=True,
     ):
         super().__init__(
             frametype=GUITK.ELEMENT_FRAME,
@@ -1033,12 +1033,12 @@ class Frame(_Frame):
 class LabelFrame(_Frame):
     def __init__(
         self,
+        layout=None,
         text=None,
         key=None,
         labelanchor=None,
         width=None,
         height=None,
-        layout=None,
         style=None,
         borderwidth=None,
         padding=None,
@@ -1050,7 +1050,7 @@ class LabelFrame(_Frame):
         pady=None,
         sticky=None,
         tooltip=None,
-        autoframe=False,
+        autoframe=True,
     ):
         super().__init__(
             frametype=GUITK.ELEMENT_LABEL_FRAME,
