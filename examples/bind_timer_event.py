@@ -12,15 +12,9 @@ class TimerWindow(guitk.Window):
         [guitk.Label("Press Start Timer to fire event after 2000 ms")],
         [guitk.Label("", width=60, key="OUTPUT")],
         [
-            guitk.Frame(
-                layout=[
-                    [
-                        guitk.Button("Start Timer"),
-                        guitk.Button("Cancel Timer"),
-                        guitk.CheckButton("Repeat", key="REPEAT"),
-                    ]
-                ]
-            )
+            guitk.Button("Start Timer"),
+            guitk.Button("Cancel Timer"),
+            guitk.CheckButton("Repeat", key="REPEAT"),
         ],
     ]
 

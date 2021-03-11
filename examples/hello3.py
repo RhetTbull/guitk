@@ -7,7 +7,7 @@ class HelloWorld(guitk.Window):
         [guitk.Label("What's your name?")],
         [guitk.Entry(key="ENTRY_NAME")],
         [guitk.Label("", width=40, key="OUTPUT")],
-        [guitk.Frame(layout=[[guitk.Button("Ok"), guitk.Button("Quit")]])],
+        [guitk.Button("Ok"), guitk.Button("Quit")],
     ]
 
     # Interact with the Window using an event Loop

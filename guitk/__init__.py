@@ -927,10 +927,19 @@ class _Frame(Element, Layout):
         if self.frametype == GUITK.ELEMENT_FRAME:
             if self.style is not None:
                 self.element = ttk.Frame(
-                    parent, width=self.width, height=self.height, borderwidth=self.borderwidth, style=self.style
+                    parent,
+                    width=self.width,
+                    height=self.height,
+                    borderwidth=self.borderwidth,
+                    style=self.style,
                 )
             else:
-                self.element = ttk.Frame(parent, width=self.width, borderwidth=self.borderwidth, height=self.height)
+                self.element = ttk.Frame(
+                    parent,
+                    width=self.width,
+                    borderwidth=self.borderwidth,
+                    height=self.height,
+                )
         else:
             if self.style is not None:
                 self.element = ttk.LabelFrame(
@@ -1027,8 +1036,8 @@ class Frame(_Frame):
 class LabelFrame(_Frame):
     def __init__(
         self,
-        layout=None,
         text=None,
+        layout=None,
         key=None,
         labelanchor=None,
         width=None,

@@ -16,15 +16,13 @@ class HelloWorld(guitk.Window):
                     layout=[
                         [guitk.Output(width=20, height=10)],
                         [guitk.Label("Output", key="LABEL_OUTPUT", sticky=tk.S)],
-                    ],
-                    padx=0,
+                    ]
                 ),
                 guitk.Frame(
                     layout=[
                         [None, guitk.CheckButton("Upper case", key="CHECK_UPPER")],
                         [None, guitk.CheckButton("Green text", key="CHECK_GREEN")],
                     ],
-                    padx=0,
                     sticky="n",
                 ),
             ]
@@ -36,7 +34,7 @@ class HelloWorld(guitk.Window):
         [guitk.Entry(key="ENTRY_NAME")],
         [guitk.Label("", width=40, key="OUTPUT")],
         [label_frame],
-        [guitk.Frame(layout=[[guitk.Button("Ok"), guitk.Button("Quit")]])],
+        [guitk.Button("Ok"), guitk.Button("Quit")],
     ]
     # Interact with the Window using an event Loop
     def handle_event(self, event):
@@ -47,7 +45,7 @@ class HelloWorld(guitk.Window):
             # set the output Label to the value of the Entry box
             # the Window class acts like a dictionary for looking up guitk element objects by key
             name = event.values["ENTRY_NAME"]
-            print(name)
+            print(f"Hello {name}")
             self["OUTPUT"].value = f"Hello {name}! Thanks for trying guitk."
 
         if event.key == "CHECK_UPPER" and event.values["CHECK_UPPER"]:
