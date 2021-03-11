@@ -101,7 +101,7 @@ class Layout:
         for row_count, row in enumerate(self.layout):
             col_offset = 0
             if autoframe and len(row) > 1:
-                row_ = [Frame(layout=[row], padx=0, pady=0, autoframe=False)]
+                row_ = [Frame(layout=[row], autoframe=False)]
             else:
                 row_ = row
             for col_count, widget in enumerate(row_):
@@ -885,8 +885,6 @@ class _Frame(Element, Layout):
         columnspan=None,
         text=None,
         labelanchor=None,
-        padx=None,
-        pady=None,
         sticky=None,
         tooltip=None,
         autoframe=True,
@@ -896,8 +894,6 @@ class _Frame(Element, Layout):
             disabled=disabled,
             rowspan=rowspan,
             columnspan=columnspan,
-            padx=padx,
-            pady=pady,
             sticky=sticky,
             tooltip=tooltip,
         )
@@ -931,10 +927,10 @@ class _Frame(Element, Layout):
         if self.frametype == GUITK.ELEMENT_FRAME:
             if self.style is not None:
                 self.element = ttk.Frame(
-                    parent, width=self.width, height=self.height, style=self.style
+                    parent, width=self.width, height=self.height, borderwidth=self.borderwidth, style=self.style
                 )
             else:
-                self.element = ttk.Frame(parent, width=self.width, height=self.height)
+                self.element = ttk.Frame(parent, width=self.width, borderwidth=self.borderwidth, height=self.height)
         else:
             if self.style is not None:
                 self.element = ttk.LabelFrame(
@@ -944,6 +940,7 @@ class _Frame(Element, Layout):
                     height=self.height,
                     style=self.style,
                     labelanchor=self.labelanchor,
+                    borderwidth=self.borderwidth,
                 )
             else:
                 self.element = ttk.LabelFrame(
@@ -952,6 +949,7 @@ class _Frame(Element, Layout):
                     width=self.width,
                     height=self.height,
                     labelanchor=self.labelanchor,
+                    borderwidth=self.borderwidth,
                 )
 
         if self.padding is not None:
@@ -1003,8 +1001,6 @@ class Frame(_Frame):
         disabled=False,
         rowspan=None,
         columnspan=None,
-        padx=None,
-        pady=None,
         sticky=None,
         tooltip=None,
         autoframe=True,
@@ -1022,8 +1018,6 @@ class Frame(_Frame):
             disabled=disabled,
             rowspan=rowspan,
             columnspan=columnspan,
-            padx=padx,
-            pady=pady,
             sticky=sticky,
             tooltip=tooltip,
             autoframe=autoframe,
@@ -1046,8 +1040,6 @@ class LabelFrame(_Frame):
         disabled=False,
         rowspan=None,
         columnspan=None,
-        padx=None,
-        pady=None,
         sticky=None,
         tooltip=None,
         autoframe=True,
@@ -1067,8 +1059,6 @@ class LabelFrame(_Frame):
             rowspan=rowspan,
             columnspan=columnspan,
             labelanchor=labelanchor,
-            padx=padx,
-            pady=pady,
             sticky=sticky,
             tooltip=tooltip,
             autoframe=autoframe,
