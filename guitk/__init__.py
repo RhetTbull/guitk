@@ -34,6 +34,8 @@ class EventType(Enum):
     BUTTON_PRESS = auto()
     CHECK_BUTTON = auto()
     VIRTUAL_EVENT = auto()
+    BROWSE_FILE = auto()
+    BROWSE_DIRECTORY = auto()
 
 
 class TKRoot:
@@ -550,7 +552,7 @@ class Button(Element):
 class BrowseFileButton(Button):
     def __init__(
         self,
-        text,
+        text="Browse",
         key=None,
         target_key=None,
         disabled=False,
@@ -576,6 +578,93 @@ class BrowseFileButton(Button):
             tooltip=tooltip,
             anchor=anchor,
         )
+        self.target_key = target_key
+        self.element_type = "guitk.BrowseFileButton"
+        self._filename = None
+
+    def create_element(self, parent, window, row, col):
+        self.window = window
+        self.parent = parent
+        self.element = ttk.Button(
+            parent, text=self.text, anchor=self.anchor, command=self.browse_dialog
+        )
+        self._grid(
+            row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
+        )
+        if self.disabled:
+            self.element.state(["disabled"])
+
+        return self.element
+
+    @property
+    def filename(self):
+        return self._filename
+
+    def browse_dialog(self):
+        self._filename = filedialog.askopenfilename()
+        if self.target_key:
+            self.window[self.target_key].value = self._filename
+        event = Event(self, self.window, self.key, EventType.BROWSE_FILE)
+        self.window._handle_event(event)
+
+
+class BrowseDirectoryButton(Button):
+    def __init__(
+        self,
+        text="Browse",
+        key=None,
+        target_key=None,
+        disabled=False,
+        columnspan=None,
+        rowspan=None,
+        padx=None,
+        pady=None,
+        events=True,
+        sticky=None,
+        tooltip=None,
+        anchor=None,
+    ):
+        super().__init__(
+            text,
+            key=key,
+            disabled=disabled,
+            columnspan=columnspan,
+            rowspan=rowspan,
+            padx=padx,
+            pady=pady,
+            events=events,
+            sticky=sticky,
+            tooltip=tooltip,
+            anchor=anchor,
+        )
+        self.target_key = target_key
+        self.element_type = "guitk.BrowseDirectoryButton"
+        self._dirname = None
+
+    def create_element(self, parent, window, row, col):
+        self.window = window
+        self.parent = parent
+        self.element = ttk.Button(
+            parent, text=self.text, anchor=self.anchor, command=self.browse_dialog
+        )
+        self._grid(
+            row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
+        )
+        if self.disabled:
+            self.element.state(["disabled"])
+
+        return self.element
+
+    @property
+    def directory(self):
+        return self._dirname
+
+    def browse_dialog(self):
+        self._dirname = filedialog.askdirectory()
+        if self.target_key:
+            self.window[self.target_key].value = self._dirname
+        event = Event(self, self.window, self.key, EventType.BROWSE_DIRECTORY)
+        self.window._handle_event(event)
 
 
 class CheckButton(Element):
@@ -583,7 +672,7 @@ class CheckButton(Element):
 
     def __init__(
         self,
-        text="Browse",
+        text,
         key="",
         disabled=False,
         rowspan=None,
