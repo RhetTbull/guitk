@@ -484,7 +484,7 @@ class Button(Element):
 
     def __init__(
         self,
-        title,
+        text,
         key=None,
         disabled=False,
         command=None,
@@ -510,8 +510,8 @@ class Button(Element):
             anchor=anchor,
         )
         self.element_type = "ttk.Button"
-        self.title = title
-        self.key = key or title
+        self.text = text
+        self.key = key or text
         self.columnspan = columnspan
         self.rowspan = rowspan
         if command is not None:
@@ -523,8 +523,8 @@ class Button(Element):
         return self.element["text"]
 
     @value.setter
-    def value(self, title):
-        self.element["text"] = title
+    def value(self, text):
+        self.element["text"] = text
 
     def create_element(self, parent, window, row, col):
         self.window = window
@@ -532,7 +532,7 @@ class Button(Element):
         event = Event(self, window, self.key, EventType.BUTTON_PRESS)
         self.element = ttk.Button(
             parent,
-            text=self.title,
+            text=self.text,
             anchor=self.anchor,
             command=window._make_callback(event),
         )
@@ -555,7 +555,7 @@ class CheckButton(Element):
 
     def __init__(
         self,
-        title,
+        text,
         key=None,
         disabled=False,
         command=None,
@@ -581,8 +581,8 @@ class CheckButton(Element):
             anchor=anchor,
         )
         self.element_type = "ttk.CheckButton"
-        self.title = title
-        self.key = key or title
+        self.text = text
+        self.key = key or text
         self.columnspan = columnspan
         self.rowspan = rowspan
         self._value = tk.BooleanVar()
@@ -595,7 +595,7 @@ class CheckButton(Element):
         event = Event(self, window, self.key, EventType.CHECK_BUTTON)
         self.element = ttk.Checkbutton(
             parent,
-            text=self.title,
+            text=self.text,
             anchor=self.anchor,
             command=window._make_callback(event),
             variable=self._value,
