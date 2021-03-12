@@ -487,7 +487,6 @@ class Button(Element):
         text,
         key=None,
         disabled=False,
-        command=None,
         columnspan=None,
         rowspan=None,
         padx=None,
@@ -514,8 +513,6 @@ class Button(Element):
         self.key = key or text
         self.columnspan = columnspan
         self.rowspan = rowspan
-        if command is not None:
-            self.command = command
         self.tooltip = tooltip
 
     @property
@@ -550,15 +547,45 @@ class Button(Element):
         return self.element
 
 
+class BrowseFileButton(Button):
+    def __init__(
+        self,
+        text,
+        key=None,
+        target_key=None,
+        disabled=False,
+        columnspan=None,
+        rowspan=None,
+        padx=None,
+        pady=None,
+        events=True,
+        sticky=None,
+        tooltip=None,
+        anchor=None,
+    ):
+        super().__init__(
+            text,
+            key=key,
+            disabled=disabled,
+            columnspan=columnspan,
+            rowspan=rowspan,
+            padx=padx,
+            pady=pady,
+            events=events,
+            sticky=sticky,
+            tooltip=tooltip,
+            anchor=anchor,
+        )
+
+
 class CheckButton(Element):
     """Checkbox / checkbutton """
 
     def __init__(
         self,
-        text,
-        key=None,
+        text="Browse",
+        key="",
         disabled=False,
-        command=None,
         rowspan=None,
         columnspan=None,
         padx=None,
@@ -586,8 +613,6 @@ class CheckButton(Element):
         self.columnspan = columnspan
         self.rowspan = rowspan
         self._value = tk.BooleanVar()
-        if command is not None:
-            self.command = command
 
     def create_element(self, parent, window, row, col):
         self.window = window
@@ -624,7 +649,6 @@ class Text(Element):
         width=40,
         height=20,
         disabled=False,
-        command=None,
         rowspan=None,
         columnspan=None,
         padx=None,
@@ -651,8 +675,6 @@ class Text(Element):
         self._value = text or ""
         self.columnspan = columnspan
         self.rowspan = rowspan
-        if command is not None:
-            self.command = command
 
     def create_element(self, parent, window, row, col):
         self.window = window
@@ -725,7 +747,6 @@ class ScrolledText(Text):
         width=40,
         height=20,
         disabled=False,
-        command=None,
         rowspan=None,
         columnspan=None,
         padx=None,
@@ -753,8 +774,6 @@ class ScrolledText(Text):
         self._value = text if text is not None else ""
         self.columnspan = columnspan
         self.rowspan = rowspan
-        if command is not None:
-            self.command = command
 
     def create_element(self, parent, window, row, col):
         self.window = window
@@ -795,7 +814,6 @@ class Output(ScrolledText):
         width=40,
         height=20,
         disabled=False,
-        command=None,
         echo=False,
         rowspan=None,
         columnspan=None,
@@ -813,7 +831,6 @@ class Output(ScrolledText):
             width=width,
             height=height,
             disabled=disabled,
-            command=command,
             rowspan=rowspan,
             columnspan=columnspan,
             padx=padx,
