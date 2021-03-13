@@ -80,12 +80,16 @@ class TKRoot:
             pass
         if self.first_window and not self.windows:
             # last window
-            # print(f"last window!")
             self.root.destroy()
 
     def run_mainloop(self):
         if not self.mainloop_is_running:
             self.root.mainloop()
+
+
+class WindowBaseClass:
+    # only needed to keep typing happy
+    pass
 
 
 class Layout:
@@ -96,7 +100,7 @@ class Layout:
     def __init__(self, *args, **kwargs):
         pass
 
-    def _layout(self, parent, window, autoframe):
+    def _layout(self, parent, window: WindowBaseClass, autoframe):
         # as this is a mixin, make sure class being mixed into has necessary attributes
 
         row_offset = 0
@@ -129,7 +133,47 @@ class Layout:
                     col_offset += widget.columnspan - 1
 
 
-class Window(Layout):
+class Menu:
+    def __init__(self, label, underline=None) -> None:
+        self._label = label
+        self._menu = None
+        self._underline = underline
+        self.window = None
+
+    def create_element(self, parent, window: WindowBaseClass):
+        self.window = window
+        menu = tk.Menu(parent)
+        if self._underline is None:
+            idx = self._label.find("&")
+            if idx != -1:
+                self._label = self._label.replace("&", "", 1)
+                self._underline = idx
+        parent.add_cascade(menu=menu, label=self._label, underline=self._underline)
+        self._menu = menu
+
+
+class Command(Menu):
+    def __init__(self, label, disabled=False, shortcut=None):
+        self._label = label
+        self._disabled = disabled
+        self._shortcut = shortcut
+        self._parent = None
+        self._key = None
+
+    def create_element(self, parent, window: WindowBaseClass, path):
+        self._parent = parent
+        self.window = window
+        self._key = path
+        parent.add_command(
+            label=self._label,
+            command=self.window._make_callback(
+                Event(self, self.window, self._key, "MENU_COMMAND")
+            ),
+            accelerator=self._shortcut,
+        )
+
+
+class Window(Layout, WindowBaseClass):
     """Basic Window class from which all windows are derived
     
     Notes:
@@ -138,6 +182,9 @@ class Window(Layout):
 
     layout = []
     """Every class that inherits from Window must define it's own class level layout """
+
+    menu = {}
+    """ Optionally provide a menu """
 
     def __init__(
         self, title, parent=None, padx=None, pady=None, topmost=None, autoframe=True
@@ -161,6 +208,9 @@ class Window(Layout):
 
         self._return_value = None
         """ value returned from run() if set in quit() """
+
+        self._root_menu = None
+        """ will hold root tk.Menu element """
 
         self.mainframe = ttk.Frame(self.window, padding="3 3 12 12")
         self.mainframe.grid(column=0, row=0, sticky=(tk.N, tk.W, tk.E, tk.S))
@@ -191,6 +241,9 @@ class Window(Layout):
             padx = element.padx or self.padx
             pady = element.pady or self.pady
             element.element.grid_configure(padx=padx, pady=pady)
+
+        if self.menu:
+            self._build_menu()
 
         if self.topmost:
             self.window.attributes("-topmost", 1)
@@ -245,6 +298,35 @@ class Window(Layout):
         except Exception:
             pass
 
+    def _add_menus(self, menu: Menu, menu_items, path=None):
+        path = f"MENU:{menu._label}" if path is None else path
+        for m in menu_items:
+            if type(m) == dict:
+                # submenu
+                for subm in m:
+                    subm.create_element(menu._menu, self)
+                    subpath = f"{path}|{subm._label}"
+                    self._add_menus(subm, m[subm], subpath)
+            elif isinstance(m, Command):
+                command_path = f"{path}|{m._label}"
+                m.create_element(menu._menu, self, command_path)
+
+    def _build_menu(self):
+        if type(self.menu) != dict:
+            raise ValueError("self.menu must be a dict")
+
+        if self._root_menu is None:
+            # create the root menu
+            self.tk.root.option_add("*tearOff", tk.FALSE)
+            self._root_menu = tk.Menu(self.tk.root)
+            self.window["menu"] = self._root_menu
+
+        for m in self.menu:
+            if not isinstance(m, Menu):
+                raise ValueError("self.menu keys must be Menu objects")
+            m.create_element(self._root_menu, self)
+            self._add_menus(m, self.menu[m])
+
     def _destroy(self):
         # disable any stdout/stderr redirection
         for element in self._elements:
@@ -255,7 +337,9 @@ class Window(Layout):
         self.tk.deregister(self)
 
     def _make_callback(self, event):
-        def _callback(*args):
+        def _callback(*arg):
+            if arg:
+                event.event = arg[0]
             self._handle_event(event)
 
         return _callback
@@ -275,7 +359,7 @@ class Window(Layout):
             self.handle_event(event)
 
             # if deleting the window, call call _destroy after handle_event has had a chance to handle it
-            if event.event == "WM_WINDOW_DELETE":
+            if event.event_type == "WM_WINDOW_DELETE":
                 self._destroy()
 
     def run(self):
@@ -292,15 +376,16 @@ class Window(Layout):
 class Event:
     """Event that occurred and values for elements in the window """
 
-    def __init__(self, element: object, window: Window, key, event):
+    def __init__(self, element: object, window: Window, key, event_type):
         self.id = id(window)
         self.element = element
         self.key = key
-        self.event = event
+        self.event_type = event_type
+        self.event = None  # placeholder for Tk event
         self.values = {}
 
     def __str__(self):
-        return f"id={self.id}, element={self.element}, key={self.key}, event={self.event}, values={self.values}"
+        return f"id={self.id}, element={self.element}, key={self.key}, event_type={self.event_type}, event={self.event}, values={self.values}"
 
 
 class Element:
@@ -402,7 +487,7 @@ class Entry(Element):
         self.rowspan = rowspan
         self.width = width
 
-    def create_element(self, parent, window, row, col):
+    def create_element(self, parent, window: Window, row, col):
         self.window = window
         self.parent = parent
         self.element = ttk.Entry(parent, textvariable=self._value, width=self.width)
@@ -460,7 +545,7 @@ class Label(Element):
         self.rowspan = rowspan
         self.width = width
 
-    def create_element(self, parent, window, row, col):
+    def create_element(self, parent, window: Window, row, col):
         self.window = window
         self.parent = parent
         self.element = ttk.Label(
@@ -525,7 +610,7 @@ class Button(Element):
     def value(self, text):
         self.element["text"] = text
 
-    def create_element(self, parent, window, row, col):
+    def create_element(self, parent, window: Window, row, col):
         self.window = window
         self.parent = parent
         event = Event(self, window, self.key, EventType.BUTTON_PRESS)
@@ -582,7 +667,7 @@ class BrowseFileButton(Button):
         self.element_type = "guitk.BrowseFileButton"
         self._filename = None
 
-    def create_element(self, parent, window, row, col):
+    def create_element(self, parent, window: Window, row, col):
         self.window = window
         self.parent = parent
         self.element = ttk.Button(
@@ -641,7 +726,7 @@ class BrowseDirectoryButton(Button):
         self.element_type = "guitk.BrowseDirectoryButton"
         self._dirname = None
 
-    def create_element(self, parent, window, row, col):
+    def create_element(self, parent, window: Window, row, col):
         self.window = window
         self.parent = parent
         self.element = ttk.Button(
@@ -703,7 +788,7 @@ class CheckButton(Element):
         self.rowspan = rowspan
         self._value = tk.BooleanVar()
 
-    def create_element(self, parent, window, row, col):
+    def create_element(self, parent, window: Window, row, col):
         self.window = window
         self.parent = parent
         event = Event(self, window, self.key, EventType.CHECK_BUTTON)
@@ -765,7 +850,7 @@ class Text(Element):
         self.columnspan = columnspan
         self.rowspan = rowspan
 
-    def create_element(self, parent, window, row, col):
+    def create_element(self, parent, window: Window, row, col):
         self.window = window
         self.parent = parent
         self.element = tk.Text(parent, width=self.width, height=self.height)
@@ -864,7 +949,7 @@ class ScrolledText(Text):
         self.columnspan = columnspan
         self.rowspan = rowspan
 
-    def create_element(self, parent, window, row, col):
+    def create_element(self, parent, window: Window, row, col):
         self.window = window
         self.parent = parent
         self.element = _ttkScrolledText(parent, width=self.width, height=self.height)
@@ -939,7 +1024,7 @@ class Output(ScrolledText):
             r.echo = self._echo
             self._redirect_id[r] = r.register(self._write)
 
-    def create_element(self, parent, window, row, col):
+    def create_element(self, parent, window: Window, row, col):
         super().create_element(parent, window, row, col)
         self.enable_redirect()
         self.element.unbind("<KeyRelease>")
@@ -1026,7 +1111,7 @@ class _Frame(Element, Layout):
         self.text = text
         self.labelanchor = labelanchor or "nw"
 
-    def create_element(self, parent, window, row, col):
+    def create_element(self, parent, window: Window, row, col):
         self.window = window
         self.parent = parent
 

@@ -17,7 +17,7 @@ class LayoutDemo(guitk.Window):
 
     # Interact with the Window using an event Loop
     def handle_event(self, event):
-        if event.event == guitk.EventType.BUTTON_PRESS:
+        if event.event_type == guitk.EventType.BUTTON_PRESS:
             # print the key for the button that was pressed
             print(event.values[event.key])
 
