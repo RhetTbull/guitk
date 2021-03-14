@@ -21,6 +21,24 @@ from .redirect import StdOutRedirect, StdErrRedirect
 from .tooltips import Hovertip
 
 
+def map_key_binding_from_shortcut(shortcut):
+    """Return a keybinding sequence given a menu command shortcut """
+    if not shortcut:
+        return None
+    keys = shortcut.split("+")
+
+    key_mappings = {"Cmd": "Command", "Ctrl": "Control"}
+    keybinding = []
+    for k in keys:
+        if k in key_mappings:
+            keybinding.append(key_mappings[k])
+        else:
+            if len(k) == 1 and ord("A") <= ord(k) <= ord("Z"):
+                k = k.lower()
+            keybinding.append(k)
+    return "<" + "-".join(keybinding) + ">"
+
+
 class GUITK(Enum):
     """Constants used internally by guitk """
 
@@ -161,15 +179,29 @@ class Command(Menu):
         self._key = None
 
     def create_element(self, parent, window: WindowBaseClass, path):
+        print(f"create_element: {path}")
         self._parent = parent
         self.window = window
         self._key = path
+        callback = (
+            self.window._make_callback(
+                Event(self, self.window, self._key, "MENU_COMMAND")
+            ),
+        )
         parent.add_command(
             label=self._label,
             command=self.window._make_callback(
                 Event(self, self.window, self._key, "MENU_COMMAND")
             ),
             accelerator=self._shortcut,
+        )
+        key_binding = map_key_binding_from_shortcut(self._shortcut)
+        print(key_binding)
+        window.window.bind_all(
+            key_binding,
+            self.window._make_callback(
+                Event(self, self.window, self._key, "MENU_COMMAND")
+            ),
         )
 
 
