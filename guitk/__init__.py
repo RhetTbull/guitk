@@ -54,6 +54,7 @@ class EventType(Enum):
     VIRTUAL_EVENT = auto()
     BROWSE_FILE = auto()
     BROWSE_DIRECTORY = auto()
+    LINK_LABEL_CLICKED = auto()
 
 
 class TKRoot:
@@ -435,6 +436,7 @@ class Element:
         sticky=None,
         tooltip=None,
         anchor=None,
+        cursor=None,
     ):
         self.key = key
         self.disabled = disabled
@@ -446,6 +448,7 @@ class Element:
         self.sticky = sticky or ""
         self.tooltip = tooltip
         self.anchor = anchor
+        self.cursor = cursor
 
         self.element_type = None
         self._tk = TKRoot()
@@ -499,6 +502,7 @@ class Entry(Element):
         events=False,
         sticky=None,
         tooltip=None,
+        cursor=None,
     ):
         super().__init__(
             key=key,
@@ -510,6 +514,7 @@ class Entry(Element):
             events=events,
             sticky=sticky,
             tooltip=tooltip,
+            cursor=cursor,
         )
         self.element_type = "ttk.Entry"
         default = default or ""
@@ -522,7 +527,9 @@ class Entry(Element):
     def create_element(self, parent, window: Window, row, col):
         self.window = window
         self.parent = parent
-        self.element = ttk.Entry(parent, textvariable=self._value, width=self.width)
+        self.element = ttk.Entry(
+            parent, textvariable=self._value, width=self.width, cursor=self.cursor
+        )
         self._grid(
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
         )
@@ -557,6 +564,7 @@ class Label(Element):
         sticky=None,
         tooltip=None,
         anchor=None,
+        cursor=None,
     ):
         super().__init__(
             key=key,
@@ -569,6 +577,7 @@ class Label(Element):
             sticky=sticky,
             tooltip=tooltip,
             anchor=anchor,
+            cursor=cursor,
         )
         self.element_type = "ttk.Label"
         self.text = text
@@ -581,7 +590,11 @@ class Label(Element):
         self.window = window
         self.parent = parent
         self.element = ttk.Label(
-            parent, text=self.text, width=self.width, anchor=self.anchor
+            parent,
+            text=self.text,
+            width=self.width,
+            anchor=self.anchor,
+            cursor=self.cursor,
         )
         self.element["textvariable"] = self._value
         self._value.set(self.text)
@@ -596,6 +609,52 @@ class Label(Element):
     def label(self):
         """Return the Tk label element"""
         return self.element
+
+
+class LinkLabel(Label):
+    """Link label that responds to click """
+
+    def __init__(
+        self,
+        text,
+        key=None,
+        disabled=False,
+        rowspan=None,
+        columnspan=None,
+        width=None,
+        padx=None,
+        pady=None,
+        events=False,
+        sticky=None,
+        tooltip=None,
+        anchor=None,
+        cursor=None,
+    ):
+        super().__init__(
+            text=text,
+            key=key,
+            disabled=disabled,
+            rowspan=rowspan,
+            columnspan=columnspan,
+            padx=padx,
+            pady=pady,
+            events=events,
+            sticky=sticky,
+            tooltip=tooltip,
+            anchor=anchor,
+            cursor=cursor or "hand1",
+        )
+        self.element_type = "guitk.LinkLabel"
+        self.text = text
+        self.key = key or text
+        self.columnspan = columnspan
+        self.rowspan = rowspan
+        self.width = width
+
+    def create_element(self, parent, window: Window, row, col):
+        super().create_element(parent, window, row, col)
+        event = Event(self.element, window, self.key, EventType.LINK_LABEL_CLICKED)
+        self.element.bind("<Button-1>", window._make_callback(event))
 
 
 class Button(Element):
