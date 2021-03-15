@@ -14,7 +14,7 @@
 import sys
 import tkinter as tk
 from enum import Enum, auto
-from tkinter import filedialog, ttk
+from tkinter import filedialog, ttk, font
 import time
 
 from .redirect import StdOutRedirect, StdErrRedirect
@@ -629,6 +629,7 @@ class LinkLabel(Label):
         tooltip=None,
         anchor=None,
         cursor=None,
+        underline_font=False,
     ):
         super().__init__(
             text=text,
@@ -650,11 +651,16 @@ class LinkLabel(Label):
         self.columnspan = columnspan
         self.rowspan = rowspan
         self.width = width
+        self.underline_font = underline_font
 
     def create_element(self, parent, window: Window, row, col):
         super().create_element(parent, window, row, col)
         event = Event(self.element, window, self.key, EventType.LINK_LABEL_CLICKED)
         self.element.bind("<Button-1>", window._make_callback(event))
+        if self.underline_font:
+            f = font.Font(self.element, self.element.cget("font"))
+            f.configure(underline=True)
+            self.element.configure(font=f)
 
 
 class Button(Element):
