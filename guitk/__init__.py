@@ -11,6 +11,8 @@
 # TODO: add Column?
 # TODO: add way to specify tooltip delay
 
+from typing import Tuple, Optional
+
 import sys
 import tkinter as tk
 from enum import Enum, auto
@@ -55,6 +57,7 @@ class EventType(Enum):
     BROWSE_FILE = auto()
     BROWSE_DIRECTORY = auto()
     LINK_LABEL_CLICKED = auto()
+    TREEVIEW_HEADING_CLICKED = auto()
 
 
 class TKRoot:
@@ -213,26 +216,39 @@ class Window(Layout, WindowBaseClass):
         Classes which inherit from window should implement handle_event, setup, and teardown as needed
     """
 
+    title = "My Window"
+    """Title to display in the window's title bar """
+
     layout = []
     """Every class that inherits from Window must define it's own class level layout """
 
     menu = {}
     """ Optionally provide a menu """
 
+    padx = 5
+    pady = 5
+    """Default padding around elements """
+
     def __init__(
-        self, title, parent=None, padx=None, pady=None, topmost=None, autoframe=True
+        self,
+        title=None,
+        parent=None,
+        padx=None,
+        pady=None,
+        topmost=None,
+        autoframe=True,
     ):
-        self.title = title
+        self.title = title or self.title
         self.id = id(self)
         self.tk = TKRoot()
         # self.root = self.tk.root
         self.parent = self.tk.root if not parent else parent
-        self.padx = padx
-        self.pady = pady
+        self.padx = padx or self.padx
+        self.pady = pady or self.pady
         self.topmost = topmost
 
         self.window = tk.Toplevel(self.parent)
-        self.window.title(title)
+        self.window.title(self.title)
         self._elements = []
         self._element_by_key = {}
 
@@ -1360,3 +1376,130 @@ class LabelFrame(_Frame):
             tooltip=tooltip,
             autoframe=autoframe,
         )
+
+
+# TODO: for ListView, set tree.column("#0", width=0) and show="tree"
+class TreeView(Element):
+    def __init__(
+        self,
+        key=None,
+        columns: Optional[Tuple] = None,
+        cursor=None,
+        displaycolumns=None,
+        height=None,
+        padding=None,
+        selectmode=None,
+        show=None,
+        style=None,
+        takefocus=None,
+        disabled=False,
+        rowspan=None,
+        columnspan=None,
+        padx=None,
+        pady=None,
+        events=True,
+        sticky=None,
+        tooltip=None,
+        anchor=None,
+    ):
+        super().__init__(
+            key=key,
+            disabled=disabled,
+            rowspan=rowspan,
+            columnspan=columnspan,
+            padx=padx,
+            pady=pady,
+            events=events,
+            sticky=sticky,
+            tooltip=tooltip,
+            anchor=anchor,
+            cursor=cursor,
+        )
+
+        self.key = key or "TreeView"
+        self.element_type = "ttk.TreeView"
+
+        # ttk.Treeview arguments
+        self._columns = columns
+        self._displaycolumns = displaycolumns
+        self._height = height
+        self._padding = padding
+        self._selectmode = selectmode
+        self._show = show
+        self._style = style
+        self._takefocus = takefocus
+        self._cursor = cursor
+
+        self.disabled = disabled
+        self.columnspan = columnspan
+        self.rowspan = rowspan
+        self.padx = padx
+        self.pady = pady
+        self.events = events
+        self.sticky = sticky or ""
+        self.tooltip = tooltip
+        self.anchor = anchor
+
+    def create_element(self, parent, window: Window, row, col):
+        self.window = window
+        self.parent = parent
+
+        # build arg list for Treeview()
+        kwargs = {}
+        for kw in [
+            "columns",
+            "cursor",
+            "displaycolumns",
+            "height",
+            "padding",
+            "selectmode",
+            "show",
+            "style",
+            "takefocus",
+        ]:
+            val = getattr(self, f"_{kw}")
+            if val is not None:
+                kwargs[kw] = val
+
+        self.element = ttk.Treeview(parent, **kwargs)
+
+        self._grid(
+            row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
+        )
+
+        if self.disabled:
+            self.element.state(["disabled"])
+
+        event = Event(self, self.window, self.key, "<<TreeviewSelect>>")
+        self.element.bind("<<TreeviewSelect>>", window._make_callback(event))
+
+        return self.element
+
+    @property
+    def value(self):
+        return self.tree.selection()
+
+    @value.setter
+    def value(self, *values):
+        self.tree.selection_set(*values)
+
+    def bind_heading(self, column_name, event_name):
+        event = Event(self, self.window, event_name, EventType.TREEVIEW_HEADING_CLICKED)
+        self.tree.heading(column_name, command=self.window._make_callback(event))
+
+    def sort_on_column(self, column_name, key=None, reverse=False):
+        """ sort the tree view contents based on column_name
+            optional key same as sort(key=)
+        """
+        values = [
+            (self.tree.set(k, column_name), k) for k in self.tree.get_children("")
+        ]
+        values.sort(key=key, reverse=reverse)
+        for index, (val, k) in enumerate(values):
+            self.tree.move(k, "", index)
+
+    @property
+    def tree(self):
+        """Return the ttk Treeview element"""
+        return self.element
+
