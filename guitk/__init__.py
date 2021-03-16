@@ -11,7 +11,7 @@
 # TODO: add Column?
 # TODO: add way to specify tooltip delay
 
-from typing import Tuple, Optional
+from typing import List, Optional
 
 import sys
 import tkinter as tk
@@ -57,7 +57,8 @@ class EventType(Enum):
     BROWSE_FILE = auto()
     BROWSE_DIRECTORY = auto()
     LINK_LABEL_CLICKED = auto()
-    TREEVIEW_HEADING_CLICKED = auto()
+    TREEVIEW_HEADING = auto()
+    TREEVIEW_TAG = auto()
 
 
 class TKRoot:
@@ -403,6 +404,7 @@ class Window(Layout, WindowBaseClass):
         event.values = {
             elem.key: elem.value for elem in self._elements if type(elem) != Output
         }
+
         # filter events for this window
         if event.id == id(self):
             self.handle_event(event)
@@ -1383,7 +1385,8 @@ class TreeView(Element):
     def __init__(
         self,
         key=None,
-        columns: Optional[Tuple] = None,
+        headings: Optional[List] = None,
+        columns: Optional[List] = None,
         cursor=None,
         displaycolumns=None,
         height=None,
@@ -1415,12 +1418,19 @@ class TreeView(Element):
             anchor=anchor,
             cursor=cursor,
         )
-
+        """ columns is optional, if not provided, will use headings for column names """
         self.key = key or "TreeView"
         self.element_type = "ttk.TreeView"
 
+        if headings and columns:
+            # ensure heading provided for each column
+            if len(headings) != len(columns):
+                raise ValueError("headings and columns lists must be the same length")
+
+        self._headings = headings
+
         # ttk.Treeview arguments
-        self._columns = columns
+        self._columns = tuple(columns) if columns is not None else tuple(headings)
         self._displaycolumns = displaycolumns
         self._height = height
         self._padding = padding
@@ -1467,6 +1477,11 @@ class TreeView(Element):
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
         )
 
+        # set column headings
+        if self._headings:
+            for column, heading in zip(self._columns, self._headings):
+                self.element.heading(column, text=heading)
+
         if self.disabled:
             self.element.state(["disabled"])
 
@@ -1484,8 +1499,19 @@ class TreeView(Element):
         self.tree.selection_set(*values)
 
     def bind_heading(self, column_name, event_name):
-        event = Event(self, self.window, event_name, EventType.TREEVIEW_HEADING_CLICKED)
+        """Bind event to click on column heading """
+        event = Event(self, self.window, event_name, EventType.TREEVIEW_HEADING)
         self.tree.heading(column_name, command=self.window._make_callback(event))
+
+    def bind_tag(self, tagname, event_name, sequence=None):
+        """Bind event to item with tag when sequence occurs
+           If sequence is None, will bind to <Button-1>"""
+        if sequence is None:
+            sequence = "<Button-1>"
+        event = Event(self, self.window, event_name, EventType.TREEVIEW_TAG)
+        self.tree.tag_bind(
+            tagname, sequence=sequence, callback=self.window._make_callback(event)
+        )
 
     def sort_on_column(self, column_name, key=None, reverse=False):
         """ sort the tree view contents based on column_name
