@@ -11,7 +11,6 @@
 # TODO: add Column?
 # TODO: add way to specify tooltip delay
 
-import sys
 import time
 import tkinter as tk
 from tkinter import filedialog, font, ttk
@@ -531,7 +530,7 @@ class Entry(Widget):
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
         )
 
-        event = Event(self, self, self.key, "<KeyRelease>")
+        event = Event(self, window, self.key, "<KeyRelease>")
         self.widget.bind("<KeyRelease>", window._make_callback(event))
 
         if self.disabled:
@@ -952,7 +951,7 @@ class Text(Widget):
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
         )
 
-        event = Event(self, self, self.key, "<KeyRelease>")
+        event = Event(self, window, self.key, "<KeyRelease>")
         self.widget.bind("<KeyRelease>", window._make_callback(event))
 
         if self.disabled:
@@ -1051,7 +1050,7 @@ class ScrolledText(Text):
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
         )
 
-        event = Event(self, self, self.key, "<KeyRelease>")
+        event = Event(self, window, self.key, "<KeyRelease>")
         self.widget.bind("<KeyRelease>", window._make_callback(event))
 
         if self.disabled:
@@ -1464,7 +1463,7 @@ class TreeView(Widget):
         if self.disabled:
             self.widget.state(["disabled"])
 
-        event = Event(self, self.window, self.key, "<<TreeviewSelect>>")
+        event = Event(self, window, self.key, "<<TreeviewSelect>>")
         self.widget.bind("<<TreeviewSelect>>", window._make_callback(event))
 
         return self.widget

@@ -5,6 +5,7 @@ import guitk
 
 # subclass guitk.Window as the starting point for your app's main window
 class HelloWorld(guitk.Window):
+    title = "Hello World"
     # Define the window's contents
     # you must have a class variable named `layout` or you'll get an empty window
     # guitk.Label corresponds to a tkinter.ttk.Label, etc.
@@ -12,7 +13,7 @@ class HelloWorld(guitk.Window):
     # layouts are lists of lists where each list corresponds to a row in the GUI
     layout = [
         [guitk.Label("What's your name?")],
-        [guitk.Entry(key="ENTRY_NAME")],
+        [guitk.Entry(key="ENTRY_NAME", events=True)],
         [guitk.Label("", width=40, key="OUTPUT", columnspan=2)],
         [guitk.Button("Ok"), guitk.Button("Quit")],
     ]
@@ -31,8 +32,11 @@ class HelloWorld(guitk.Window):
             # set the output Label to the value of the Entry box
             self["OUTPUT"].value = f"Hello {name}! Thanks for trying guitk."
 
+        if event.event_type == "<KeyRelease>":
+            print(event)
+
 
 if __name__ == "__main__":
-    # instantiate your Window class with a title and run it
-    name = HelloWorld("Hello, World", padx=5, pady=5).run()
+    # instantiate your Window class and run it
+    name = HelloWorld().run()
     print(f"HelloWorld: {name}")
