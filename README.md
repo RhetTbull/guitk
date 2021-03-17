@@ -1,8 +1,8 @@
-# Python GUI Toolkit for TK (guitk)
+# Python GUI Toolkit for TK (GUITk)
 
 ## Synopsis
 
-Yes, this is yet another python GUI framework/wrapper.  guitk is an experiment to design a toolkit that simplifies creating simple GUIs with [tkinter](https://docs.python.org/3/library/tkinter.html).
+GUITk is an experiment to design a lightweight framework that simplifies creating simple GUIs with [tkinter](https://docs.python.org/3/library/tkinter.html).
 
 ## Code Example
 
@@ -12,18 +12,20 @@ Yes, this is yet another python GUI framework/wrapper.  guitk is an experiment t
 import guitk
 
 class HelloWindow(guitk.Window):
-    layout = [
-        [guitk.Label("What's your name?")],
-        [guitk.Entry(key="name")],
-        [guitk.Button("Ok")],
-    ]
+
+    def config(self):
+        self.layout = [
+            [guitk.Label("What's your name?")],
+            [guitk.Entry(key="name")],
+            [guitk.Button("Ok")],
+        ]
+        self.title = "Hello, World"
 
     def handle_event(self, event):
         print(f"Hello {event.values['name']}")
 
-
 if __name__ == "__main__":
-    HelloWindow("Window Title").run()
+    HelloWindow().run()
 ```
 
 ![hello.py example](examples/hello.py.png "Hello World example")
@@ -46,17 +48,13 @@ guitk is my attempt to provide an event-loop interface to tkinter.  It is not in
 
 Again, if you can live with these concerns, I highly recommend you consider PySimpleGUI.
 
-### Should I use guitk in my own project?
-
-No. You definitely should not. At best, this is currently a pre-alpha experiment.  I am attempting though, to get this to an MVP state that's usable in one of my other projects.
-
 ## Installation
 
 * `git clone git@github.com:RhetTbull/guitk.git`
 * `cd guitk`
 * `python3 setup.py install`
 
-## A Few More Examples
+## Anatomy of a GUITk program 
 
 ```python
 """Hello World example using guitk """
@@ -66,42 +64,56 @@ import guitk
 
 # subclass guitk.Window as the starting point for your app's main window
 class HelloWorld(guitk.Window):
-    # Define the window's contents
-    # you must have a class variable named `layout` or you'll get an empty window
-    # guitk.Label corresponds to a tkinter.ttk.Label, etc.
-    # optionally provide a unique key to each element to easily reference the element later
-    # layouts are lists of lists where each list corresponds to a row in the GUI
-    layout = [
-        [guitk.Label("What's your name?")],
-        [guitk.Entry(key="ENTRY_NAME")],
-        [guitk.Label("", width=40, key="OUTPUT", columnspan=2)],
-        [guitk.Button("Ok"), guitk.Button("Quit")],
-    ]
+
+    # every Window class needs a config() method that 
+    # defines the title and the layout (and optionally menu and other other settings)
+    def config(self):
+        # Title for the window
+        self.title = "Hello, World"
+
+        # Define the window's contents
+        # guitk.Label corresponds to a tkinter.ttk.Label, etc.
+        # optionally provide a unique key to each element to easily reference the element later
+        # layouts are lists of lists where each list corresponds to a row in the GUI
+        self.layout = [
+            [guitk.Label("What's your name?")],
+            [guitk.Entry(key="ENTRY_NAME", events=True)],
+            [guitk.Label("", width=40, key="OUTPUT", columnspan=2)],
+            [guitk.Button("Ok"), guitk.Button("Quit")],
+        ]
 
     # Interact with the Window using an event Loop
     # every guitk.Window will call self.handle_event to handle GUI events
     # event is a guitk.Event object
     def handle_event(self, event):
+        # the value of each widget can be read using event.values["KEYNAME"] 
         name = event.values["ENTRY_NAME"]
 
         if event.key == "Quit":
+            # a key wasn't supplied in `guitk.Button("Quit")` so guitk uses the name of the button
             # value passed to quit will be returned by HelloWorld.run()
             self.quit(name)
 
         if event.key == "Ok":
             # set the output Label to the value of the Entry box
+            # individual widgets can be accessed by their key; the window object acts as a dictionary of widgets
             self["OUTPUT"].value = f"Hello {name}! Thanks for trying guitk."
+
+        if event.event_type == "<KeyRelease>":
+            # events can be handled by event type as well as even key
+            print(event)
 
 
 if __name__ == "__main__":
-    # instantiate your Window class with a title and run it
-    name = HelloWorld("Hello, World").run()
+    # instantiate your Window class and run it
+    name = HelloWorld().run()
     print(f"HelloWorld: {name}")
 ```
 
 ![hello2.py example](examples/hello2.py.png "Hello World example")
 
 
+<!---
 guitk GUIs are created using a lists of lists where each element in the lists corresponds to a ttk or tk element.  This design pattern is borrowed from PySimpleGUI.
 
 ```python
@@ -304,7 +316,7 @@ if __name__ == "__main__":
 ```
 
 ![bind_timer_event example](examples/bind_timer_event.py.png "Creating timed virtual events.")
-
+-->
 ## Contributors
 
 Contributions welcome! If this project interests you, open an Issue or send a PR!

@@ -5,13 +5,16 @@ import guitk
 
 # subclass guitk.Window as the starting point for your app's main window
 class HelloWindow(guitk.Window):
-    # define a layout for the window
-    # you must have a class variable named `layout` or you'll get an empty window
-    layout = [
-        [guitk.Label("What's your name?")],
-        [guitk.Entry(key="name")],
-        [guitk.Button("Ok")],
-    ]
+
+    def config(self):
+        # define a layout for the window
+        # you must have a class variable named `layout` or you'll get an empty window
+        self.layout = [
+            [guitk.Label("What's your name?")],
+            [guitk.Entry(key="name")],
+            [guitk.Button("Ok")],
+        ]
+        self.title = "Hello, World"
 
     # define your event loop
     # every guitk.Window will call self.handle_event to handle GUI events
@@ -22,4 +25,4 @@ class HelloWindow(guitk.Window):
 
 # run your event loop
 if __name__ == "__main__":
-    HelloWindow("Window Title").run()
+    HelloWindow().run()

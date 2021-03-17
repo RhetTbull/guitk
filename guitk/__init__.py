@@ -11,6 +11,7 @@
 # TODO: add Column?
 # TODO: add way to specify tooltip delay
 
+import sys
 import time
 import tkinter as tk
 from tkinter import filedialog, font, ttk
@@ -81,6 +82,7 @@ class TKRoot:
         if self.first_window and not self.windows:
             # last window
             self.root.destroy()
+            del self.root
 
     def get_children(self, window):
         """Return child windows of parent window"""
@@ -196,19 +198,6 @@ class Window(Layout, WindowBaseClass):
         Classes which inherit from window should implement handle_event, setup, and teardown as needed
     """
 
-    title = "My Window"
-    """Title to display in the window's title bar """
-
-    layout = []
-    """Every class that inherits from Window must define it's own class level layout """
-
-    menu = {}
-    """ Optionally provide a menu """
-
-    padx = 5
-    pady = 5
-    """Default padding around widgets """
-
     def __init__(
         self,
         title=None,
@@ -218,6 +207,12 @@ class Window(Layout, WindowBaseClass):
         topmost=None,
         autoframe=True,
     ):
+        # call _config then subclass's config to initialize
+        # layout, title, menu, etc.
+        self._config()
+        self.config()
+
+        # override any layout defaults from constructor
         self.title = title or self.title
         self.padx = padx or self.padx
         self.pady = pady or self.pady
@@ -279,9 +274,34 @@ class Window(Layout, WindowBaseClass):
 
         self.setup()
 
+    def _config(self):
+        self.title = "My Window"
+        """Title to display in the window's title bar """
+
+        self.layout = [
+            [
+                Label(
+                    "Looks like you forgot to add self.layout to your config() method."
+                )
+            ],
+            [Button("Quit")],
+        ]
+        """Every class that inherits from Window must define it's own layout """
+
+        self.menu = {}
+        """ Optionally provide a menu """
+
+        self.padx = 5
+        self.pady = 5
+        """Default padding around widgets """
+
+    def config(self):
+        pass
+
     def handle_event(self, event):
         """Handle event objects, inheriting classes should implement handle_event"""
-        pass
+        if event.key == "Quit":
+            self.quit()
 
     def setup(self):
         """Perform any needed setup for the window. 
@@ -299,6 +319,14 @@ class Window(Layout, WindowBaseClass):
         """ Close the window """
         self._return_value = return_value
         self._destroy()
+
+    @property
+    def title(self):
+        return self._title
+
+    @title.setter
+    def title(self, value):
+        self._title = value
 
     def bind_timer_event(self, delay, event_name, repeat=False):
         """ Create a new virtual event `event_name` that fires after `delay` ms, 
@@ -372,7 +400,12 @@ class Window(Layout, WindowBaseClass):
     def _destroy(self):
         # kill any child windows
         for child in self.children():
-            child._destroy()
+            event = Event(child, child.window, "WM_WINDOW_DELETE", "WM_WINDOW_DELETE")
+            child.handle_event(event)
+            try:
+                child._destroy()
+            except Exception:
+                pass
 
         # disable any stdout/stderr redirection
         for widget in self._widgets:
@@ -395,15 +428,14 @@ class Window(Layout, WindowBaseClass):
         if isinstance(event.widget, Widget) and not event.widget.events:
             return
 
-        event.values = {
-            elem.key: elem.value for elem in self._widgets if type(elem) != Output
-        }
-
         # filter events for this window
         if event.id == self._id:
+            event.values = {
+                elem.key: elem.value for elem in self._widgets if type(elem) != Output
+            }
             self.handle_event(event)
 
-            # if deleting the window, call call _destroy after handle_event has had a chance to handle it
+            # if deleting the window, call _destroy after handle_event has had a chance to handle it
             if event.event_type == "WM_WINDOW_DELETE":
                 self._destroy()
 
