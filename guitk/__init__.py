@@ -40,7 +40,6 @@ def _map_key_binding_from_shortcut(shortcut):
     return "<" + "-".join(keybinding) + ">"
 
 
-
 class TKRoot:
     """ Singleton that returns a tkinter.TK() object; there can be only one in an app"""
 
@@ -60,6 +59,7 @@ class TKRoot:
         root = tk.Tk()
         root.attributes("-alpha", 0)
         root.withdraw()
+
         self.root = root
         self.first_window = False
         self.windows = {}
@@ -67,7 +67,6 @@ class TKRoot:
 
     def register(self, window):
         """Register a new child window """
-        # print(f"register: {window}")
         if not self.first_window:
             self.first_window = True
         self.windows[window] = 1
@@ -76,7 +75,6 @@ class TKRoot:
         """De-register a new child window
            Once all children are de-registered, the root Tk object is destroyed
         """
-        # print(f"deregister: {window}")
         try:
             del self.windows[window]
         except KeyError:
@@ -121,7 +119,7 @@ class Layout:
                 widget.key = (
                     widget.key or f"{widget.element_type},{row_count},{col_count}"
                 )
-                widget.create_element(
+                widget._create_element(
                     parent, window, row_count + row_offset, col_count + col_offset
                 )
                 widget._tooltip = (
@@ -143,7 +141,7 @@ class Menu:
         self._underline = underline
         self.window = None
 
-    def create_element(self, parent, window: WindowBaseClass):
+    def _create_element(self, parent, window: WindowBaseClass):
         self.window = window
         menu = tk.Menu(parent)
         if self._underline is None:
@@ -163,8 +161,7 @@ class Command(Menu):
         self._parent = None
         self._key = None
 
-    def create_element(self, parent, window: WindowBaseClass, path):
-        print(f"create_element: {path}")
+    def _create_element(self, parent, window: WindowBaseClass, path):
         self._parent = parent
         self.window = window
         self._key = path
@@ -181,7 +178,6 @@ class Command(Menu):
             accelerator=self._shortcut,
         )
         key_binding = _map_key_binding_from_shortcut(self._shortcut)
-        print(key_binding)
         window.window.bind_all(
             key_binding,
             self.window._make_callback(
@@ -220,14 +216,15 @@ class Window(Layout, WindowBaseClass):
         autoframe=True,
     ):
         self.title = title or self.title
-        self.id = id(self)
-        self.tk = TKRoot()
-        self.parent = self.tk.root if not parent else parent
         self.padx = padx or self.padx
         self.pady = pady or self.pady
-        self.topmost = topmost
 
-        self.window = tk.Toplevel(self.parent)
+        self._id = id(self)
+        self._tk = TKRoot()
+        self._parent = self._tk.root if not parent else parent
+        self._topmost = topmost
+
+        self.window = tk.Toplevel(self._parent)
         self.window.title(self.title)
         self._elements = []
         self._element_by_key = {}
@@ -246,7 +243,7 @@ class Window(Layout, WindowBaseClass):
         self.window.columnconfigure(0, weight=1)
         self.window.rowconfigure(0, weight=1)
 
-        self.tk.register(self)
+        self._tk.register(self)
         self.window.protocol(
             "WM_DELETE_WINDOW",
             self._make_callback(
@@ -274,7 +271,7 @@ class Window(Layout, WindowBaseClass):
         if self.menu:
             self._build_menu()
 
-        if self.topmost:
+        if self._topmost:
             self.window.attributes("-topmost", 1)
 
         self.setup()
@@ -310,13 +307,13 @@ class Window(Layout, WindowBaseClass):
         def _generate_event():
             self.root.event_generate(event_name)
             if repeat:
-                self._timer_events[timer_id] = self.tk.root.after(
+                self._timer_events[timer_id] = self._tk.root.after(
                     delay, _generate_event
                 )
 
         event = Event(self, self, event_name, EventType.VIRTUAL_EVENT)
         self.root.bind(event_name, self._make_callback(event))
-        self._timer_events[timer_id] = self.tk.root.after(delay, _generate_event)
+        self._timer_events[timer_id] = self._tk.root.after(delay, _generate_event)
         return timer_id
 
     def cancel_timer_event(self, timer_id):
@@ -327,10 +324,14 @@ class Window(Layout, WindowBaseClass):
         except Exception:
             pass
 
+    def run(self):
+        self._tk.run_mainloop()
+        return self._return_value
+
     @property
     def root(self):
         """Return Tk root instance """
-        return self.tk.root
+        return self._tk.root
 
     def _add_menus(self, menu: Menu, menu_items, path=None):
         path = f"MENU:{menu._label}" if path is None else path
@@ -338,12 +339,12 @@ class Window(Layout, WindowBaseClass):
             if type(m) == dict:
                 # submenu
                 for subm in m:
-                    subm.create_element(menu._menu, self)
+                    subm._create_element(menu._menu, self)
                     subpath = f"{path}|{subm._label}"
                     self._add_menus(subm, m[subm], subpath)
             elif isinstance(m, Command):
                 command_path = f"{path}|{m._label}"
-                m.create_element(menu._menu, self, command_path)
+                m._create_element(menu._menu, self, command_path)
 
     def _build_menu(self):
         if type(self.menu) != dict:
@@ -358,7 +359,7 @@ class Window(Layout, WindowBaseClass):
         for m in self.menu:
             if not isinstance(m, Menu):
                 raise ValueError("self.menu keys must be Menu objects")
-            m.create_element(self._root_menu, self)
+            m._create_element(self._root_menu, self)
             self._add_menus(m, self.menu[m])
 
     def _destroy(self):
@@ -368,7 +369,7 @@ class Window(Layout, WindowBaseClass):
                 element.disable_redirect()
         self.teardown()
         self.window.destroy()
-        self.tk.deregister(self)
+        self._tk.deregister(self)
 
     def _make_callback(self, event):
         def _callback(*arg):
@@ -380,9 +381,7 @@ class Window(Layout, WindowBaseClass):
 
     def _handle_event(self, event):
         # only handle events if element has events=True; Window objects always get events
-        # print(f"_handle_event={event}")
         if isinstance(event.element, Element) and not event.element.events:
-            # print(f"skip this event: {event}")
             return
 
         event.values = {
@@ -390,16 +389,12 @@ class Window(Layout, WindowBaseClass):
         }
 
         # filter events for this window
-        if event.id == id(self):
+        if event.id == self._id:
             self.handle_event(event)
 
             # if deleting the window, call call _destroy after handle_event has had a chance to handle it
             if event.event_type == "WM_WINDOW_DELETE":
                 self._destroy()
-
-    def run(self):
-        self.tk.run_mainloop()
-        return self._return_value
 
     def __getitem__(self, key):
         try:
@@ -457,8 +452,8 @@ class Element:
         self.element = None
         self._value = tk.StringVar()
 
-        # get set by create_element in inherited classes
-        self.parent = None
+        # get set by _create_element in inherited classes
+        self._parent = None
         self.window = None
 
     @property
@@ -526,9 +521,9 @@ class Entry(Element):
         self.rowspan = rowspan
         self.width = width
 
-    def create_element(self, parent, window: Window, row, col):
+    def _create_element(self, parent, window: Window, row, col):
         self.window = window
-        self.parent = parent
+        self._parent = parent
         self.element = ttk.Entry(
             parent, textvariable=self._value, width=self.width, cursor=self.cursor
         )
@@ -588,9 +583,9 @@ class Label(Element):
         self.rowspan = rowspan
         self.width = width
 
-    def create_element(self, parent, window: Window, row, col):
+    def _create_element(self, parent, window: Window, row, col):
         self.window = window
-        self.parent = parent
+        self._parent = parent
         self.element = ttk.Label(
             parent,
             text=self.text,
@@ -655,8 +650,8 @@ class LinkLabel(Label):
         self.width = width
         self.underline_font = underline_font
 
-    def create_element(self, parent, window: Window, row, col):
-        super().create_element(parent, window, row, col)
+    def _create_element(self, parent, window: Window, row, col):
+        super()._create_element(parent, window, row, col)
         event = Event(self.element, window, self.key, EventType.LINK_LABEL_CLICKED)
         self.element.bind("<Button-1>", window._make_callback(event))
         if self.underline_font:
@@ -709,9 +704,9 @@ class Button(Element):
     def value(self, text):
         self.element["text"] = text
 
-    def create_element(self, parent, window: Window, row, col):
+    def _create_element(self, parent, window: Window, row, col):
         self.window = window
-        self.parent = parent
+        self._parent = parent
         event = Event(self, window, self.key, EventType.BUTTON_PRESS)
         self.element = ttk.Button(
             parent,
@@ -766,9 +761,9 @@ class BrowseFileButton(Button):
         self.element_type = "guitk.BrowseFileButton"
         self._filename = None
 
-    def create_element(self, parent, window: Window, row, col):
+    def _create_element(self, parent, window: Window, row, col):
         self.window = window
-        self.parent = parent
+        self._parent = parent
         self.element = ttk.Button(
             parent, text=self.text, anchor=self.anchor, command=self.browse_dialog
         )
@@ -825,9 +820,9 @@ class BrowseDirectoryButton(Button):
         self.element_type = "guitk.BrowseDirectoryButton"
         self._dirname = None
 
-    def create_element(self, parent, window: Window, row, col):
+    def _create_element(self, parent, window: Window, row, col):
         self.window = window
-        self.parent = parent
+        self._parent = parent
         self.element = ttk.Button(
             parent, text=self.text, anchor=self.anchor, command=self.browse_dialog
         )
@@ -887,9 +882,9 @@ class CheckButton(Element):
         self.rowspan = rowspan
         self._value = tk.BooleanVar()
 
-    def create_element(self, parent, window: Window, row, col):
+    def _create_element(self, parent, window: Window, row, col):
         self.window = window
-        self.parent = parent
+        self._parent = parent
         event = Event(self, window, self.key, EventType.CHECK_BUTTON)
         self.element = ttk.Checkbutton(
             parent,
@@ -949,9 +944,9 @@ class Text(Element):
         self.columnspan = columnspan
         self.rowspan = rowspan
 
-    def create_element(self, parent, window: Window, row, col):
+    def _create_element(self, parent, window: Window, row, col):
         self.window = window
-        self.parent = parent
+        self._parent = parent
         self.element = tk.Text(parent, width=self.width, height=self.height)
         self._grid(
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
@@ -1048,9 +1043,9 @@ class ScrolledText(Text):
         self.columnspan = columnspan
         self.rowspan = rowspan
 
-    def create_element(self, parent, window: Window, row, col):
+    def _create_element(self, parent, window: Window, row, col):
         self.window = window
-        self.parent = parent
+        self._parent = parent
         self.element = _ttkScrolledText(parent, width=self.width, height=self.height)
         self._grid(
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
@@ -1123,8 +1118,8 @@ class Output(ScrolledText):
             r.echo = self._echo
             self._redirect_id[r] = r.register(self._write)
 
-    def create_element(self, parent, window: Window, row, col):
-        super().create_element(parent, window, row, col)
+    def _create_element(self, parent, window: Window, row, col):
+        super()._create_element(parent, window, row, col)
         self.enable_redirect()
         self.element.unbind("<KeyRelease>")
         return self.element
@@ -1210,9 +1205,9 @@ class _Frame(Element, Layout):
         self.text = text
         self.labelanchor = labelanchor or "nw"
 
-    def create_element(self, parent, window: Window, row, col):
+    def _create_element(self, parent, window: Window, row, col):
         self.window = window
-        self.parent = parent
+        self._parent = parent
 
         if self.frametype == GUITK.ELEMENT_FRAME:
             if self.style is not None:
@@ -1434,9 +1429,9 @@ class TreeView(Element):
         self.tooltip = tooltip
         self.anchor = anchor
 
-    def create_element(self, parent, window: Window, row, col):
+    def _create_element(self, parent, window: Window, row, col):
         self.window = window
-        self.parent = parent
+        self._parent = parent
 
         # build arg list for Treeview()
         kwargs = {}
