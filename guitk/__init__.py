@@ -204,7 +204,7 @@ class Window(Layout, WindowBaseClass):
 
     padx = 5
     pady = 5
-    """Default padding around elements """
+    """Default padding around widgets """
 
     def __init__(
         self,
@@ -236,7 +236,7 @@ class Window(Layout, WindowBaseClass):
         """ value returned from run() if set in quit() """
 
         self._root_menu = None
-        """ will hold root tk.Menu element """
+        """ will hold root tk.Menu widget"""
 
         self.mainframe = ttk.Frame(self.window, padding="3 3 12 12")
         self.mainframe.grid(column=0, row=0, sticky=(tk.N, tk.W, tk.E, tk.S))
@@ -262,11 +262,11 @@ class Window(Layout, WindowBaseClass):
 
         self._layout(self.mainframe, self, autoframe=autoframe)
 
-        # apply padding, element padding takes precedent over window
-        for element in self._widgets:
-            padx = element.padx or self.padx
-            pady = element.pady or self.pady
-            element.widget.grid_configure(padx=padx, pady=pady)
+        # apply padding, widget padding takes precedent over window
+        for widget in self._widgets:
+            padx = widget.padx or self.padx
+            pady = widget.pady or self.pady
+            widget.widget.grid_configure(padx=padx, pady=pady)
 
         if self.menu:
             self._build_menu()
@@ -364,9 +364,9 @@ class Window(Layout, WindowBaseClass):
 
     def _destroy(self):
         # disable any stdout/stderr redirection
-        for element in self._widgets:
-            if type(element) == Output:
-                element.disable_redirect()
+        for widget in self._widgets:
+            if type(widget) == Output:
+                widget.disable_redirect()
         self.teardown()
         self.window.destroy()
         self._tk.deregister(self)
@@ -380,8 +380,8 @@ class Window(Layout, WindowBaseClass):
         return _callback
 
     def _handle_event(self, event):
-        # only handle events if element has events=True; Window objects always get events
-        if isinstance(event.widget, Element) and not event.widget.events:
+        # only handle events if widget has events=True; Window objects always get events
+        if isinstance(event.widget, Widget) and not event.widget.events:
             return
 
         event.values = {
@@ -404,7 +404,7 @@ class Window(Layout, WindowBaseClass):
 
 
 class Event:
-    """Event that occurred and values for elements in the window """
+    """Event that occurred and values for widgets in the window """
 
     def __init__(self, widget: object, window: Window, key, event_type):
         self.id = id(window)
@@ -418,8 +418,8 @@ class Event:
         return f"id={self.id}, widget={self.widget}, key={self.key}, event_type={self.event_type}, event={self.event}, values={self.values}"
 
 
-class Element:
-    """Basic abstract base class for all tk elements """
+class Widget:
+    """Basic abstract base class for all tk widget"""
 
     def __init__(
         self,
@@ -478,12 +478,12 @@ class Element:
             self.widget.grid_configure(padx=self.padx, pady=self.pady)
 
     def bind_event(self, event_name):
-        """Bind a tkinter event to element; will result in an Event of event_type type being sent to handle_event when triggered"""
+        """Bind a tkinter event to widget; will result in an Event of event_type type being sent to handle_event when triggered"""
         event = Event(self, self, self.key, event_name)
         self.widget.bind(event_name, self.window._make_callback(event))
 
 
-class Entry(Element):
+class Entry(Widget):
     """Text entry / input box """
 
     def __init__(
@@ -540,11 +540,11 @@ class Entry(Element):
 
     @property
     def entry(self):
-        """Return the Tk entry element"""
+        """Return the Tk entry widget"""
         return self.widget
 
 
-class Label(Element):
+class Label(Widget):
     """Text label """
 
     def __init__(
@@ -604,7 +604,7 @@ class Label(Element):
 
     @property
     def label(self):
-        """Return the Tk label element"""
+        """Return the Tk label widget"""
         return self.widget
 
 
@@ -660,7 +660,7 @@ class LinkLabel(Label):
             self.widget.configure(font=f)
 
 
-class Button(Element):
+class Button(Widget):
     """Basic button """
 
     def __init__(
@@ -724,7 +724,7 @@ class Button(Element):
 
     @property
     def button(self):
-        """Return the Tk button element"""
+        """Return the Tk button widget"""
         return self.widget
 
 
@@ -846,7 +846,7 @@ class BrowseDirectoryButton(Button):
         self.window._handle_event(event)
 
 
-class CheckButton(Element):
+class CheckButton(Widget):
     """Checkbox / checkbutton """
 
     def __init__(
@@ -903,11 +903,11 @@ class CheckButton(Element):
 
     @property
     def checkbutton(self):
-        """Return the Tk checkbutton element"""
+        """Return the Tk checkbutton widget"""
         return self.widget
 
 
-class Text(Element):
+class Text(Widget):
     """Text box """
 
     def __init__(
@@ -970,7 +970,7 @@ class Text(Element):
 
     @property
     def text(self):
-        """Return the Tk text element"""
+        """Return the Tk text widget"""
         return self.widget
 
 
@@ -1151,7 +1151,7 @@ class Output(ScrolledText):
             r.deregister(id_)
 
 
-class _Frame(Element, Layout):
+class _Frame(Widget, Layout):
     """Frame base class for Frame and LabelFrame"""
 
     def __init__(
@@ -1269,7 +1269,7 @@ class _Frame(Element, Layout):
 
     @property
     def frame(self):
-        """Return the Tk frame element"""
+        """Return the Tk frame widget"""
         return self.widget
 
     @property
@@ -1360,7 +1360,7 @@ class LabelFrame(_Frame):
 
 
 # TODO: for ListView, set tree.column("#0", width=0) and show="tree"
-class TreeView(Element):
+class TreeView(Widget):
     def __init__(
         self,
         key=None,
@@ -1505,5 +1505,5 @@ class TreeView(Element):
 
     @property
     def tree(self):
-        """Return the ttk Treeview element"""
+        """Return the ttk Treeview widget"""
         return self.widget
