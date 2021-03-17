@@ -11,19 +11,18 @@
 # TODO: add Column?
 # TODO: add way to specify tooltip delay
 
+import sys
+import time
+import tkinter as tk
+from tkinter import filedialog, font, ttk
 from typing import List, Optional
 
-import sys
-import tkinter as tk
-from enum import Enum, auto
-from tkinter import filedialog, ttk, font
-import time
-
-from .redirect import StdOutRedirect, StdErrRedirect
+from .constants import GUITK, EventType
+from .redirect import StdErrRedirect, StdOutRedirect
 from .tooltips import Hovertip
 
 
-def map_key_binding_from_shortcut(shortcut):
+def _map_key_binding_from_shortcut(shortcut):
     """Return a keybinding sequence given a menu command shortcut """
     if not shortcut:
         return None
@@ -40,25 +39,6 @@ def map_key_binding_from_shortcut(shortcut):
             keybinding.append(k)
     return "<" + "-".join(keybinding) + ">"
 
-
-class GUITK(Enum):
-    """Constants used internally by guitk """
-
-    ELEMENT_FRAME = ("Frame",)
-    ELEMENT_LABEL_FRAME = "LabelFrame"
-
-
-class EventType(Enum):
-    """Constants for event types"""
-
-    BUTTON_PRESS = auto()
-    CHECK_BUTTON = auto()
-    VIRTUAL_EVENT = auto()
-    BROWSE_FILE = auto()
-    BROWSE_DIRECTORY = auto()
-    LINK_LABEL_CLICKED = auto()
-    TREEVIEW_HEADING = auto()
-    TREEVIEW_TAG = auto()
 
 
 class TKRoot:
@@ -200,7 +180,7 @@ class Command(Menu):
             ),
             accelerator=self._shortcut,
         )
-        key_binding = map_key_binding_from_shortcut(self._shortcut)
+        key_binding = _map_key_binding_from_shortcut(self._shortcut)
         print(key_binding)
         window.window.bind_all(
             key_binding,
@@ -242,7 +222,6 @@ class Window(Layout, WindowBaseClass):
         self.title = title or self.title
         self.id = id(self)
         self.tk = TKRoot()
-        # self.root = self.tk.root
         self.parent = self.tk.root if not parent else parent
         self.padx = padx or self.padx
         self.pady = pady or self.pady
@@ -329,14 +308,14 @@ class Window(Layout, WindowBaseClass):
         timer_id = f"{event_name}_{time.time_ns()}"
 
         def _generate_event():
-            self.tk.root.event_generate(event_name)
+            self.root.event_generate(event_name)
             if repeat:
                 self._timer_events[timer_id] = self.tk.root.after(
                     delay, _generate_event
                 )
 
         event = Event(self, self, event_name, EventType.VIRTUAL_EVENT)
-        self.tk.root.bind(event_name, self._make_callback(event))
+        self.root.bind(event_name, self._make_callback(event))
         self._timer_events[timer_id] = self.tk.root.after(delay, _generate_event)
         return timer_id
 
@@ -344,9 +323,14 @@ class Window(Layout, WindowBaseClass):
         """ Cancel a timer event created with bind_timer_event """
         try:
             after_id = self._timer_events[timer_id]
-            self.tk.root.after_cancel(after_id)
+            self.root.after_cancel(after_id)
         except Exception:
             pass
+
+    @property
+    def root(self):
+        """Return Tk root instance """
+        return self.tk.root
 
     def _add_menus(self, menu: Menu, menu_items, path=None):
         path = f"MENU:{menu._label}" if path is None else path
@@ -367,8 +351,8 @@ class Window(Layout, WindowBaseClass):
 
         if self._root_menu is None:
             # create the root menu
-            self.tk.root.option_add("*tearOff", tk.FALSE)
-            self._root_menu = tk.Menu(self.tk.root)
+            self.root.option_add("*tearOff", tk.FALSE)
+            self._root_menu = tk.Menu(self.root)
             self.window["menu"] = self._root_menu
 
         for m in self.menu:
@@ -1528,4 +1512,3 @@ class TreeView(Element):
     def tree(self):
         """Return the ttk Treeview element"""
         return self.element
-
