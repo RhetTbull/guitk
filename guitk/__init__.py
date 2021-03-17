@@ -117,17 +117,17 @@ class Layout:
                     widget = Label("", disabled=True, events=False)
 
                 widget.key = (
-                    widget.key or f"{widget.element_type},{row_count},{col_count}"
+                    widget.key or f"{widget.widget_type},{row_count},{col_count}"
                 )
-                widget._create_element(
+                widget._create_widget(
                     parent, window, row_count + row_offset, col_count + col_offset
                 )
                 widget._tooltip = (
-                    Hovertip(widget.element, widget.tooltip) if widget.tooltip else None
+                    Hovertip(widget.widget, widget.tooltip) if widget.tooltip else None
                 )
-                window._elements.append(widget)
+                window._widgets.append(widget)
                 widget.parent = self
-                window._element_by_key[widget.key] = widget
+                window._widget_by_key[widget.key] = widget
                 if widget.rowspan and widget.rowspan > 1:
                     row_offset += widget.rowspan - 1
                 if widget.columnspan and widget.columnspan > 1:
@@ -141,7 +141,7 @@ class Menu:
         self._underline = underline
         self.window = None
 
-    def _create_element(self, parent, window: WindowBaseClass):
+    def _create_widget(self, parent, window: WindowBaseClass):
         self.window = window
         menu = tk.Menu(parent)
         if self._underline is None:
@@ -161,7 +161,7 @@ class Command(Menu):
         self._parent = None
         self._key = None
 
-    def _create_element(self, parent, window: WindowBaseClass, path):
+    def _create_widget(self, parent, window: WindowBaseClass, path):
         self._parent = parent
         self.window = window
         self._key = path
@@ -226,8 +226,8 @@ class Window(Layout, WindowBaseClass):
 
         self.window = tk.Toplevel(self._parent)
         self.window.title(self.title)
-        self._elements = []
-        self._element_by_key = {}
+        self._widgets = []
+        self._widget_by_key = {}
 
         self._timer_events = {}
         """ timer events that have been set by bind_timer_event, stores most recent after() id for event"""
@@ -263,10 +263,10 @@ class Window(Layout, WindowBaseClass):
         self._layout(self.mainframe, self, autoframe=autoframe)
 
         # apply padding, element padding takes precedent over window
-        for element in self._elements:
+        for element in self._widgets:
             padx = element.padx or self.padx
             pady = element.pady or self.pady
-            element.element.grid_configure(padx=padx, pady=pady)
+            element.widget.grid_configure(padx=padx, pady=pady)
 
         if self.menu:
             self._build_menu()
@@ -339,12 +339,12 @@ class Window(Layout, WindowBaseClass):
             if type(m) == dict:
                 # submenu
                 for subm in m:
-                    subm._create_element(menu._menu, self)
+                    subm._create_widget(menu._menu, self)
                     subpath = f"{path}|{subm._label}"
                     self._add_menus(subm, m[subm], subpath)
             elif isinstance(m, Command):
                 command_path = f"{path}|{m._label}"
-                m._create_element(menu._menu, self, command_path)
+                m._create_widget(menu._menu, self, command_path)
 
     def _build_menu(self):
         if type(self.menu) != dict:
@@ -359,12 +359,12 @@ class Window(Layout, WindowBaseClass):
         for m in self.menu:
             if not isinstance(m, Menu):
                 raise ValueError("self.menu keys must be Menu objects")
-            m._create_element(self._root_menu, self)
+            m._create_widget(self._root_menu, self)
             self._add_menus(m, self.menu[m])
 
     def _destroy(self):
         # disable any stdout/stderr redirection
-        for element in self._elements:
+        for element in self._widgets:
             if type(element) == Output:
                 element.disable_redirect()
         self.teardown()
@@ -381,11 +381,11 @@ class Window(Layout, WindowBaseClass):
 
     def _handle_event(self, event):
         # only handle events if element has events=True; Window objects always get events
-        if isinstance(event.element, Element) and not event.element.events:
+        if isinstance(event.widget, Element) and not event.widget.events:
             return
 
         event.values = {
-            elem.key: elem.value for elem in self._elements if type(elem) != Output
+            elem.key: elem.value for elem in self._widgets if type(elem) != Output
         }
 
         # filter events for this window
@@ -398,7 +398,7 @@ class Window(Layout, WindowBaseClass):
 
     def __getitem__(self, key):
         try:
-            return self._element_by_key[key]
+            return self._widget_by_key[key]
         except KeyError:
             return None
 
@@ -406,16 +406,16 @@ class Window(Layout, WindowBaseClass):
 class Event:
     """Event that occurred and values for elements in the window """
 
-    def __init__(self, element: object, window: Window, key, event_type):
+    def __init__(self, widget: object, window: Window, key, event_type):
         self.id = id(window)
-        self.element = element
+        self.widget = widget
         self.key = key
         self.event_type = event_type
         self.event = None  # placeholder for Tk event
         self.values = {}
 
     def __str__(self):
-        return f"id={self.id}, element={self.element}, key={self.key}, event_type={self.event_type}, event={self.event}, values={self.values}"
+        return f"id={self.id}, widget={self.widget}, key={self.key}, event_type={self.event_type}, event={self.event}, values={self.values}"
 
 
 class Element:
@@ -447,12 +447,12 @@ class Element:
         self.anchor = anchor
         self.cursor = cursor
 
-        self.element_type = None
+        self.widget_type = None
         self._tk = TKRoot()
-        self.element = None
+        self.widget = None
         self._value = tk.StringVar()
 
-        # get set by _create_element in inherited classes
+        # get set by _create_widget in inherited classes
         self._parent = None
         self.window = None
 
@@ -466,7 +466,7 @@ class Element:
 
     def _grid(self, row, column, rowspan, columnspan):
         sticky = self.sticky or tk.W
-        self.element.grid(
+        self.widget.grid(
             row=row,
             column=column,
             columnspan=columnspan,
@@ -475,12 +475,12 @@ class Element:
         )
 
         if self.padx is not None or self.pady is not None:
-            self.element.grid_configure(padx=self.padx, pady=self.pady)
+            self.widget.grid_configure(padx=self.padx, pady=self.pady)
 
     def bind_event(self, event_name):
         """Bind a tkinter event to element; will result in an Event of event_type type being sent to handle_event when triggered"""
         event = Event(self, self, self.key, event_name)
-        self.element.bind(event_name, self.window._make_callback(event))
+        self.widget.bind(event_name, self.window._make_callback(event))
 
 
 class Entry(Element):
@@ -513,7 +513,7 @@ class Entry(Element):
             tooltip=tooltip,
             cursor=cursor,
         )
-        self.element_type = "ttk.Entry"
+        self.widget_type = "ttk.Entry"
         default = default or ""
         self._value.set(default)
         self.key = key or "Entry"
@@ -521,10 +521,10 @@ class Entry(Element):
         self.rowspan = rowspan
         self.width = width
 
-    def _create_element(self, parent, window: Window, row, col):
+    def _create_widget(self, parent, window: Window, row, col):
         self.window = window
         self._parent = parent
-        self.element = ttk.Entry(
+        self.widget = ttk.Entry(
             parent, textvariable=self._value, width=self.width, cursor=self.cursor
         )
         self._grid(
@@ -532,16 +532,16 @@ class Entry(Element):
         )
 
         event = Event(self, self, self.key, "<KeyRelease>")
-        self.element.bind("<KeyRelease>", window._make_callback(event))
+        self.widget.bind("<KeyRelease>", window._make_callback(event))
 
         if self.disabled:
-            self.element.state(["disabled"])
-        return self.element
+            self.widget.state(["disabled"])
+        return self.widget
 
     @property
     def entry(self):
         """Return the Tk entry element"""
-        return self.element
+        return self.widget
 
 
 class Label(Element):
@@ -576,36 +576,36 @@ class Label(Element):
             anchor=anchor,
             cursor=cursor,
         )
-        self.element_type = "ttk.Label"
+        self.widget_type = "ttk.Label"
         self.text = text
         self.key = key or text
         self.columnspan = columnspan
         self.rowspan = rowspan
         self.width = width
 
-    def _create_element(self, parent, window: Window, row, col):
+    def _create_widget(self, parent, window: Window, row, col):
         self.window = window
         self._parent = parent
-        self.element = ttk.Label(
+        self.widget = ttk.Label(
             parent,
             text=self.text,
             width=self.width,
             anchor=self.anchor,
             cursor=self.cursor,
         )
-        self.element["textvariable"] = self._value
+        self.widget["textvariable"] = self._value
         self._value.set(self.text)
         self._grid(
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
         )
         if self.disabled:
-            self.element.state(["disabled"])
-        return self.element
+            self.widget.state(["disabled"])
+        return self.widget
 
     @property
     def label(self):
         """Return the Tk label element"""
-        return self.element
+        return self.widget
 
 
 class LinkLabel(Label):
@@ -642,7 +642,7 @@ class LinkLabel(Label):
             anchor=anchor,
             cursor=cursor or "hand1",
         )
-        self.element_type = "guitk.LinkLabel"
+        self.widget_type = "guitk.LinkLabel"
         self.text = text
         self.key = key or text
         self.columnspan = columnspan
@@ -650,14 +650,14 @@ class LinkLabel(Label):
         self.width = width
         self.underline_font = underline_font
 
-    def _create_element(self, parent, window: Window, row, col):
-        super()._create_element(parent, window, row, col)
-        event = Event(self.element, window, self.key, EventType.LINK_LABEL_CLICKED)
-        self.element.bind("<Button-1>", window._make_callback(event))
+    def _create_widget(self, parent, window: Window, row, col):
+        super()._create_widget(parent, window, row, col)
+        event = Event(self.widget, window, self.key, EventType.LINK_LABEL_CLICKED)
+        self.widget.bind("<Button-1>", window._make_callback(event))
         if self.underline_font:
-            f = font.Font(self.element, self.element.cget("font"))
+            f = font.Font(self.widget, self.widget.cget("font"))
             f.configure(underline=True)
-            self.element.configure(font=f)
+            self.widget.configure(font=f)
 
 
 class Button(Element):
@@ -689,7 +689,7 @@ class Button(Element):
             tooltip=tooltip,
             anchor=anchor,
         )
-        self.element_type = "ttk.Button"
+        self.widget_type = "ttk.Button"
         self.text = text
         self.key = key or text
         self.columnspan = columnspan
@@ -698,17 +698,17 @@ class Button(Element):
 
     @property
     def value(self):
-        return self.element["text"]
+        return self.widget["text"]
 
     @value.setter
     def value(self, text):
-        self.element["text"] = text
+        self.widget["text"] = text
 
-    def _create_element(self, parent, window: Window, row, col):
+    def _create_widget(self, parent, window: Window, row, col):
         self.window = window
         self._parent = parent
         event = Event(self, window, self.key, EventType.BUTTON_PRESS)
-        self.element = ttk.Button(
+        self.widget = ttk.Button(
             parent,
             text=self.text,
             anchor=self.anchor,
@@ -718,14 +718,14 @@ class Button(Element):
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
         )
         if self.disabled:
-            self.element.state(["disabled"])
+            self.widget.state(["disabled"])
 
-        return self.element
+        return self.widget
 
     @property
     def button(self):
         """Return the Tk button element"""
-        return self.element
+        return self.widget
 
 
 class BrowseFileButton(Button):
@@ -758,22 +758,22 @@ class BrowseFileButton(Button):
             anchor=anchor,
         )
         self.target_key = target_key
-        self.element_type = "guitk.BrowseFileButton"
+        self.widget_type = "guitk.BrowseFileButton"
         self._filename = None
 
-    def _create_element(self, parent, window: Window, row, col):
+    def _create_widget(self, parent, window: Window, row, col):
         self.window = window
         self._parent = parent
-        self.element = ttk.Button(
+        self.widget = ttk.Button(
             parent, text=self.text, anchor=self.anchor, command=self.browse_dialog
         )
         self._grid(
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
         )
         if self.disabled:
-            self.element.state(["disabled"])
+            self.widget.state(["disabled"])
 
-        return self.element
+        return self.widget
 
     @property
     def filename(self):
@@ -817,22 +817,22 @@ class BrowseDirectoryButton(Button):
             anchor=anchor,
         )
         self.target_key = target_key
-        self.element_type = "guitk.BrowseDirectoryButton"
+        self.widget_type = "guitk.BrowseDirectoryButton"
         self._dirname = None
 
-    def _create_element(self, parent, window: Window, row, col):
+    def _create_widget(self, parent, window: Window, row, col):
         self.window = window
         self._parent = parent
-        self.element = ttk.Button(
+        self.widget = ttk.Button(
             parent, text=self.text, anchor=self.anchor, command=self.browse_dialog
         )
         self._grid(
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
         )
         if self.disabled:
-            self.element.state(["disabled"])
+            self.widget.state(["disabled"])
 
-        return self.element
+        return self.widget
 
     @property
     def directory(self):
@@ -875,18 +875,18 @@ class CheckButton(Element):
             tooltip=tooltip,
             anchor=anchor,
         )
-        self.element_type = "ttk.CheckButton"
+        self.widget_type = "ttk.CheckButton"
         self.text = text
         self.key = key or text
         self.columnspan = columnspan
         self.rowspan = rowspan
         self._value = tk.BooleanVar()
 
-    def _create_element(self, parent, window: Window, row, col):
+    def _create_widget(self, parent, window: Window, row, col):
         self.window = window
         self._parent = parent
         event = Event(self, window, self.key, EventType.CHECK_BUTTON)
-        self.element = ttk.Checkbutton(
+        self.widget = ttk.Checkbutton(
             parent,
             text=self.text,
             anchor=self.anchor,
@@ -898,13 +898,13 @@ class CheckButton(Element):
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
         )
         if self.disabled:
-            self.element.state(["disabled"])
-        return self.element
+            self.widget.state(["disabled"])
+        return self.widget
 
     @property
     def checkbutton(self):
         """Return the Tk checkbutton element"""
-        return self.element
+        return self.widget
 
 
 class Text(Element):
@@ -936,7 +936,7 @@ class Text(Element):
             sticky=sticky,
             tooltip=tooltip,
         )
-        self.element_type = "tk.Text"
+        self.widget_type = "tk.Text"
         self.key = key or "Text"
         self.width = width
         self.height = height
@@ -944,34 +944,34 @@ class Text(Element):
         self.columnspan = columnspan
         self.rowspan = rowspan
 
-    def _create_element(self, parent, window: Window, row, col):
+    def _create_widget(self, parent, window: Window, row, col):
         self.window = window
         self._parent = parent
-        self.element = tk.Text(parent, width=self.width, height=self.height)
+        self.widget = tk.Text(parent, width=self.width, height=self.height)
         self._grid(
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
         )
 
         event = Event(self, self, self.key, "<KeyRelease>")
-        self.element.bind("<KeyRelease>", window._make_callback(event))
+        self.widget.bind("<KeyRelease>", window._make_callback(event))
 
         if self.disabled:
-            self.element["state"] = "disabled"
-        return self.element
+            self.widget["state"] = "disabled"
+        return self.widget
 
     @property
     def value(self):
-        return self.element.get("1.0", tk.END).rstrip()
+        return self.widget.get("1.0", tk.END).rstrip()
 
     @value.setter
     def value(self, text):
-        self.element.delete("1.0", tk.END)
-        self.element.insert("1.0", text)
+        self.widget.delete("1.0", tk.END)
+        self.widget.insert("1.0", text)
 
     @property
     def text(self):
         """Return the Tk text element"""
-        return self.element
+        return self.widget
 
 
 class _ttkScrolledText(tk.Text):
@@ -1035,7 +1035,7 @@ class ScrolledText(Text):
             sticky=sticky,
             tooltip=tooltip,
         )
-        self.element_type = "guitk.ScrolledText"
+        self.widget_type = "guitk.ScrolledText"
         self.key = key or "ScrolledText"
         self.width = width
         self.height = height
@@ -1043,33 +1043,33 @@ class ScrolledText(Text):
         self.columnspan = columnspan
         self.rowspan = rowspan
 
-    def _create_element(self, parent, window: Window, row, col):
+    def _create_widget(self, parent, window: Window, row, col):
         self.window = window
         self._parent = parent
-        self.element = _ttkScrolledText(parent, width=self.width, height=self.height)
+        self.widget = _ttkScrolledText(parent, width=self.width, height=self.height)
         self._grid(
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
         )
 
         event = Event(self, self, self.key, "<KeyRelease>")
-        self.element.bind("<KeyRelease>", window._make_callback(event))
+        self.widget.bind("<KeyRelease>", window._make_callback(event))
 
         if self.disabled:
-            self.element["state"] = "disabled"
+            self.widget["state"] = "disabled"
 
         self.value = self._value
 
-        return self.element
+        return self.widget
 
     @property
     def value(self):
-        return self.element.get("1.0", tk.END).rstrip()
+        return self.widget.get("1.0", tk.END).rstrip()
 
     @value.setter
     def value(self, text):
-        self.element.delete("1.0", tk.END)
-        self.element.insert("1.0", text)
-        self.element.yview(tk.END)
+        self.widget.delete("1.0", tk.END)
+        self.widget.insert("1.0", text)
+        self.widget.yview(tk.END)
 
 
 class Output(ScrolledText):
@@ -1118,11 +1118,11 @@ class Output(ScrolledText):
             r.echo = self._echo
             self._redirect_id[r] = r.register(self._write)
 
-    def _create_element(self, parent, window: Window, row, col):
-        super()._create_element(parent, window, row, col)
+    def _create_widget(self, parent, window: Window, row, col):
+        super()._create_widget(parent, window, row, col)
         self.enable_redirect()
-        self.element.unbind("<KeyRelease>")
-        return self.element
+        self.widget.unbind("<KeyRelease>")
+        return self.widget
 
     def _write(self, line):
         self.text.insert(tk.END, line)
@@ -1187,7 +1187,7 @@ class _Frame(Element, Layout):
         if frametype not in [GUITK.ELEMENT_FRAME, GUITK.ELEMENT_LABEL_FRAME]:
             raise ValueError(f"bad frametype: {frametype}")
         self.frametype = frametype
-        self.element_type = (
+        self.widget_type = (
             "ttk.Frame" if frametype == GUITK.ELEMENT_FRAME else "ttk.LabelFrame"
         )
         if key is None:
@@ -1205,13 +1205,13 @@ class _Frame(Element, Layout):
         self.text = text
         self.labelanchor = labelanchor or "nw"
 
-    def _create_element(self, parent, window: Window, row, col):
+    def _create_widget(self, parent, window: Window, row, col):
         self.window = window
         self._parent = parent
 
         if self.frametype == GUITK.ELEMENT_FRAME:
             if self.style is not None:
-                self.element = ttk.Frame(
+                self.widget = ttk.Frame(
                     parent,
                     width=self.width,
                     height=self.height,
@@ -1219,7 +1219,7 @@ class _Frame(Element, Layout):
                     style=self.style,
                 )
             else:
-                self.element = ttk.Frame(
+                self.widget = ttk.Frame(
                     parent,
                     width=self.width,
                     borderwidth=self.borderwidth,
@@ -1227,7 +1227,7 @@ class _Frame(Element, Layout):
                 )
         else:
             if self.style is not None:
-                self.element = ttk.LabelFrame(
+                self.widget = ttk.LabelFrame(
                     parent,
                     text=self.text,
                     width=self.width,
@@ -1237,7 +1237,7 @@ class _Frame(Element, Layout):
                     borderwidth=self.borderwidth,
                 )
             else:
-                self.element = ttk.LabelFrame(
+                self.widget = ttk.LabelFrame(
                     parent,
                     text=self.text,
                     width=self.width,
@@ -1247,30 +1247,30 @@ class _Frame(Element, Layout):
                 )
 
         if self.padding is not None:
-            self.element["padding"] = self.padding
+            self.widget["padding"] = self.padding
         if self.relief is not None:
-            self.element["relief"] = self.relief
+            self.widget["relief"] = self.relief
         if self.borderwidth is not None:
-            self.element["borderwidth"] = self.borderwidth
+            self.widget["borderwidth"] = self.borderwidth
 
         self._grid(
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
         )
 
         if self.layout:
-            self._layout(self.element, self.window, autoframe=self._autoframe)
+            self._layout(self.widget, self.window, autoframe=self._autoframe)
 
         if self.width or self.height:
-            self.element.grid_propagate(0)
+            self.widget.grid_propagate(0)
 
         if self.disabled:
-            self.element.state(["disabled"])
-        return self.element
+            self.widget.state(["disabled"])
+        return self.widget
 
     @property
     def frame(self):
         """Return the Tk frame element"""
-        return self.element
+        return self.widget
 
     @property
     def value(self):
@@ -1399,7 +1399,7 @@ class TreeView(Element):
         )
         """ columns is optional, if not provided, will use headings for column names """
         self.key = key or "TreeView"
-        self.element_type = "ttk.TreeView"
+        self.widget_type = "ttk.TreeView"
 
         if headings and columns:
             # ensure heading provided for each column
@@ -1429,7 +1429,7 @@ class TreeView(Element):
         self.tooltip = tooltip
         self.anchor = anchor
 
-    def _create_element(self, parent, window: Window, row, col):
+    def _create_widget(self, parent, window: Window, row, col):
         self.window = window
         self._parent = parent
 
@@ -1450,7 +1450,7 @@ class TreeView(Element):
             if val is not None:
                 kwargs[kw] = val
 
-        self.element = ttk.Treeview(parent, **kwargs)
+        self.widget = ttk.Treeview(parent, **kwargs)
 
         self._grid(
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
@@ -1459,15 +1459,15 @@ class TreeView(Element):
         # set column headings
         if self._headings:
             for column, heading in zip(self._columns, self._headings):
-                self.element.heading(column, text=heading)
+                self.widget.heading(column, text=heading)
 
         if self.disabled:
-            self.element.state(["disabled"])
+            self.widget.state(["disabled"])
 
         event = Event(self, self.window, self.key, "<<TreeviewSelect>>")
-        self.element.bind("<<TreeviewSelect>>", window._make_callback(event))
+        self.widget.bind("<<TreeviewSelect>>", window._make_callback(event))
 
-        return self.element
+        return self.widget
 
     @property
     def value(self):
@@ -1506,4 +1506,4 @@ class TreeView(Element):
     @property
     def tree(self):
         """Return the ttk Treeview element"""
-        return self.element
+        return self.widget

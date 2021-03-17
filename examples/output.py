@@ -3,6 +3,8 @@ import sys
 
 
 class OutputDemo(guitk.Window):
+    title = "Output Demo"
+
     layout = [
         [
             guitk.Frame(
@@ -84,24 +86,24 @@ class OutputDemo(guitk.Window):
 
         if event.key == "STOP_STDOUT":
             self["OUTPUT_STDOUT"].disable_redirect()
-            self["START_STDOUT"].element.state(["!disabled"])
-            self["STOP_STDOUT"].element.state(["disabled"])
+            self["START_STDOUT"].widget.state(["!disabled"])
+            self["STOP_STDOUT"].widget.state(["disabled"])
 
         if event.key == "START_STDOUT":
             self["OUTPUT_STDOUT"].enable_redirect()
-            self["START_STDOUT"].element.state(["disabled"])
-            self["STOP_STDOUT"].element.state(["!disabled"])
+            self["START_STDOUT"].widget.state(["disabled"])
+            self["STOP_STDOUT"].widget.state(["!disabled"])
 
         if event.key == "STOP_STDERR":
             self["OUTPUT_STDERR"].disable_redirect()
-            self["START_STDERR"].element.state(["!disabled"])
-            self["STOP_STDERR"].element.state(["disabled"])
+            self["START_STDERR"].widget.state(["!disabled"])
+            self["STOP_STDERR"].widget.state(["disabled"])
 
         if event.key == "START_STDERR":
             self["OUTPUT_STDERR"].enable_redirect()
-            self["START_STDERR"].element.state(["disabled"])
-            self["STOP_STDERR"].element.state(["!disabled"])
+            self["START_STDERR"].widget.state(["disabled"])
+            self["STOP_STDERR"].widget.state(["!disabled"])
 
 
 if __name__ == "__main__":
-    OutputDemo("Output Demo", padx=5, pady=5).run()
+    OutputDemo().run()

@@ -55,14 +55,14 @@ class HelloWorld(guitk.Window):
 
         if event.key == "CHECK_GREEN":
             # change label text color to green if needed
-            # use .element to access the underlying ttk element for each object
+            # use .widget to access the underlying ttk element for each object
             # tkinter is not abstracted -- you can easily use tkinter methods and properties if needed
             if event.values["CHECK_GREEN"]:
                 # checked
-                self["OUTPUT"].element["foreground"] = "green"
+                self["OUTPUT"].widget["foreground"] = "green"
             else:
                 # not checked
-                self["OUTPUT"].element["foreground"] = ""
+                self["OUTPUT"].widget["foreground"] = ""
 
 
 if __name__ == "__main__":

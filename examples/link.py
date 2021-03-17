@@ -9,7 +9,7 @@ class ClickMe(guitk.Window):
         # configure the Click Me label to be blue
         style = ttk.Style()
         style.configure("Blue.TLabel", foreground="blue")
-        self["CLICK_ME"].element.configure(style="Blue.TLabel")
+        self["CLICK_ME"].widget.configure(style="Blue.TLabel")
 
     def handle_event(self, event):
         print(event)
