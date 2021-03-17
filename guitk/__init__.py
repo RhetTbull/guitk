@@ -82,6 +82,10 @@ class TKRoot:
             # last window
             self.root.destroy()
 
+    def get_children(self, window):
+        """Return child windows of parent window"""
+        return [w for w in self.windows if w._parent == window.window]
+
     def run_mainloop(self):
         if not self.mainloop_is_running:
             self.root.mainloop()
@@ -332,6 +336,10 @@ class Window(Layout, WindowBaseClass):
         """Return Tk root instance """
         return self._tk.root
 
+    def children(self):
+        """ Return child windows """
+        return self._tk.get_children(self)
+
     def _add_menus(self, menu: Menu, menu_items, path=None):
         path = f"MENU:{menu._label}" if path is None else path
         for m in menu_items:
@@ -362,6 +370,10 @@ class Window(Layout, WindowBaseClass):
             self._add_menus(m, self.menu[m])
 
     def _destroy(self):
+        # kill any child windows
+        for child in self.children():
+            child._destroy()
+
         # disable any stdout/stderr redirection
         for widget in self._widgets:
             if type(widget) == Output:
