@@ -1,12 +1,15 @@
+""" Demonstrates use of guitk.TreeView widget """
+
 import guitk
 import pathlib
 
 
 class ShowMeATree(guitk.Window):
-    title = "Tree View"
-    layout = [
-        [guitk.TreeView(key="TREE", headings=["Filename", "Size"], show="headings")]
-    ]
+    def config(self):
+        self.title = "Tree View"
+        self.layout = [
+            [guitk.TreeView(key="TREE", headings=["Filename", "Size"], show="headings")]
+        ]
 
     def list_files(self, path, tree):
         files = pathlib.Path(path).iterdir()

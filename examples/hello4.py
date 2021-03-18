@@ -5,37 +5,48 @@ import tkinter as tk
 
 
 class HelloWorld(guitk.Window):
-    # Define the window's contents
-    # use variables to define rows to make your layout more readable
-    label_frame = guitk.LabelFrame(
-        "Label Frame",
-        labelanchor=tk.N,
-        layout=[
-            [
-                guitk.Frame(
-                    layout=[
-                        [guitk.Output(width=20, height=10)],
-                        [guitk.Label("Output", key="LABEL_OUTPUT", sticky=tk.S)],
-                    ]
-                ),
-                guitk.Frame(
-                    layout=[
-                        [None, guitk.CheckButton("Upper case", key="CHECK_UPPER")],
-                        [None, guitk.CheckButton("Green text", key="CHECK_GREEN")],
-                    ],
-                    sticky="n",
-                ),
-            ]
-        ],
-    )
 
-    layout = [
-        [guitk.Label("What's your name?")],
-        [guitk.Entry(key="ENTRY_NAME")],
-        [guitk.Label("", width=40, key="OUTPUT")],
-        [label_frame],
-        [guitk.Button("Ok"), guitk.Button("Quit")],
-    ]
+    def config(self):
+        self.title = "Hello, World"
+
+        # Define the window's contents
+        # use variables to define rows to make your layout more readable
+        # use guitk.Frame to group sub-layouts into columns
+        label_frame = guitk.LabelFrame(
+            "Label Frame",
+            labelanchor=tk.N,
+            layout=[
+                [
+                    guitk.Frame(
+                        layout=[
+                            [guitk.Output(width=20, height=10)],
+                            [guitk.Label("Output", key="LABEL_OUTPUT", sticky=tk.S)],
+                        ]
+                    ),
+                    guitk.Frame(
+                        layout=[
+                            [None, guitk.CheckButton("Upper case", key="CHECK_UPPER")],
+                            [None, guitk.CheckButton("Green text", key="CHECK_GREEN")],
+                        ],
+                        sticky="n",
+                    ),
+                ]
+            ],
+        )
+
+        self.layout = [
+            [guitk.Label("What's your name?")],
+            [guitk.Entry(key="ENTRY_NAME")],
+            [guitk.Label("", width=40, key="OUTPUT")],
+            [label_frame],
+            [guitk.Button("Ok"), guitk.Button("Quit")],
+        ]
+
+        # you can define custom padding around widgets with padx, pady
+        # see https://tkdocs.com/tutorial/grid.html#padding
+        self.padx = 3
+        self.pady = 3
+
     # Interact with the Window using an event Loop
     def handle_event(self, event):
         if event.key == "Quit":
@@ -67,4 +78,4 @@ class HelloWorld(guitk.Window):
 
 if __name__ == "__main__":
     # add some padding around GUI elements to make it prettier
-    HelloWorld("Hello, World", padx=5, pady=5).run()
+    HelloWorld().run()

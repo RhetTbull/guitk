@@ -7,16 +7,18 @@ import guitk
 
 
 class TimerWindow(guitk.Window):
-    # Define the window's contents
-    layout = [
-        [guitk.Label("Press Start Timer to fire event after 2000 ms")],
-        [guitk.Label("", width=60, key="OUTPUT")],
-        [
-            guitk.Button("Start Timer"),
-            guitk.Button("Cancel Timer"),
-            guitk.CheckButton("Repeat", key="REPEAT"),
-        ],
-    ]
+    def config(self):
+        self.title = "Timer Window"
+
+        self.layout = [
+            [guitk.Label("Press Start Timer to fire event after 2000 ms")],
+            [guitk.Label("", width=60, key="OUTPUT")],
+            [
+                guitk.Button("Start Timer"),
+                guitk.Button("Cancel Timer"),
+                guitk.CheckButton("Repeat", key="REPEAT"),
+            ],
+        ]
 
     def setup(self):
         # store the id of the running timer so it can be cancelled
@@ -49,4 +51,4 @@ class TimerWindow(guitk.Window):
 
 if __name__ == "__main__":
     # add some padding around GUI elements to make it prettier
-    TimerWindow("Timer Window", padx=5, pady=5).run()
+    TimerWindow().run()

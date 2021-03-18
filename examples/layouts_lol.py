@@ -4,12 +4,13 @@ import guitk
 
 
 class LayoutDemo(guitk.Window):
-
-    layout = [
-        [guitk.Label("Row 1"), guitk.Label("What's your name?")],
-        [guitk.Label("Row 2"), guitk.Entry()],
-        [guitk.Label("Row 3"), guitk.Button("Ok")],
-    ]
+    def config(self):
+        self.title = "Layouts are Lists of Lists"
+        self.layout = [
+            [guitk.Label("Row 1"), guitk.Label("What's your name?")],
+            [guitk.Label("Row 2"), guitk.Entry()],
+            [guitk.Label("Row 3"), guitk.Button("Ok")],
+        ]
 
     def handle_event(self, event):
         if event.key == "Ok":
@@ -17,4 +18,4 @@ class LayoutDemo(guitk.Window):
 
 
 if __name__ == "__main__":
-    LayoutDemo("Layouts are Lists of Lists", padx=5, pady=5).run()
+    LayoutDemo().run()

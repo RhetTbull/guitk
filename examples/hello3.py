@@ -2,13 +2,15 @@ import guitk
 
 
 class HelloWorld(guitk.Window):
-    # Define the window's contents
-    layout = [
-        [guitk.Label("What's your name?")],
-        [guitk.Entry(key="ENTRY_NAME")],
-        [guitk.Label("", width=40, key="OUTPUT")],
-        [guitk.Button("Ok"), guitk.Button("Quit")],
-    ]
+    def config(self):
+        self.title = "Hello, World"
+        # Define the window's contents
+        self.layout = [
+            [guitk.Label("What's your name?")],
+            [guitk.Entry(key="ENTRY_NAME")],
+            [guitk.Label("", width=40, key="OUTPUT")],
+            [guitk.Button("Ok"), guitk.Button("Quit")],
+        ]
 
     # Interact with the Window using an event Loop
     def handle_event(self, event):
@@ -22,4 +24,4 @@ class HelloWorld(guitk.Window):
 
 
 if __name__ == "__main__":
-    HelloWorld("Hello, World", padx=5, pady=5).run()
+    HelloWorld().run()

@@ -1,8 +1,8 @@
-# Python GUI Toolkit for TK (GUITk)
+# Python GUI Toolkit for TK (guitk)
 
 ## Synopsis
 
-GUITk is an experiment to design a lightweight framework that simplifies creating simple GUIs with [tkinter](https://docs.python.org/3/library/tkinter.html).
+guitk is an experiment to design a lightweight framework that simplifies creating simple GUIs with [tkinter](https://docs.python.org/3/library/tkinter.html).
 
 ## Code Example
 
@@ -54,7 +54,7 @@ Again, if you can live with these concerns, I highly recommend you consider PySi
 * `cd guitk`
 * `python3 setup.py install`
 
-## Anatomy of a GUITk program 
+## Anatomy of a guitk program 
 
 ```python
 """Hello World example using guitk """
@@ -113,7 +113,6 @@ if __name__ == "__main__":
 ![hello2.py example](examples/hello2.py.png "Hello World example")
 
 
-<!---
 guitk GUIs are created using a lists of lists where each element in the lists corresponds to a ttk or tk element.  This design pattern is borrowed from PySimpleGUI.
 
 ```python
@@ -123,12 +122,13 @@ import guitk
 
 
 class LayoutDemo(guitk.Window):
-
-    layout = [
-        [guitk.Label("Row 1"), guitk.Label("What's your name?")],
-        [guitk.Label("Row 2"), guitk.Entry()],
-        [guitk.Label("Row 3"), guitk.Button("Ok")],
-    ]
+    def config(self):
+        self.title = "Layouts are Lists of Lists"
+        self.layout = [
+            [guitk.Label("Row 1"), guitk.Label("What's your name?")],
+            [guitk.Label("Row 2"), guitk.Entry()],
+            [guitk.Label("Row 3"), guitk.Button("Ok")],
+        ]
 
     def handle_event(self, event):
         if event.key == "Ok":
@@ -136,7 +136,7 @@ class LayoutDemo(guitk.Window):
 
 
 if __name__ == "__main__":
-    LayoutDemo("Layouts are Lists of Lists", padx=5, pady=5).run()
+    LayoutDemo().run()
 ```
 
 ![layout_lol.py example](examples/layouts_lol.py.png "Layout using lists of lists example")
@@ -150,26 +150,29 @@ import guitk
 
 
 class LayoutDemo(guitk.Window):
-
-    # use list comprehension to generate 4x4 grid of buttons with tooltips
-    # use the tooltip named argument to add tooltip text to any element
-    layout = [
-        [
-            guitk.Button(f"{row}, {col}", padx=0, pady=0, tooltip=f"Tooltip: {row},{col}")
-            for col in range(4)
+    def config(self):
+        self.title = "List Comprehension"
+        # use list comprehension to generate 4x4 grid of buttons with tooltips
+        # use the tooltip named argument to add tooltip text to any element
+        self.layout = [
+            [
+                guitk.Button(
+                    f"{row}, {col}", padx=0, pady=0, tooltip=f"Tooltip: {row},{col}"
+                )
+                for col in range(4)
+            ]
+            for row in range(4)
         ]
-        for row in range(4)
-    ]
 
     # Interact with the Window using an event Loop
     def handle_event(self, event):
-        if event.event == guitk.EventType.BUTTON_PRESS:
+        if event.event_type == guitk.EventType.BUTTON_PRESS:
             # print the key for the button that was pressed
             print(event.values[event.key])
 
 
 if __name__ == "__main__":
-    LayoutDemo("List Comprehension", padx=5, pady=5).run()
+    LayoutDemo().run()
 ```
 
 ![layout2.py example](examples/layout2.py.png "Layout using list comprehensions, with tooltips!")
@@ -184,39 +187,48 @@ import tkinter as tk
 
 
 class HelloWorld(guitk.Window):
-    # Define the window's contents
-    # use variables to define rows to make your layout more readable
-    label_frame = guitk.LabelFrame(
-        "Label Frame",
-        labelanchor=tk.N,
-        layout=[
-            [
-                guitk.Frame(
-                    layout=[
-                        [guitk.Output(width=20, height=10)],
-                        [guitk.Label("Output", key="LABEL_OUTPUT", sticky=tk.S)],
-                    ],
-                    padx=0,
-                ),
-                guitk.Frame(
-                    layout=[
-                        [None, guitk.CheckButton("Upper case", key="CHECK_UPPER")],
-                        [None, guitk.CheckButton("Green text", key="CHECK_GREEN")],
-                    ],
-                    padx=0,
-                    sticky="n",
-                ),
-            ]
-        ],
-    )
 
-    layout = [
-        [guitk.Label("What's your name?")],
-        [guitk.Entry(key="ENTRY_NAME")],
-        [guitk.Label("", width=40, key="OUTPUT")],
-        [label_frame],
-        [guitk.Frame(layout=[[guitk.Button("Ok"), guitk.Button("Quit")]])],
-    ]
+    def config(self):
+        self.title = "Hello, World"
+
+        # Define the window's contents
+        # use variables to define rows to make your layout more readable
+        # use guitk.Frame to group sub-layouts into columns
+        label_frame = guitk.LabelFrame(
+            "Label Frame",
+            labelanchor=tk.N,
+            layout=[
+                [
+                    guitk.Frame(
+                        layout=[
+                            [guitk.Output(width=20, height=10)],
+                            [guitk.Label("Output", key="LABEL_OUTPUT", sticky=tk.S)],
+                        ]
+                    ),
+                    guitk.Frame(
+                        layout=[
+                            [None, guitk.CheckButton("Upper case", key="CHECK_UPPER")],
+                            [None, guitk.CheckButton("Green text", key="CHECK_GREEN")],
+                        ],
+                        sticky="n",
+                    ),
+                ]
+            ],
+        )
+
+        self.layout = [
+            [guitk.Label("What's your name?")],
+            [guitk.Entry(key="ENTRY_NAME")],
+            [guitk.Label("", width=40, key="OUTPUT")],
+            [label_frame],
+            [guitk.Button("Ok"), guitk.Button("Quit")],
+        ]
+
+        # you can define custom padding around widgets with padx, pady
+        # see https://tkdocs.com/tutorial/grid.html#padding
+        self.padx = 3
+        self.pady = 3
+
     # Interact with the Window using an event Loop
     def handle_event(self, event):
         if event.key == "Quit":
@@ -226,6 +238,7 @@ class HelloWorld(guitk.Window):
             # set the output Label to the value of the Entry box
             # the Window class acts like a dictionary for looking up guitk element objects by key
             name = event.values["ENTRY_NAME"]
+            print(f"Hello {name}")
             self["OUTPUT"].value = f"Hello {name}! Thanks for trying guitk."
 
         if event.key == "CHECK_UPPER" and event.values["CHECK_UPPER"]:
@@ -235,19 +248,19 @@ class HelloWorld(guitk.Window):
 
         if event.key == "CHECK_GREEN":
             # change label text color to green if needed
-            # use .element to access the underlying ttk element for each object
+            # use .widget to access the underlying ttk element for each object
             # tkinter is not abstracted -- you can easily use tkinter methods and properties if needed
             if event.values["CHECK_GREEN"]:
                 # checked
-                self["OUTPUT"].element["foreground"] = "green"
+                self["OUTPUT"].widget["foreground"] = "green"
             else:
                 # not checked
-                self["OUTPUT"].element["foreground"] = ""
+                self["OUTPUT"].widget["foreground"] = ""
 
 
 if __name__ == "__main__":
     # add some padding around GUI elements to make it prettier
-    HelloWorld("Hello, World", padx=5, pady=5).run()
+    HelloWorld().run()
 ```
 
 ![hello4.py example](examples/hello4.py.png "A more complex example showing how to use the event handler.")
@@ -316,7 +329,57 @@ if __name__ == "__main__":
 ```
 
 ![bind_timer_event example](examples/bind_timer_event.py.png "Creating timed virtual events.")
--->
+
+You can access the underlying ttk widget, for example, to change style.  guitk also implements some additional widgets link `LinkLabel` which is a `ttk.Label()` that generates an event when clicked and changes mouse cursor to pointing hand (like a URL does).
+
+```python
+""" Demonstrates use of LinkLabel widget """
+
+import guitk
+from tkinter import ttk
+
+
+class ClickMe(guitk.Window):
+    def config(self):
+        self.title = "Click me!"
+
+        # you can pass tkinter.ttk options to the widgets
+        # e.g. width and anchor
+        self.layout = [
+            [
+                guitk.LinkLabel(
+                    "Click me!",
+                    width=20,
+                    anchor="center",
+                    key="CLICK_ME",
+                    underline_font=True,
+                )
+            ]
+        ]
+        self.padx = 20
+        self.pady = 20
+
+    def setup(self):
+        # setup gets called immediately before the window is shown
+
+        # configure the Click Me label to be blue
+        style = ttk.Style()
+        style.configure("Blue.TLabel", foreground="blue")
+
+        # use .widget to access the underlying tkinter ttk object, 
+        # in this case, a tkinter.ttk.Label
+        self["CLICK_ME"].widget.configure(style="Blue.TLabel")
+
+    def handle_event(self, event):
+        print(event)
+
+
+if __name__ == "__main__":
+    ClickMe().run()
+```
+
+![LinkLabel example](examples/link.py.png "Using LinkLabel widget.")
+
 ## Contributors
 
 Contributions welcome! If this project interests you, open an Issue or send a PR!

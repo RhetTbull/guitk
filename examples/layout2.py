@@ -4,16 +4,19 @@ import guitk
 
 
 class LayoutDemo(guitk.Window):
-
-    # use list comprehension to generate 4x4 grid of buttons with tooltips
-    # use the tooltip named argument to add tooltip text to any element
-    layout = [
-        [
-            guitk.Button(f"{row}, {col}", padx=0, pady=0, tooltip=f"Tooltip: {row},{col}")
-            for col in range(4)
+    def config(self):
+        self.title = "List Comprehension"
+        # use list comprehension to generate 4x4 grid of buttons with tooltips
+        # use the tooltip named argument to add tooltip text to any element
+        self.layout = [
+            [
+                guitk.Button(
+                    f"{row}, {col}", padx=0, pady=0, tooltip=f"Tooltip: {row},{col}"
+                )
+                for col in range(4)
+            ]
+            for row in range(4)
         ]
-        for row in range(4)
-    ]
 
     # Interact with the Window using an event Loop
     def handle_event(self, event):
@@ -23,4 +26,4 @@ class LayoutDemo(guitk.Window):
 
 
 if __name__ == "__main__":
-    LayoutDemo("List Comprehension", padx=5, pady=5).run()
+    LayoutDemo().run()
