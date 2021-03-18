@@ -2,6 +2,7 @@
 
 from enum import Enum, auto
 
+
 class GUITK(Enum):
     """Constants used internally by guitk """
 
@@ -20,4 +21,5 @@ class EventType(Enum):
     LINK_LABEL_CLICKED = auto()
     TREEVIEW_HEADING = auto()
     TREEVIEW_TAG = auto()
+    OUTPUT_WRITE = "<<OutputWrite>>"
 

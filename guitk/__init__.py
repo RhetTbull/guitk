@@ -82,7 +82,6 @@ class TKRoot:
         if self.first_window and not self.windows:
             # last window
             self.root.destroy()
-            del self.root
 
     def get_children(self, window):
         """Return child windows of parent window"""
@@ -477,6 +476,7 @@ class Widget:
         tooltip=None,
         anchor=None,
         cursor=None,
+        takefocus=None,
     ):
         self.key = key
         self.disabled = disabled
@@ -489,6 +489,10 @@ class Widget:
         self.tooltip = tooltip
         self.anchor = anchor
         self.cursor = cursor
+        if takefocus is not None:
+            self.takefocus = 1 if takefocus else 0
+        else:
+            self.takefocus = None
 
         self.widget_type = None
         self._tk = TKRoot()
@@ -543,6 +547,7 @@ class Entry(Widget):
         sticky=None,
         tooltip=None,
         cursor=None,
+        takefocus=None,
     ):
         super().__init__(
             key=key,
@@ -555,6 +560,7 @@ class Entry(Widget):
             sticky=sticky,
             tooltip=tooltip,
             cursor=cursor,
+            takefocus=takefocus,
         )
         self.widget_type = "ttk.Entry"
         default = default or ""
@@ -567,9 +573,16 @@ class Entry(Widget):
     def _create_widget(self, parent, window: Window, row, col):
         self.window = window
         self._parent = parent
-        self.widget = ttk.Entry(
-            parent, textvariable=self._value, width=self.width, cursor=self.cursor
-        )
+
+        # build arg list for Entry
+        # TODO: Need to update all widget options to underscore format
+        kwargs = {}
+        for kw in ["width", "cursor", "takefocus"]:
+            val = getattr(self, f"{kw}")
+            if val is not None:
+                kwargs[kw] = val
+
+        self.widget = ttk.Entry(parent, textvariable=self._value, **kwargs)
         self._grid(
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
         )
@@ -719,6 +732,7 @@ class Button(Widget):
         sticky=None,
         tooltip=None,
         anchor=None,
+        takefocus=None,
     ):
         super().__init__(
             key=key,
@@ -731,6 +745,7 @@ class Button(Widget):
             sticky=sticky,
             tooltip=tooltip,
             anchor=anchor,
+            takefocus=takefocus,
         )
         self.widget_type = "ttk.Button"
         self.text = text
@@ -756,6 +771,7 @@ class Button(Widget):
             text=self.text,
             anchor=self.anchor,
             command=window._make_callback(event),
+            takefocus=self.takefocus,
         )
         self._grid(
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
@@ -1163,13 +1179,23 @@ class Output(ScrolledText):
 
     def _create_widget(self, parent, window: Window, row, col):
         super()._create_widget(parent, window, row, col)
-        self.enable_redirect()
+        # Unbind <KeyRelease> since this isn't for user input
         self.widget.unbind("<KeyRelease>")
+
+        if self.events:
+            event = Event(self, window, self.key, EventType.OUTPUT_WRITE)
+            self.window.root.bind_all(
+                EventType.OUTPUT_WRITE.value, window._make_callback(event)
+            )
+
+        self.enable_redirect()
+
         return self.widget
 
     def _write(self, line):
         self.text.insert(tk.END, line)
         self.text.yview(tk.END)
+        self.window.root.event_generate(EventType.OUTPUT_WRITE.value)
 
     @property
     def echo(self):
@@ -1550,3 +1576,40 @@ class TreeView(Widget):
     def tree(self):
         """Return the ttk Treeview widget"""
         return self.widget
+
+
+class DebugWindow(Window):
+    """ Debug window that captures stdout/stderr """
+
+    def __init__(self, output_width=80, output_height=20, **kwargs):
+        self._output_width = output_width
+        self._output_height = output_height
+        super().__init__(**kwargs)
+
+    def config(self):
+        self.title = "Debug"
+        self.padx = self.pady = 2
+        self.layout = [
+            [
+                Label("Filter"),
+                Entry(key="FILTER_TEXT", width=40),
+                Button("Filter", key="FILTER"),
+            ],
+            [
+                Output(
+                    width=self._output_width,
+                    height=self._output_height,
+                    key="OUTPUT",
+                    events=True,
+                )
+            ],
+        ]
+
+    def handle_event(self, event):
+        if event.key in ["FILTER", "OUTPUT"]:
+            filter = self["FILTER_TEXT"].value
+            if filter:
+                lines = self["OUTPUT"].value.split("\n")
+                lines = [l for l in lines if filter in l]
+                self["OUTPUT"].value = "\n".join(lines) + "\n"
+
