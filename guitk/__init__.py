@@ -1578,6 +1578,62 @@ class TreeView(Widget):
         return self.widget
 
 
+# TODO: for ListView, set tree.column("#0", width=0) and show="tree"
+class ListBox(TreeView):
+    def __init__(
+        self,
+        key=None,
+        cursor=None,
+        height=None,
+        padding=None,
+        selectmode=None,
+        style=None,
+        takefocus=None,
+        disabled=False,
+        rowspan=None,
+        columnspan=None,
+        padx=None,
+        pady=None,
+        events=True,
+        sticky=None,
+        tooltip=None,
+        anchor=None,
+    ):
+        self.key = key or "ListBox"
+        self.widget_type = "guitk.ListBox"
+        self._show = "tree"
+        self._columns = ["list"]
+        super().__init__(
+            key=key,
+            disabled=disabled,
+            rowspan=rowspan,
+            columnspan=columnspan,
+            padx=padx,
+            pady=pady,
+            events=events,
+            sticky=sticky,
+            tooltip=tooltip,
+            anchor=anchor,
+            cursor=cursor,
+            show=self._show,
+            columns=self._columns,
+            height=height,
+            padding=padding,
+            selectmode=selectmode,
+            style=style,
+            takefocus=takefocus,
+        )
+
+    def _create_widget(self, parent, window: Window, row, col):
+        super()._create_widget(parent, window, row, col)
+        self.tree.column("#0", width=0, minwidth=0)
+        self.listbox = self.tree
+
+    def insert(self, index, line):
+        """Insert a line into list """
+        self.widget.insert("", index, iid=line, values=(line))
+
+
 class DebugWindow(Window):
     """ Debug window that captures stdout/stderr """
 
