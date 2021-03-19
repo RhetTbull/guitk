@@ -1630,9 +1630,16 @@ class ListBox(TreeView):
         self.listbox = self.tree
 
     def insert(self, index, line):
-        """Insert a line into list """
+        """Insert a line into ListBox """
         self.widget.insert("", index, iid=line, values=(line))
 
+    def append(self, line):
+        """Apppend a line to end of ListBox """
+        self.widget.insert("", "end", iid=line, values=(line))
+
+    def delete(self, line):
+        """Delete a line from ListBox """
+        self.widget.delete(line)
 
 class DebugWindow(Window):
     """ Debug window that captures stdout/stderr """

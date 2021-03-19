@@ -9,7 +9,7 @@ class ListWindow(guitk.Window):
     def setup(self):
         lines = ["Foo", "Bar", "FooBar", "XYZZY"]
         for line in lines:
-            self["LISTBOX"].insert("end", line)
+            self["LISTBOX"].append(line)
 
     def handle_event(self, event):
         print(event)
