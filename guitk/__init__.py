@@ -82,6 +82,7 @@ class TKRoot:
         if self.first_window and not self.windows:
             # last window
             self.root.destroy()
+            del self.root
 
     def get_children(self, window):
         """Return child windows of parent window"""
@@ -244,7 +245,7 @@ class Window(Layout, WindowBaseClass):
         self.window.protocol(
             "WM_DELETE_WINDOW",
             self._make_callback(
-                Event(self, self, "WM_WINDOW_DELETE", "WM_WINDOW_DELETE")
+                Event(self, self, EventType.WM_DELETE_WINDOW, "WM_DELETE_WINDOW")
             ),
         )
 
@@ -399,7 +400,9 @@ class Window(Layout, WindowBaseClass):
     def _destroy(self):
         # kill any child windows
         for child in self.children():
-            event = Event(child, child.window, "WM_WINDOW_DELETE", "WM_WINDOW_DELETE")
+            event = Event(
+                child, child.window, EventType.WM_DELETE_WINDOW, "WM_DELETE_WINDOW"
+            )
             child.handle_event(event)
             try:
                 child._destroy()
@@ -435,7 +438,7 @@ class Window(Layout, WindowBaseClass):
             self.handle_event(event)
 
             # if deleting the window, call _destroy after handle_event has had a chance to handle it
-            if event.event_type == "WM_WINDOW_DELETE":
+            if event.event_type == "WM_DELETE_WINDOW":
                 self._destroy()
 
     def __getitem__(self, key):
@@ -1131,6 +1134,7 @@ class ScrolledText(Text):
         self.widget.yview(tk.END)
 
 
+# TODO: how to make Output read-only?
 class Output(ScrolledText):
     """Text box with stderr/stdout redirected """
 

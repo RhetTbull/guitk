@@ -13,6 +13,7 @@ class GUITK(Enum):
 class EventType(Enum):
     """Constants for event types"""
 
+    WM_DELETE_WINDOW = "WM_DELETE_WINDOW"
     BUTTON_PRESS = auto()
     CHECK_BUTTON = auto()
     VIRTUAL_EVENT = auto()
