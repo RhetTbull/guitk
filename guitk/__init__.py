@@ -1578,13 +1578,14 @@ class TreeView(Widget):
         return self.widget
 
 
-# TODO: for ListView, set tree.column("#0", width=0) and show="tree"
 class ListBox(TreeView):
     def __init__(
         self,
+        text: Optional[List] = None,
         key=None,
         cursor=None,
         height=None,
+        width=None,
         padding=None,
         selectmode=None,
         style=None,
@@ -1603,6 +1604,12 @@ class ListBox(TreeView):
         self.widget_type = "guitk.ListBox"
         self._show = "tree"
         self._columns = ["list"]
+        self._width = width
+
+        if text and type(text) != list:
+            raise ValueError("text must be a list of strings")
+        self._text = text
+
         super().__init__(
             key=key,
             disabled=disabled,
@@ -1627,7 +1634,13 @@ class ListBox(TreeView):
     def _create_widget(self, parent, window: Window, row, col):
         super()._create_widget(parent, window, row, col)
         self.tree.column("#0", width=0, minwidth=0)
+        if self._width:
+            self.tree.column("#1", width=self._width)
+
         self.listbox = self.tree
+        if self._text:
+            for line in self._text:
+                self.append(line)
 
     def insert(self, index, line):
         """Insert a line into ListBox """
@@ -1640,6 +1653,7 @@ class ListBox(TreeView):
     def delete(self, line):
         """Delete a line from ListBox """
         self.widget.delete(line)
+
 
 class DebugWindow(Window):
     """ Debug window that captures stdout/stderr """
