@@ -16,7 +16,9 @@ class EventType(Enum):
     WM_DELETE_WINDOW = "WM_DELETE_WINDOW"
     BUTTON_PRESS = auto()
     CHECK_BUTTON = auto()
+    RADIO_BUTTON = auto()
     VIRTUAL_EVENT = auto()
+    COMBOBOX_SELECTED = auto()
     BROWSE_FILE = auto()
     BROWSE_DIRECTORY = auto()
     LINK_LABEL_CLICKED = auto()

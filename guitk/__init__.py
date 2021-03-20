@@ -10,12 +10,13 @@
 
 # TODO: add Column?
 # TODO: add way to specify tooltip delay
+# TODO: check Event() -- some places uses self and some self.widget
 
 import sys
 import time
 import tkinter as tk
 from tkinter import filedialog, font, ttk
-from typing import List, Optional
+from typing import List, Optional, Union
 
 from .constants import GUITK, EventType
 from .redirect import StdErrRedirect, StdOutRedirect
@@ -91,6 +92,21 @@ class TKRoot:
     def run_mainloop(self):
         if not self.mainloop_is_running:
             self.root.mainloop()
+
+    @property
+    def theme(self):
+        """Return name of ttk theme in use """
+        s = ttk.Style()
+        return s.theme_use()
+
+    @theme.setter
+    def theme(self, theme_name: str):
+        """ Set name of ttk theme to use """
+        s = ttk.Style()
+        theme_names = s.theme_names()
+        if theme_name not in theme_names:
+            raise ValueError(f"theme_name {theme_name} must by in {theme_names}")
+        s.theme_use(theme_name)
 
 
 class WindowBaseClass:
@@ -206,6 +222,7 @@ class Window(Layout, WindowBaseClass):
         pady=None,
         topmost=None,
         autoframe=True,
+        theme=None,
     ):
         # call _config then subclass's config to initialize
         # layout, title, menu, etc.
@@ -216,6 +233,7 @@ class Window(Layout, WindowBaseClass):
         self.title = title or self.title
         self.padx = padx or self.padx
         self.pady = pady or self.pady
+        self.theme = theme or self.theme
 
         self._id = id(self)
         self._tk = TKRoot()
@@ -235,6 +253,9 @@ class Window(Layout, WindowBaseClass):
 
         self._root_menu = None
         """ will hold root tk.Menu widget"""
+
+        self._radiobuttons = {}
+        """ will hold group name/variable for radio buttons in the window """
 
         self.mainframe = ttk.Frame(self.window, padding="3 3 12 12")
         self.mainframe.grid(column=0, row=0, sticky=(tk.N, tk.W, tk.E, tk.S))
@@ -259,6 +280,10 @@ class Window(Layout, WindowBaseClass):
             ]
 
         self._layout(self.mainframe, self, autoframe=autoframe)
+
+        # apply theme if necessary
+        if self.theme is not None:
+            self._tk.theme = self.theme
 
         # apply padding, widget padding takes precedent over window
         for widget in self._widgets:
@@ -294,6 +319,9 @@ class Window(Layout, WindowBaseClass):
         self.padx = 5
         self.pady = 5
         """Default padding around widgets """
+
+        self.theme = None
+        """The ttk theme to use, if None, uses ttk default"""
 
     def config(self):
         pass
@@ -590,11 +618,117 @@ class Entry(Widget):
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
         )
 
-        event = Event(self, window, self.key, "<KeyRelease>")
+        event = Event(self.widget, window, self.key, "<KeyRelease>")
         self.widget.bind("<KeyRelease>", window._make_callback(event))
 
         if self.disabled:
             self.widget.state(["disabled"])
+        return self.widget
+
+    @property
+    def entry(self):
+        """Return the Tk entry widget"""
+        return self.widget
+
+
+class ComboBox(Widget):
+    """ttk Combobox"""
+
+    def __init__(
+        self,
+        key=None,
+        cursor=None,
+        exportselection=None,
+        height=None,
+        justify=None,
+        # postcommand=None,
+        style=None,
+        takefocus=None,
+        # validate=None,
+        # validatecommand=None,
+        values=None,
+        width=None,
+        # default=None,
+        disabled=False,
+        columnspan=None,
+        rowspan=None,
+        padx=None,
+        pady=None,
+        events=False,
+        sticky=None,
+        tooltip=None,
+        readonly=None,
+    ):
+        super().__init__(
+            key=key,
+            disabled=disabled,
+            columnspan=columnspan,
+            rowspan=rowspan,
+            padx=padx,
+            pady=pady,
+            events=events,
+            sticky=sticky,
+            tooltip=tooltip,
+            cursor=cursor,
+            takefocus=takefocus,
+        )
+        self.widget_type = "ttk.Combobox"
+        # default = default or ""
+        # self._value.set(default)
+        self.key = key or "ComboBox"
+        self.columnspan = columnspan
+        self.rowspan = rowspan
+        self.width = width
+        self._readonly = readonly
+
+        # ttk.Combobox args
+        self._cursor = cursor  # TODO: take cursor out of Widget?
+        self._exportselection = exportselection
+        self._height = height
+        self._justify = justify
+        self._style = style
+        self._takefocus = takefocus
+        self._combobox_values = values
+        self._width = width
+
+    def _create_widget(self, parent, window: Window, row, col):
+        self.window = window
+        self._parent = parent
+
+        # build arg list for Entry
+        kwargs = {}
+        for kw in [
+            "cursor",
+            "exportselection",
+            "height",
+            "justify",
+            "style",
+            "takefocus",
+            "width",
+        ]:
+            val = getattr(self, f"_{kw}")
+            if val is not None:
+                kwargs[kw] = val
+        if self._combobox_values is not None:
+            kwargs["values"] = self._combobox_values
+
+        self.widget = ttk.Combobox(parent, textvariable=self._value, **kwargs)
+        self._grid(
+            row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
+        )
+
+        event_release = Event(self.widget, window, self.key, "<KeyRelease>")
+        self.widget.bind("<KeyRelease>", window._make_callback(event_release))
+
+        event_selected = Event(self.widget, window, self.key, EventType.COMBOBOX_SELECTED)
+        self.widget.bind("<<ComboboxSelected>>", window._make_callback(event_selected))
+
+        if self.disabled:
+            self.widget.state(["disabled"])
+
+        if self._readonly:
+            self.widget.state(["readonly"])
+
         return self.widget
 
     @property
@@ -937,7 +1071,7 @@ class CheckButton(Widget):
             tooltip=tooltip,
             anchor=anchor,
         )
-        self.widget_type = "ttk.CheckButton"
+        self.widget_type = "ttk.Checkbutton"
         self.text = text
         self.key = key or text
         self.columnspan = columnspan
@@ -965,7 +1099,101 @@ class CheckButton(Widget):
 
     @property
     def checkbutton(self):
-        """Return the Tk checkbutton widget"""
+        """Return the ttk.Checkbutton widget"""
+        return self.widget
+
+
+class RadioButton(Widget):
+    """Radiobutton class
+    
+    Note: group must be specified and will be used as key unless a separate key is specified."""
+
+    def __init__(
+        self,
+        text: str,
+        group: str,
+        key: str = "",
+        value: Union[int, str, None] = None,
+        disabled=False,
+        rowspan=None,
+        columnspan=None,
+        padx=None,
+        pady=None,
+        events=True,
+        sticky=None,
+        tooltip=None,
+        anchor=None,
+        selected=False,
+    ):
+        super().__init__(
+            key=key,
+            disabled=disabled,
+            rowspan=rowspan,
+            columnspan=columnspan,
+            padx=padx,
+            pady=pady,
+            events=events,
+            sticky=sticky,
+            tooltip=tooltip,
+            anchor=anchor,
+        )
+        self.widget_type = "ttk.Radiobutton"
+        self.text = text
+        self.group = group
+        self.key = key or group
+        self._radiobutton_value = value if value is not None else 0
+        self._value = None  # will be set in _create_widget
+        self.columnspan = columnspan
+        self.rowspan = rowspan
+        self.selected = selected
+
+    def _create_widget(self, parent, window: Window, row, col):
+        self.window = window
+        self._parent = parent
+
+        # assign control variable or create it if necessary
+        if self.group not in self.window._radiobuttons:
+            # determine type of control variable based on value
+            var_type = type(self._radiobutton_value)
+            if var_type == int:
+                self.window._radiobuttons[self.group] = tk.IntVar(
+                    value=self._radiobutton_value
+                )
+            elif var_type == str:
+                self.window._radiobuttons[self.group] = tk.StringVar(
+                    value=self._radiobutton_value
+                )
+            else:
+                # unsupported type
+                raise ValueError("value must be str or int")
+
+        self._value = self.window._radiobuttons[self.group]
+
+        event = Event(self, window, self.key, EventType.RADIO_BUTTON)
+        self.widget = ttk.Radiobutton(
+            parent,
+            text=self.text,
+            anchor=self.anchor,
+            command=window._make_callback(event),
+            variable=self._value,
+            value=self._radiobutton_value,
+        )
+        self._grid(
+            row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
+        )
+        if self.disabled:
+            self.widget.state(["disabled"])
+
+        if self.selected:
+            self.widget.state(["selected"])
+        else:
+            self.widget.state(["!selected"])
+
+        return self.widget
+
+    @property
+    def radiobutton(self):
+        """Return the ttk Radiobutton widget"""
         return self.widget
 
 
