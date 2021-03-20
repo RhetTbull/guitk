@@ -617,7 +617,7 @@ class Entry(Widget):
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
         )
 
-        event = Event(self.widget, window, self.key, EventType.KeyRelease,)
+        event = Event(self.widget, window, self.key, EventType.KeyRelease)
         self.widget.bind("<KeyRelease>", window._make_callback(event))
 
         if self.disabled:
@@ -689,7 +689,7 @@ class ComboBox(Widget):
         self._justify = justify
         self._style = style
         self._takefocus = takefocus
-        self._combobox_values = values
+        self._combobox_values = values or []
         self._width = width
 
     def _create_widget(self, parent, window: Window, row, col):
@@ -713,6 +713,11 @@ class ComboBox(Widget):
         if self._combobox_values is not None:
             kwargs["values"] = self._combobox_values
 
+        if self._autosize:
+            # automatically set width, override any width value provided
+            width = len(max(self._combobox_values, key=len))
+            kwargs["width"] = width + 1
+
         self.widget = ttk.Combobox(parent, textvariable=self._value, **kwargs)
         self._grid(
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
@@ -735,8 +740,8 @@ class ComboBox(Widget):
         return self.widget
 
     @property
-    def entry(self):
-        """Return the Tk entry widget"""
+    def combobox(self):
+        """Return the Tk combobox widget"""
         return self.widget
 
 
@@ -1924,4 +1929,3 @@ class DebugWindow(Window):
                 lines = self["OUTPUT"].value.split("\n")
                 lines = [l for l in lines if filter in l]
                 self["OUTPUT"].value = "\n".join(lines) + "\n"
-
