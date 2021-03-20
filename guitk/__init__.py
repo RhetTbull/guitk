@@ -635,7 +635,7 @@ class Entry(Widget):
         return self.widget
 
 
-class ComboBox(Widget):
+class Combobox(Widget):
     """ttk Combobox"""
 
     def __init__(
@@ -680,7 +680,7 @@ class ComboBox(Widget):
         self.widget_type = "ttk.Combobox"
         # default = default or ""
         # self._value.set(default)
-        self.key = key or "ComboBox"
+        self.key = key or "Combobox"
         self.columnspan = columnspan
         self.rowspan = rowspan
         self.width = width
@@ -1055,7 +1055,7 @@ class BrowseDirectoryButton(Button):
         self.window._handle_event(event)
 
 
-class CheckButton(Widget):
+class Checkbutton(Widget):
     """Checkbox / checkbutton """
 
     def __init__(
@@ -1094,7 +1094,7 @@ class CheckButton(Widget):
     def _create_widget(self, parent, window: Window, row, col):
         self.window = window
         self._parent = parent
-        event = Event(self, window, self.key, EventType.CHECK_BUTTON)
+        event = Event(self, window, self.key, EventType.Checkbutton)
         self.widget = ttk.Checkbutton(
             parent,
             text=self.text,
@@ -1116,7 +1116,7 @@ class CheckButton(Widget):
         return self.widget
 
 
-class RadioButton(Widget):
+class Radiobutton(Widget):
     """Radiobutton class
     
     Note: group must be specified and will be used as key unless a separate key is specified."""
@@ -1182,7 +1182,7 @@ class RadioButton(Widget):
 
         self._value = self.window._radiobuttons[self.group]
 
-        event = Event(self, window, self.key, EventType.RADIO_BUTTON)
+        event = Event(self, window, self.key, EventType.Radiobutton)
         self.widget = ttk.Radiobutton(
             parent,
             text=self.text,
@@ -1673,8 +1673,7 @@ class LabelFrame(_Frame):
         )
 
 
-# TODO: for ListView, set tree.column("#0", width=0) and show="tree"
-class TreeView(Widget):
+class Treeview(Widget):
     def __init__(
         self,
         key=None,
@@ -1712,8 +1711,8 @@ class TreeView(Widget):
             cursor=cursor,
         )
         """ columns is optional, if not provided, will use headings for column names """
-        self.key = key or "TreeView"
-        self.widget_type = "ttk.TreeView"
+        self.key = key or "Treeview"
+        self.widget_type = "ttk.Treeview"
 
         if headings and columns:
             # ensure heading provided for each column
@@ -1778,7 +1777,7 @@ class TreeView(Widget):
         if self.disabled:
             self.widget.state(["disabled"])
 
-        event = Event(self, window, self.key, "<<TreeviewSelect>>")
+        event = Event(self, window, self.key, EventType.TreeviewSelect)
         self.widget.bind("<<TreeviewSelect>>", window._make_callback(event))
 
         return self.widget
@@ -1793,7 +1792,7 @@ class TreeView(Widget):
 
     def bind_heading(self, column_name, event_name):
         """Bind event to click on column heading """
-        event = Event(self, self.window, event_name, EventType.TREEVIEW_HEADING)
+        event = Event(self, self.window, event_name, EventType.TreeviewHeading)
         self.tree.heading(column_name, command=self.window._make_callback(event))
 
     def bind_tag(self, tagname, event_name, sequence=None):
@@ -1801,7 +1800,7 @@ class TreeView(Widget):
            If sequence is None, will bind to <Button-1>"""
         if sequence is None:
             sequence = "<Button-1>"
-        event = Event(self, self.window, event_name, EventType.TREEVIEW_TAG)
+        event = Event(self, self.window, event_name, EventType.TreeviewTag)
         self.tree.tag_bind(
             tagname, sequence=sequence, callback=self.window._make_callback(event)
         )
@@ -1823,7 +1822,7 @@ class TreeView(Widget):
         return self.widget
 
 
-class ListBox(TreeView):
+class Listbox(Treeview):
     def __init__(
         self,
         text: Optional[List] = None,
@@ -1845,8 +1844,8 @@ class ListBox(TreeView):
         tooltip=None,
         anchor=None,
     ):
-        self.key = key or "ListBox"
-        self.widget_type = "guitk.ListBox"
+        self.key = key or "Listbox"
+        self.widget_type = "guitk.Listbox"
         self._show = "tree"
         self._columns = ["list"]
         self._width = width
@@ -1887,16 +1886,19 @@ class ListBox(TreeView):
             for line in self._text:
                 self.append(line)
 
+        event = Event(self, window, self.key, EventType.ListboxSelect)
+        self.widget.bind("<<TreeviewSelect>>", window._make_callback(event))
+
     def insert(self, index, line):
-        """Insert a line into ListBox """
+        """Insert a line into Listbox """
         self.widget.insert("", index, iid=line, values=(line))
 
     def append(self, line):
-        """Apppend a line to end of ListBox """
+        """Apppend a line to end of Listbox """
         self.widget.insert("", "end", iid=line, values=(line))
 
     def delete(self, line):
-        """Delete a line from ListBox """
+        """Delete a line from Listbox """
         self.widget.delete(line)
 
 
@@ -1934,3 +1936,16 @@ class DebugWindow(Window):
                 lines = self["OUTPUT"].value.split("\n")
                 lines = [l for l in lines if filter in l]
                 self["OUTPUT"].value = "\n".join(lines) + "\n"
+
+
+# Aliases for classnames as I don't like tkinter's naming convention
+# You can use either CapWords or Firstword names in guitk
+ComboBox = Combobox
+CheckButton = Checkbutton
+RadioButton = Radiobutton
+TreeView = Treeview
+ListBox = Listbox
+Linklabel = LinkLabel
+Scrolledtext = ScrolledText
+Labelframe = LabelFrame
+

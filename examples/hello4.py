@@ -25,8 +25,8 @@ class HelloWorld(guitk.Window):
                     ),
                     guitk.Frame(
                         layout=[
-                            [None, guitk.CheckButton("Upper case", key="CHECK_UPPER")],
-                            [None, guitk.CheckButton("Green text", key="CHECK_GREEN")],
+                            [None, guitk.Checkbutton("Upper case", key="CHECK_UPPER")],
+                            [None, guitk.Checkbutton("Green text", key="CHECK_GREEN")],
                         ],
                         sticky="n",
                     ),

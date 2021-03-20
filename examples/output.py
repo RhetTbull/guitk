@@ -39,7 +39,7 @@ class OutputDemo(guitk.Window):
                             )
                         ],
                         [
-                            guitk.CheckButton("echo", key="ECHO_STDOUT"),
+                            guitk.Checkbutton("echo", key="ECHO_STDOUT"),
                             guitk.Button("Start", key="START_STDOUT", disabled=True),
                             guitk.Button("Stop", key="STOP_STDOUT"),
                         ],
@@ -54,7 +54,7 @@ class OutputDemo(guitk.Window):
                         ],
                         [guitk.Label("stderr", sticky="nsew", anchor="center")],
                         [
-                            guitk.CheckButton("echo", key="ECHO_STDERR"),
+                            guitk.Checkbutton("echo", key="ECHO_STDERR"),
                             guitk.Button("Start", key="START_STDERR", disabled=True),
                             guitk.Button("Stop", key="STOP_STDERR"),
                         ],

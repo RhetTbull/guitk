@@ -1,17 +1,17 @@
 import guitk
 
 
-class ComboBoxWindow(guitk.Window):
+class ComboboxWindow(guitk.Window):
     def config(self):
-        self.title = "ComboBox Demo"
+        self.title = "Combobox Demo"
         self.layout = [
             [
-                guitk.ComboBox(
+                guitk.Combobox(
                     key="COMBOBOX1", values=["Foo", "Bar", "XYZZY"], autosize=True
                 )
             ],
             [
-                guitk.ComboBox(
+                guitk.Combobox(
                     key="COMBOBOX2",
                     values=["Foo", "Bar", "XYZZY"],
                     width=6,
@@ -25,4 +25,4 @@ class ComboBoxWindow(guitk.Window):
 
 
 if __name__ == "__main__":
-    ComboBoxWindow().run()
+    ComboboxWindow().run()
