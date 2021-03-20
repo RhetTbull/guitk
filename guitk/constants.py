@@ -18,7 +18,9 @@ class EventType(Enum):
     CHECK_BUTTON = auto()
     RADIO_BUTTON = auto()
     VIRTUAL_EVENT = auto()
-    COMBOBOX_SELECTED = auto()
+    ComboboxSelected = "<<ComboboxSelected>>"
+    ComboBoxSelected = "<<ComboboxSelected>>"
+    KeyRelease = "<KeyRelease>"
     BROWSE_FILE = auto()
     BROWSE_DIRECTORY = auto()
     LINK_LABEL_CLICKED = auto()

@@ -6,7 +6,7 @@ import guitk
 # subclass guitk.Window as the starting point for your app's main window
 class HelloWorld(guitk.Window):
 
-    # every Window class needs a config() method that 
+    # every Window class needs a config() method that
     # defines the title and the layout (and optionally menu and other other settings)
     def config(self):
         # Title for the window
@@ -27,7 +27,7 @@ class HelloWorld(guitk.Window):
     # every guitk.Window will call self.handle_event to handle GUI events
     # event is a guitk.Event object
     def handle_event(self, event):
-        # the value of each widget can be read using event.values["KEYNAME"] 
+        # the value of each widget can be read using event.values["KEYNAME"]
         name = event.values["ENTRY_NAME"]
 
         if event.key == "Quit":
@@ -40,7 +40,7 @@ class HelloWorld(guitk.Window):
             # individual widgets can be accessed by their key; the window object acts as a dictionary of widgets
             self["OUTPUT"].value = f"Hello {name}! Thanks for trying guitk."
 
-        if event.event_type == "<KeyRelease>":
+        if event.event_type == guitk.EventType.KeyRelease:
             # events can be handled by event type as well as even key
             print(event)
 

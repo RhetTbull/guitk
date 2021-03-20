@@ -10,7 +10,6 @@
 
 # TODO: add Column?
 # TODO: add way to specify tooltip delay
-# TODO: check Event() -- some places uses self and some self.widget
 
 import sys
 import time
@@ -557,7 +556,7 @@ class Widget:
 
     def bind_event(self, event_name):
         """Bind a tkinter event to widget; will result in an Event of event_type type being sent to handle_event when triggered"""
-        event = Event(self, self, self.key, event_name)
+        event = Event(self, self.window, self.key, event_name)
         self.widget.bind(event_name, self.window._make_callback(event))
 
 
@@ -618,7 +617,7 @@ class Entry(Widget):
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
         )
 
-        event = Event(self.widget, window, self.key, "<KeyRelease>")
+        event = Event(self.widget, window, self.key, EventType.KeyRelease,)
         self.widget.bind("<KeyRelease>", window._make_callback(event))
 
         if self.disabled:
@@ -657,7 +656,8 @@ class ComboBox(Widget):
         events=False,
         sticky=None,
         tooltip=None,
-        readonly=None,
+        readonly=False,
+        autosize=False,
     ):
         super().__init__(
             key=key,
@@ -680,6 +680,7 @@ class ComboBox(Widget):
         self.rowspan = rowspan
         self.width = width
         self._readonly = readonly
+        self._autosize = autosize
 
         # ttk.Combobox args
         self._cursor = cursor  # TODO: take cursor out of Widget?
@@ -717,10 +718,12 @@ class ComboBox(Widget):
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
         )
 
-        event_release = Event(self.widget, window, self.key, "<KeyRelease>")
+        event_release = Event(self.widget, window, self.key, EventType.KeyRelease)
         self.widget.bind("<KeyRelease>", window._make_callback(event_release))
 
-        event_selected = Event(self.widget, window, self.key, EventType.COMBOBOX_SELECTED)
+        event_selected = Event(
+            self.widget, window, self.key, EventType.ComboboxSelected
+        )
         self.widget.bind("<<ComboboxSelected>>", window._make_callback(event_selected))
 
         if self.disabled:
@@ -1242,7 +1245,7 @@ class Text(Widget):
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
         )
 
-        event = Event(self, window, self.key, "<KeyRelease>")
+        event = Event(self, window, self.key, EventType.KeyRelease)
         self.widget.bind("<KeyRelease>", window._make_callback(event))
 
         if self.disabled:
@@ -1341,7 +1344,7 @@ class ScrolledText(Text):
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
         )
 
-        event = Event(self, window, self.key, "<KeyRelease>")
+        event = Event(self, window, self.key, EventType.KeyRelease)
         self.widget.bind("<KeyRelease>", window._make_callback(event))
 
         if self.disabled:

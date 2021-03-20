@@ -99,7 +99,7 @@ class HelloWorld(guitk.Window):
             # individual widgets can be accessed by their key; the window object acts as a dictionary of widgets
             self["OUTPUT"].value = f"Hello {name}! Thanks for trying guitk."
 
-        if event.event_type == "<KeyRelease>":
+        if event.event_type == guitk.EventType.KeyRelease:
             # events can be handled by event type as well as even key
             print(event)
 
