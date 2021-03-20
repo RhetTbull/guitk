@@ -155,10 +155,11 @@ class Layout:
 
 
 class Menu:
-    def __init__(self, label, underline=None) -> None:
+    def __init__(self, label, underline=None, separator=False) -> None:
         self._label = label
         self._menu = None
         self._underline = underline
+        self._separator = separator
         self.window = None
 
     def _create_widget(self, parent, window: WindowBaseClass):
@@ -170,6 +171,10 @@ class Menu:
                 self._label = self._label.replace("&", "", 1)
                 self._underline = idx
         parent.add_cascade(menu=menu, label=self._label, underline=self._underline)
+
+        if self._separator:
+            parent.add_separator()
+
         self._menu = menu
 
 
