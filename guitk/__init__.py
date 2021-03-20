@@ -5,7 +5,7 @@
 
     Published under the MIT License.
 
-    Copyright Rhet Turnbull, 2020, all rights reserved.
+    Copyright Rhet Turnbull, 2021, all rights reserved.
 """
 
 # TODO: add Column?
@@ -174,8 +174,9 @@ class Menu:
 
 
 class Command(Menu):
-    def __init__(self, label, disabled=False, shortcut=None):
+    def __init__(self, label, separator=False, disabled=False, shortcut=None):
         self._label = label
+        self._separator = separator  # add separator line after this command
         self._disabled = disabled
         self._shortcut = shortcut
         self._parent = None
@@ -197,6 +198,10 @@ class Command(Menu):
             ),
             accelerator=self._shortcut,
         )
+
+        if self._separator:
+            parent.add_separator()
+
         key_binding = _map_key_binding_from_shortcut(self._shortcut)
         window.window.bind_all(
             key_binding,
