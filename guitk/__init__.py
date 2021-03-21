@@ -14,6 +14,7 @@ import time
 import tkinter as tk
 from tkinter import filedialog, font, ttk
 from typing import List, Optional, Union, Any
+from collections import namedtuple
 
 from .constants import GUITK, EventType
 from .redirect import StdErrRedirect, StdOutRedirect
@@ -43,6 +44,8 @@ __all__ = [
     "DebugWindow",
     "EventType",
 ]
+
+EventCommand = namedtuple("EventCommand", ["widget", "key", "event_type", "command"])
 
 
 def _map_key_binding_from_shortcut(shortcut):
@@ -311,6 +314,7 @@ class Window(Layout, WindowBaseClass):
                 ]
             ]
 
+        self._commands = []
         self._layout(self.mainframe, self, autoframe=autoframe)
 
         # apply theme if necessary
@@ -387,6 +391,16 @@ class Window(Layout, WindowBaseClass):
     @title.setter
     def title(self, value):
         self._title = value
+
+    def bind_command(self, key=None, event_type=None, command=None):
+        if not any([key, event_type]):
+            raise ValueError("At least one of key, event_type must be specified")
+        self._bind_command(
+            EventCommand(widget=None, key=key, event_type=event_type, command=command)
+        )
+
+    def _bind_command(self, event_command: EventCommand):
+        self._commands.append(event_command)
 
     def bind_timer_event(self, delay, event_name, repeat=False):
         """ Create a new virtual event `event_name` that fires after `delay` ms, 
@@ -495,11 +509,26 @@ class Window(Layout, WindowBaseClass):
             event.values = {
                 elem.key: elem.value for elem in self._widgets if type(elem) != Output
             }
+
+            # handle custom commands
+            self._handle_commands(event)
+
             self.handle_event(event)
 
             # if deleting the window, call _destroy after handle_event has had a chance to handle it
             if event.event_type == "WM_DELETE_WINDOW":
                 self._destroy()
+
+    def _handle_commands(self, event):
+        for command in self._commands:
+            if (
+                (command.widget is None or command.widget == event.widget)
+                and (command.key is None or command.key == event.key)
+                and (
+                    command.event_type is None or command.event_type == event.event_type
+                )
+            ):
+                command.command()
 
     def __getitem__(self, key):
         try:
@@ -540,6 +569,7 @@ class Widget:
         anchor=None,
         cursor=None,
         takefocus=None,
+        command=None,
     ):
         self.key = key
         self.disabled = disabled
@@ -556,6 +586,9 @@ class Widget:
             self.takefocus = 1 if takefocus else 0
         else:
             self.takefocus = None
+
+        self._command = command
+        self._commands = {}
 
         self.widget_type = None
         self._tk = TKRoot()
@@ -911,6 +944,7 @@ class Button(Widget):
         tooltip=None,
         anchor=None,
         takefocus=None,
+        command=None,
     ):
         super().__init__(
             key=key,
@@ -924,6 +958,7 @@ class Button(Widget):
             tooltip=tooltip,
             anchor=anchor,
             takefocus=takefocus,
+            command=command,
         )
         self.widget_type = "ttk.Button"
         self.text = text
@@ -943,7 +978,7 @@ class Button(Widget):
     def _create_widget(self, parent, window: Window, row, col):
         self.window = window
         self._parent = parent
-        event = Event(self, window, self.key, EventType.BUTTON_PRESS)
+        event = Event(self, window, self.key, EventType.ButtonPress)
         self.widget = ttk.Button(
             parent,
             text=self.text,
@@ -954,6 +989,18 @@ class Button(Widget):
         self._grid(
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
         )
+
+        if self._command:
+            # self.events = True #TODO
+            window._bind_command(
+                EventCommand(
+                    widget=self,
+                    key=self.key,
+                    event_type=EventType.ButtonPress,
+                    command=self._command,
+                )
+            )
+
         if self.disabled:
             self.widget.state(["disabled"])
 
@@ -1287,7 +1334,7 @@ class Text(Widget):
         self.widget.bind("<KeyRelease>", window._make_callback(event))
 
         self.value = self._value
-        
+
         if self.disabled:
             self.widget["state"] = "disabled"
         return self.widget

@@ -15,7 +15,7 @@ class EventType(Enum):
 
     BrowseFile = "<<BrowseFile>>"
     BrowseDirectory = "<<BrowseDirectory>>"
-    BUTTON_PRESS = auto()
+    ButtonPress = "<<Button>>"
     Checkbutton = "<<Checkbutton>>"
     CheckButton = "<<Checkbutton>>"
     ComboboxSelected = "<<ComboboxSelected>>"
