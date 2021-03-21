@@ -1,0 +1,336 @@
+import sys
+from enum import Enum, auto
+
+import guitk
+from guitk import *
+import pathlib
+
+dummy_text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras tempus neque in vehicula hendrerit. Nam non posuere ante. Nunc libero libero, tempus eget enim vitae, egestas hendrerit tortor. Vivamus et egestas felis. Aliquam erat volutpat. Nulla facilisi. Aliquam hendrerit, nibh nec tempor lobortis, purus nisl vehicula ex, dapibus fermentum mauris nibh id nulla. Vivamus non pretium quam. Phasellus elementum commodo nisl. Nullam eu faucibus augue. Vivamus pulvinar metus vehicula urna porttitor euismod. "
+
+
+def _list_files(path, tree):
+    """ list files in a directory and add to Treeview tree"""
+    files = pathlib.Path(path).iterdir()
+    pyfiles = []
+    for f in files:
+        if f.suffix == ".py":
+            pyfiles.append(str(f))
+            tags = ["pyfile"]
+        else:
+            tags = []
+        tree.insert(
+            "",
+            "end",
+            iid=str(f),
+            tags=tags,
+            text=str(f),
+            values=(str(f), f.stat().st_size),
+        )
+    tree.selection_set(pyfiles)
+
+
+class DemoWindow(Window):
+    """Demo guitk widgets """
+
+    # constants
+    class GUI(Enum):
+        FileEntry = auto()
+        DirectoryEntry = auto()
+        TextEntry = auto()
+        TextLabel = auto()
+        DebugWindow = auto()
+        LinkLabel = auto()
+        EnableCheckbutton = auto()
+        OtherCheckbutton = auto()
+        TimerButton = auto()
+        TimerLabel = auto()
+        Output = auto()
+        RadioButtons1 = auto()
+        RadioButtons2 = auto()
+        Text = auto()
+        ScrolledText = auto()
+        ButtonStdOut = auto()
+        ButtonStdErr = auto()
+        OutputEchoCheckbutton = auto()
+        OutputEnableCheckbutton = auto()
+        TreeView = auto()
+        ListBox = auto()
+        TextDocStrings = auto()
+        ComboBox = auto()
+        TreeHeadingSize = auto()
+        TreeHeadingFilename = auto()
+        TreePythonFile = auto()
+
+    def config(self):
+        GUI = self.GUI  # shortcut for constants
+        self.title = "guitk Demo Window"
+        self.padx = 2
+        self.pady = 2
+        self.menu = {
+            Menu("File"): [
+                Command("New File", shortcut="Cmd+N", separator=True),
+                Command("Open...", shortcut="Ctrl+O"),
+                {
+                    Menu("Open Recent...", separator=True): [
+                        Command("Recent File 1"),
+                        Command("Recent File 2"),
+                    ]
+                },
+                Command("Save", disabled=True),
+                Command("Save As"),
+            ],
+            Menu("Edit"): [Command("Copy", shortcut="Cmd+C"), Command("Paste")],
+            Menu("Debug"): [Command("Open Debug Window", shortcut="Alt+Ctrl+X")],
+            Menu("Help"): [Command("About")],
+        }
+
+        self.layout = [
+            [  # row 1
+                Label("File"),
+                Entry(key=GUI.FileEntry),
+                BrowseFileButton(target_key=GUI.FileEntry),
+                Label("Directory"),
+                Entry(key=GUI.DirectoryEntry),
+                BrowseDirectoryButton(target_key=GUI.DirectoryEntry),
+                Button("Debug Window", key=GUI.DebugWindow, sticky="e"),
+            ],
+            [  # row 2
+                Label("Enter some text"),
+                Entry(key=GUI.TextEntry, events=True),
+                Label("You entered: "),
+                Label("", key=GUI.TextLabel),
+            ],
+            [  # row 3
+                LinkLabel(
+                    "This Label is a link", key=GUI.LinkLabel, underline_font=True
+                ),
+                None,
+                Checkbutton("Enable other checkbutton", key=GUI.EnableCheckbutton),
+                Checkbutton(
+                    "Other checkbutton", key=GUI.OtherCheckbutton, disabled=True
+                ),
+                Button("Start Timer", key=GUI.TimerButton),
+                Label("0", key=GUI.TimerLabel, width=5),
+                Label("Combobox"),
+                Combobox(
+                    key=GUI.ComboBox,
+                    values=["JPEG", "PNG", "HEIC"],
+                    autosize=True,
+                    readonly=True,
+                ),
+            ],
+            [  # row 4
+                # column 1
+                LabelFrame(
+                    text="Radio Buttons",
+                    layout=[
+                        [Label("These Radiobuttons are in a LabelFrame")],
+                        [
+                            Radiobutton("Option A", GUI.RadioButtons1),
+                            Radiobutton("Option 1", GUI.RadioButtons2, value=1),
+                        ],
+                        [
+                            Radiobutton("Option B", GUI.RadioButtons1),
+                            Radiobutton("Option 2", GUI.RadioButtons2, value=2),
+                        ],
+                    ],
+                    sticky="n",
+                ),
+                # column 2
+                Frame(
+                    layout=[
+                        [
+                            Label(
+                                "These Text boxes are in a Frame with autoframe=False so columns line up",
+                                columnspan=2,
+                            )
+                        ],
+                        [Label("Text box"), Label("ScrolledText box")],
+                        [
+                            Text(key=GUI.Text, height=4, text=dummy_text),
+                            ScrolledText(
+                                key=GUI.ScrolledText, height=4, text=dummy_text
+                            ),
+                        ],
+                    ],
+                    autoframe=False,
+                ),
+            ],
+            # row 5
+            [
+                Treeview(
+                    key=GUI.TreeView, headings=["Filename", "Size"], show="headings"
+                ),
+                Frame(
+                    layout=[
+                        [
+                            Label("Classes in guitk"),
+                            Label("Doc String", key=GUI.TextDocStrings),
+                        ],
+                        [
+                            Listbox(
+                                key=GUI.ListBox,
+                                height=10,
+                                width=150,
+                                text=guitk.__all__,
+                            ),
+                            Text(key=GUI.TextDocStrings, height=14, width=30),
+                        ],
+                    ],
+                    autoframe=False,
+                ),
+            ],
+            # row 6
+            [
+                Output(key=GUI.Output, width=100, height=10),
+                Frame(
+                    layout=[
+                        [Checkbutton("Enable", key=GUI.OutputEnableCheckbutton)],
+                        [Checkbutton("Echo", key=GUI.OutputEchoCheckbutton)],
+                        [Button("stdout", key=GUI.ButtonStdOut)],
+                        [Button("stderr", key=GUI.ButtonStdErr)],
+                    ]
+                ),
+            ],
+        ]
+
+    def setup(self):
+        """ gets called right after __init__"""
+        # a place to store some data later
+        GUI = self.GUI
+        self.data = {
+            "timer_id": None,
+            "tree_sort_size_reverse": False,
+            "tree_sort_filename_reverse": False,
+        }
+
+        # check the Enable checkbutton for enabled output redirect
+        self[GUI.OutputEnableCheckbutton].widget.invoke()
+
+        _list_files(".", self[GUI.TreeView].tree)
+        self[GUI.TreeView].bind_heading("Size", GUI.TreeHeadingSize)
+        self[GUI.TreeView].bind_heading("Filename", GUI.TreeHeadingFilename)
+        self[GUI.TreeView].bind_tag("pyfile", GUI.TreePythonFile, sequence="<Return>")
+        print("Done with setup")
+
+    def teardown(self):
+        """ gets called right before window is destroyed """
+        print(f"Tearing down")
+
+    def handle_event(self, event):
+        # print(event)
+        GUI = self.GUI
+        if event.event_type == EventType.BrowseFile:
+            print(f"You chose file {event.values[GUI.FileEntry]}")
+
+        if event.event_type == EventType.BrowseDirectory:
+            print(f"You chose directory {event.values[GUI.DirectoryEntry]}")
+
+        if event.key == GUI.TextEntry:
+            self[GUI.TextLabel].value = self[GUI.TextEntry].value
+            print(f"You typed: '{self[GUI.TextEntry].value}'")
+
+        if event.key == GUI.LinkLabel:
+            print(f"You clicked the link!")
+
+        if event.key == GUI.EnableCheckbutton:
+            if self[GUI.EnableCheckbutton].value:
+                # checkbutton is checked
+                self[GUI.OtherCheckbutton].widget.state(["!disabled"])
+                print("Enabling other Checkbutton")
+            else:
+                # checkbutton is not checked
+                self[GUI.OtherCheckbutton].widget.state(["disabled"])
+                print("Disabling other Checkbutton")
+
+        if event.key == GUI.TimerButton:
+            if self.data["timer_id"] is None:
+                # timer not running, start a timer
+                print("Starting timer")
+                self.data["timer_id"] = self.bind_timer_event(
+                    1000, "<<MyTimer>>", repeat=True
+                )
+                self[GUI.TimerButton].value = "Stop Timer"
+            else:
+                # timer is running, stop it
+                print("Stopping timer")
+                self.cancel_timer_event(self.data["timer_id"])
+                self[GUI.TimerButton].value = "Start Timer"
+                self.data["timer_id"] = None
+
+        if event.key == "<<MyTimer>>":
+            timer = self[GUI.TimerLabel].value
+            self[GUI.TimerLabel].value = int(timer) + 1
+
+        if event.key == GUI.OutputEnableCheckbutton:
+            if self[GUI.OutputEnableCheckbutton].value:
+                print("Enabling output redirect")
+                self[GUI.Output].enable_redirect()
+            else:
+                print("Disabling output redirect")
+                self[GUI.Output].disable_redirect()
+
+        if event.key == GUI.OutputEchoCheckbutton:
+            if self[GUI.OutputEchoCheckbutton].value:
+                print("Enabling output redirect echo")
+                self[GUI.Output].echo = True
+            else:
+                print("Disabling output redirect echo")
+                self[GUI.Output].echo = False
+
+        if event.key == GUI.ButtonStdOut:
+            print("This text went to stdout")
+
+        if event.key == GUI.ButtonStdErr:
+            print("This text went to stderr", file=sys.stderr)
+
+        if event.key == GUI.RadioButtons1:
+            print(f"Radiobuttons1 value is {event.values[GUI.RadioButtons1]}")
+
+        if event.key == GUI.RadioButtons2:
+            print(f"Radiobuttons2 value is {event.values[GUI.RadioButtons2]}")
+
+        if event.key == GUI.TreeHeadingSize:
+            self[GUI.TreeView].sort_on_column(
+                "Size",
+                reverse=self.data["tree_sort_size_reverse"],
+                key=lambda x: int(x[0]),
+            )
+            self.data["tree_sort_size_reverse"] = not self.data[
+                "tree_sort_size_reverse"
+            ]
+
+        if event.key == GUI.TreeHeadingFilename:
+            self[GUI.TreeView].sort_on_column(
+                "Filename", reverse=self.data["tree_sort_filename_reverse"]
+            ),
+            self.data["tree_sort_filename_reverse"] = not self.data[
+                "tree_sort_filename_reverse"
+            ]
+
+        if event.event_type == guitk.EventType.TreeviewSelect:
+            print(f"You selected file(s): {event.values[GUI.TreeView]}")
+
+        if event.key == GUI.TreePythonFile:
+            print(f"You hit Return on a python file: {event.values[GUI.TreeView]}")
+
+        if event.key == GUI.ListBox:
+            print(f"You selected {event.values[GUI.ListBox]}")
+            docstring = None
+            try:
+                docstring = getattr(guitk, event.values[GUI.ListBox][0]).__doc__
+            except AttributeError:
+                pass
+            docstring = docstring or "doc string not found"
+            self[GUI.TextDocStrings].value = docstring
+
+        if event.key == GUI.ComboBox:
+            print(f"Combobox: {event.values[GUI.ComboBox]}")
+
+        if event.key == GUI.DebugWindow:
+            # open debug window
+            DebugWindow()
+
+
+if __name__ == "__main__":
+    DemoWindow().run()

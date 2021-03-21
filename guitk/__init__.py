@@ -8,18 +8,41 @@
     Copyright Rhet Turnbull, 2021, all rights reserved.
 """
 
-# TODO: add Column?
 # TODO: add way to specify tooltip delay
 
-import sys
 import time
 import tkinter as tk
 from tkinter import filedialog, font, ttk
-from typing import List, Optional, Union
+from typing import List, Optional, Union, Any
 
 from .constants import GUITK, EventType
 from .redirect import StdErrRedirect, StdOutRedirect
 from .tooltips import Hovertip
+
+__all__ = [
+    "Menu",
+    "Command",
+    "Window",
+    "Event",
+    "Entry",
+    "Combobox",
+    "Label",
+    "LinkLabel",
+    "Button",
+    "BrowseFileButton",
+    "BrowseDirectoryButton",
+    "Checkbutton",
+    "Radiobutton",
+    "Text",
+    "ScrolledText",
+    "Output",
+    "Frame",
+    "LabelFrame",
+    "Treeview",
+    "Listbox",
+    "DebugWindow",
+    "EventType",
+]
 
 
 def _map_key_binding_from_shortcut(shortcut):
@@ -997,7 +1020,7 @@ class BrowseFileButton(Button):
         self._filename = filedialog.askopenfilename()
         if self.target_key:
             self.window[self.target_key].value = self._filename
-        event = Event(self, self.window, self.key, EventType.BROWSE_FILE)
+        event = Event(self, self.window, self.key, EventType.BrowseFile)
         self.window._handle_event(event)
 
 
@@ -1056,7 +1079,7 @@ class BrowseDirectoryButton(Button):
         self._dirname = filedialog.askdirectory()
         if self.target_key:
             self.window[self.target_key].value = self._dirname
-        event = Event(self, self.window, self.key, EventType.BROWSE_DIRECTORY)
+        event = Event(self, self.window, self.key, EventType.BrowseDirectory)
         self.window._handle_event(event)
 
 
@@ -1129,7 +1152,7 @@ class Radiobutton(Widget):
     def __init__(
         self,
         text: str,
-        group: str,
+        group: Any,
         key: str = "",
         value: Union[int, str, None] = None,
         disabled=False,
@@ -1159,7 +1182,7 @@ class Radiobutton(Widget):
         self.text = text
         self.group = group
         self.key = key or group
-        self._radiobutton_value = value if value is not None else 0
+        self._radiobutton_value = value if value is not None else text
         self._value = None  # will be set in _create_widget
         self.columnspan = columnspan
         self.rowspan = rowspan
@@ -1248,7 +1271,7 @@ class Text(Widget):
         self.key = key or "Text"
         self.width = width
         self.height = height
-        self._value = text or ""
+        self._value = text if text is not None else ""
         self.columnspan = columnspan
         self.rowspan = rowspan
 
@@ -1263,6 +1286,8 @@ class Text(Widget):
         event = Event(self, window, self.key, EventType.KeyRelease)
         self.widget.bind("<KeyRelease>", window._make_callback(event))
 
+        self.value = self._value
+        
         if self.disabled:
             self.widget["state"] = "disabled"
         return self.widget
@@ -1345,6 +1370,8 @@ class ScrolledText(Text):
         )
         self.widget_type = "guitk.ScrolledText"
         self.key = key or "ScrolledText"
+
+        # TODO: should be able to eliminate all these and pass to super()
         self.width = width
         self.height = height
         self._value = text if text is not None else ""

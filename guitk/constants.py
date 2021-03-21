@@ -13,8 +13,8 @@ class GUITK(Enum):
 class EventType(Enum):
     """Constants for event types"""
 
-    BROWSE_FILE = auto()
-    BROWSE_DIRECTORY = auto()
+    BrowseFile = "<<BrowseFile>>"
+    BrowseDirectory = "<<BrowseDirectory>>"
     BUTTON_PRESS = auto()
     Checkbutton = "<<Checkbutton>>"
     CheckButton = "<<Checkbutton>>"
