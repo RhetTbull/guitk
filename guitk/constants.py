@@ -22,15 +22,19 @@ class EventType(Enum):
     ComboBoxSelected = "<<ComboboxSelected>>"
     Radiobutton = "<<Radiobutton>>"
     RadioButton = "<<Radiobutton>>"
-    VIRTUAL_EVENT = auto()
+    VirtualEvent = "<<VirtualEvent>>"
     KeyRelease = "<KeyRelease>"
-    LINK_LABEL_CLICKED = auto()
+    LinkLabel = "<<LinkLabel>>"
     ListboxSelect = "<<ListboxSelect>>"
     ListBoxSelect = "<<ListboxSelect>>"
-    OUTPUT_WRITE = "<<OutputWrite>>"
-    TreeviewHeading = auto()
+    OutputWrite = "<<OutputWrite>>"
+    TreeviewHeading = "<<TreeviewHeading>>"
+    TreeViewHeading = "<<TreeviewHeading>>"
     TreeviewSelect = "<<TreeviewSelect>>"
     TreeViewSelect = "<<TreeviewSelect>>"
-    TreeviewTag = auto()
+    TreeviewTag = "<<TreeviewTag>>"
+    TreeViewTag = "<<TreeviewTag>>"
     WM_DELETE_WINDOW = "WM_DELETE_WINDOW"
+    DeleteWindow = "WM_DELETE_WINDOW"
+    Quit = "WM_DELETE_WINDOW"
 

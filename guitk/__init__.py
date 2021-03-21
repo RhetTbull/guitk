@@ -300,9 +300,7 @@ class Window(Layout, WindowBaseClass):
         self._tk.register(self)
         self.window.protocol(
             "WM_DELETE_WINDOW",
-            self._make_callback(
-                Event(self, self, EventType.WM_DELETE_WINDOW, "WM_DELETE_WINDOW")
-            ),
+            self._make_callback(Event(self, self, EventType.Quit, EventType.Quit)),
         )
 
         if not self.layout:
@@ -416,7 +414,7 @@ class Window(Layout, WindowBaseClass):
                     delay, _generate_event
                 )
 
-        event = Event(self, self, event_name, EventType.VIRTUAL_EVENT)
+        event = Event(self, self, event_name, EventType.VirtualEvent)
         self.root.bind(event_name, self._make_callback(event))
         self._timer_events[timer_id] = self._tk.root.after(delay, _generate_event)
         return timer_id
@@ -474,9 +472,7 @@ class Window(Layout, WindowBaseClass):
     def _destroy(self):
         # kill any child windows
         for child in self.children():
-            event = Event(
-                child, child.window, EventType.WM_DELETE_WINDOW, "WM_DELETE_WINDOW"
-            )
+            event = Event(child, child.window, EventType.Quit, EventType.Quit)
             child.handle_event(event)
             try:
                 child._destroy()
@@ -516,7 +512,7 @@ class Window(Layout, WindowBaseClass):
             self.handle_event(event)
 
             # if deleting the window, call _destroy after handle_event has had a chance to handle it
-            if event.event_type == "WM_DELETE_WINDOW":
+            if event.event_type == EventType.Quit:
                 self._destroy()
 
     def _handle_commands(self, event):
@@ -644,6 +640,7 @@ class Entry(Widget):
         tooltip=None,
         cursor=None,
         takefocus=None,
+        command=None,
     ):
         super().__init__(
             key=key,
@@ -657,6 +654,7 @@ class Entry(Widget):
             tooltip=tooltip,
             cursor=cursor,
             takefocus=takefocus,
+            command=command,
         )
         self.widget_type = "ttk.Entry"
         default = default or ""
@@ -685,6 +683,17 @@ class Entry(Widget):
 
         event = Event(self.widget, window, self.key, EventType.KeyRelease)
         self.widget.bind("<KeyRelease>", window._make_callback(event))
+
+        if self._command:
+            self.events = True
+            window._bind_command(
+                EventCommand(
+                    widget=self,
+                    key=self.key,
+                    event_type=EventType.KeyRelease,
+                    command=self._command,
+                )
+            )
 
         if self.disabled:
             self.widget.state(["disabled"])
@@ -724,6 +733,7 @@ class Combobox(Widget):
         tooltip=None,
         readonly=False,
         autosize=False,
+        command=None,
     ):
         super().__init__(
             key=key,
@@ -737,6 +747,7 @@ class Combobox(Widget):
             tooltip=tooltip,
             cursor=cursor,
             takefocus=takefocus,
+            command=command,
         )
         self.widget_type = "ttk.Combobox"
         # default = default or ""
@@ -796,6 +807,17 @@ class Combobox(Widget):
             self.widget, window, self.key, EventType.ComboboxSelected
         )
         self.widget.bind("<<ComboboxSelected>>", window._make_callback(event_selected))
+
+        if self._command:
+            self.events = True
+            window._bind_command(
+                EventCommand(
+                    widget=self,
+                    key=self.key,
+                    event_type=EventType.ComboboxSelected,
+                    command=self._command,
+                )
+            )
 
         if self.disabled:
             self.widget.state(["disabled"])
@@ -894,6 +916,7 @@ class LinkLabel(Label):
         anchor=None,
         cursor=None,
         underline_font=False,
+        command=None,
     ):
         super().__init__(
             text=text,
@@ -916,15 +939,27 @@ class LinkLabel(Label):
         self.rowspan = rowspan
         self.width = width
         self.underline_font = underline_font
+        self._command = command
 
     def _create_widget(self, parent, window: Window, row, col):
         super()._create_widget(parent, window, row, col)
-        event = Event(self.widget, window, self.key, EventType.LINK_LABEL_CLICKED)
+        event = Event(self.widget, window, self.key, EventType.LinkLabel)
         self.widget.bind("<Button-1>", window._make_callback(event))
         if self.underline_font:
             f = font.Font(self.widget, self.widget.cget("font"))
             f.configure(underline=True)
             self.widget.configure(font=f)
+
+        if self._command:
+            self.events = True
+            window._bind_command(
+                EventCommand(
+                    widget=self,
+                    key=self.key,
+                    event_type=EventType.LinkLabel,
+                    command=self._command,
+                )
+            )
 
 
 class Button(Widget):
@@ -991,7 +1026,7 @@ class Button(Widget):
         )
 
         if self._command:
-            # self.events = True #TODO
+            self.events = True
             window._bind_command(
                 EventCommand(
                     widget=self,
@@ -1146,6 +1181,7 @@ class Checkbutton(Widget):
         sticky=None,
         tooltip=None,
         anchor=None,
+        command=None,
     ):
         super().__init__(
             key=key,
@@ -1158,6 +1194,7 @@ class Checkbutton(Widget):
             sticky=sticky,
             tooltip=tooltip,
             anchor=anchor,
+            command=command,
         )
         self.widget_type = "ttk.Checkbutton"
         self.text = text
@@ -1181,6 +1218,18 @@ class Checkbutton(Widget):
         self._grid(
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
         )
+
+        if self._command:
+            self.events = True
+            window._bind_command(
+                EventCommand(
+                    widget=self,
+                    key=self.key,
+                    event_type=EventType.Checkbutton,
+                    command=self._command,
+                )
+            )
+
         if self.disabled:
             self.widget.state(["disabled"])
         return self.widget
@@ -1212,6 +1261,7 @@ class Radiobutton(Widget):
         tooltip=None,
         anchor=None,
         selected=False,
+        command=None,
     ):
         super().__init__(
             key=key,
@@ -1224,6 +1274,7 @@ class Radiobutton(Widget):
             sticky=sticky,
             tooltip=tooltip,
             anchor=anchor,
+            command=command,
         )
         self.widget_type = "ttk.Radiobutton"
         self.text = text
@@ -1269,6 +1320,18 @@ class Radiobutton(Widget):
         self._grid(
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
         )
+
+        if self._command:
+            self.events = True
+            window._bind_command(
+                EventCommand(
+                    widget=self,
+                    key=self.key,
+                    event_type=EventType.Radiobutton,
+                    command=self._command,
+                )
+            )
+
         if self.disabled:
             self.widget.state(["disabled"])
 
@@ -1302,6 +1365,7 @@ class Text(Widget):
         events=False,
         sticky=None,
         tooltip=None,
+        command=None,
     ):
         super().__init__(
             key=key,
@@ -1313,6 +1377,7 @@ class Text(Widget):
             events=events,
             sticky=sticky,
             tooltip=tooltip,
+            command=command,
         )
         self.widget_type = "tk.Text"
         self.key = key or "Text"
@@ -1334,6 +1399,17 @@ class Text(Widget):
         self.widget.bind("<KeyRelease>", window._make_callback(event))
 
         self.value = self._value
+
+        if self._command:
+            self.events = True
+            window._bind_command(
+                EventCommand(
+                    widget=self,
+                    key=self.key,
+                    event_type=EventType.KeyRelease,
+                    command=self._command,
+                )
+            )
 
         if self.disabled:
             self.widget["state"] = "disabled"
@@ -1402,6 +1478,7 @@ class ScrolledText(Text):
         events=False,
         sticky=None,
         tooltip=None,
+        command=None,
     ):
         super().__init__(
             text=text,
@@ -1414,6 +1491,7 @@ class ScrolledText(Text):
             events=events,
             sticky=sticky,
             tooltip=tooltip,
+            command=command,
         )
         self.widget_type = "guitk.ScrolledText"
         self.key = key or "ScrolledText"
@@ -1435,6 +1513,17 @@ class ScrolledText(Text):
 
         event = Event(self, window, self.key, EventType.KeyRelease)
         self.widget.bind("<KeyRelease>", window._make_callback(event))
+
+        if self._command:
+            self.events = True
+            window._bind_command(
+                EventCommand(
+                    widget=self,
+                    key=self.key,
+                    event_type=EventType.KeyRelease,
+                    command=self._command,
+                )
+            )
 
         if self.disabled:
             self.widget["state"] = "disabled"
@@ -1507,9 +1596,9 @@ class Output(ScrolledText):
         self.widget.unbind("<KeyRelease>")
 
         if self.events:
-            event = Event(self, window, self.key, EventType.OUTPUT_WRITE)
+            event = Event(self, window, self.key, EventType.OutputWrite)
             self.window.root.bind_all(
-                EventType.OUTPUT_WRITE.value, window._make_callback(event)
+                EventType.OutputWrite.value, window._make_callback(event)
             )
 
         self.enable_redirect()
@@ -1519,7 +1608,7 @@ class Output(ScrolledText):
     def _write(self, line):
         self.text.insert(tk.END, line)
         self.text.yview(tk.END)
-        self.window.root.event_generate(EventType.OUTPUT_WRITE.value)
+        self.window.root.event_generate(EventType.OutputWrite.value)
 
     @property
     def echo(self):
@@ -1752,6 +1841,7 @@ class LabelFrame(_Frame):
         )
 
 
+# TODO: Add scroll bars to Treeview
 class Treeview(Widget):
     def __init__(
         self,
@@ -1775,6 +1865,7 @@ class Treeview(Widget):
         sticky=None,
         tooltip=None,
         anchor=None,
+        command=None,
     ):
         super().__init__(
             key=key,
@@ -1788,6 +1879,7 @@ class Treeview(Widget):
             tooltip=tooltip,
             anchor=anchor,
             cursor=cursor,
+            command=command,
         )
         """ columns is optional, if not provided, will use headings for column names """
         self.key = key or "Treeview"
@@ -1859,6 +1951,17 @@ class Treeview(Widget):
         event = Event(self, window, self.key, EventType.TreeviewSelect)
         self.widget.bind("<<TreeviewSelect>>", window._make_callback(event))
 
+        if self._command:
+            self.events = True
+            window._bind_command(
+                EventCommand(
+                    widget=self,
+                    key=self.key,
+                    event_type=EventType.TreeviewSelect,
+                    command=self._command,
+                )
+            )
+
         return self.widget
 
     @property
@@ -1922,6 +2025,7 @@ class Listbox(Treeview):
         sticky=None,
         tooltip=None,
         anchor=None,
+        command=None,
     ):
         self.key = key or "Listbox"
         self.widget_type = "guitk.Listbox"
@@ -1952,6 +2056,7 @@ class Listbox(Treeview):
             selectmode=selectmode,
             style=style,
             takefocus=takefocus,
+            command=command,
         )
 
     def _create_widget(self, parent, window: Window, row, col):
@@ -1967,6 +2072,17 @@ class Listbox(Treeview):
 
         event = Event(self, window, self.key, EventType.ListboxSelect)
         self.widget.bind("<<TreeviewSelect>>", window._make_callback(event))
+
+        if self._command:
+            self.events = True
+            window._bind_command(
+                EventCommand(
+                    widget=self,
+                    key=self.key,
+                    event_type=EventType.ListboxSelect,
+                    command=self._command,
+                )
+            )
 
     def insert(self, index, line):
         """Insert a line into Listbox """
