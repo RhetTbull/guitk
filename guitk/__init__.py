@@ -168,9 +168,16 @@ class Layout:
                 widget._create_widget(
                     parent, window, row_count + row_offset, col_count + col_offset
                 )
-                widget._tooltip = (
-                    Hovertip(widget.widget, widget.tooltip) if widget.tooltip else None
-                )
+                if widget.tooltip:
+                    tooltip = (
+                        widget.tooltip(widget.key)
+                        if callable(widget.tooltip)
+                        else widget.tooltip
+                    )
+                    widget._tooltip = Hovertip(widget.widget, tooltip)
+                else:
+                    widget._tooltip = None
+
                 window._widgets.append(widget)
                 widget.parent = self
                 window._widget_by_key[widget.key] = widget
@@ -2159,3 +2166,4 @@ ListBox = Listbox
 Linklabel = LinkLabel
 Scrolledtext = ScrolledText
 Labelframe = LabelFrame
+
