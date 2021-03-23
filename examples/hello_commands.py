@@ -10,7 +10,7 @@ class HelloWorld(guitk.Window):
         # Define the window's contents
         self.layout = [
             [guitk.Label("What's your name?")],
-            [guitk.Entry(key="ENTRY_NAME")],
+            [guitk.Entry(key="ENTRY_NAME", events=True)],
             [guitk.Label("", width=40, key="OUTPUT")],
             [
                 guitk.Button("Ok", command=self.on_ok),
@@ -31,6 +31,9 @@ class HelloWorld(guitk.Window):
     def on_pressme(self):
         print("I got pressed!")
 
+    def on_entry_press(self):
+        print("Release me!")
+
     def setup(self):
         # commands can also be bound by event type or key value
         self.bind_command(
@@ -38,8 +41,12 @@ class HelloWorld(guitk.Window):
         )
         self.bind_command(key="PRESSME", command=self.on_pressme)
 
+        # commands can be bound via the widget as well
+        self["ENTRY_NAME"].bind_event_command("<FocusIn>", self.on_entry_press)
+
     # Interact with the Window using an event Loop
     def handle_event(self, event):
+        print(event)
         if event.key == "Quit":
             self.quit()
 

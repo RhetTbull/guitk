@@ -315,7 +315,7 @@ class DemoWindow(Window):
         print(f"Tearing down")
 
     def handle_event(self, event):
-        # print(event)
+        print(event)
         GUI = self.GUI
         if event.event_type == EventType.BrowseFile:
             print(f"You chose file {event.values[GUI.FileEntry]}")

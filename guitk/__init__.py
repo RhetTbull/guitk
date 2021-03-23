@@ -484,6 +484,7 @@ class Window(Layout, WindowBaseClass):
             if type(widget) == Output:
                 widget.disable_redirect()
         self.teardown()
+        self._parent.focus_set()
         self.window.destroy()
         self._tk.deregister(self)
 
@@ -517,6 +518,8 @@ class Window(Layout, WindowBaseClass):
 
     def _handle_commands(self, event):
         for command in self._commands:
+            if command.widget == event.widget:
+                print(command, event)
             if (
                 (command.widget is None or command.widget == event.widget)
                 and (command.key is None or command.key == event.key)
@@ -621,6 +624,19 @@ class Widget:
         event = Event(self, self.window, self.key, event_name)
         self.widget.bind(event_name, self.window._make_callback(event))
 
+    def bind_event_command(self, event_name, command):
+        """Bind a tkinter event to to a command callback; creates a guitk Event and binds this to the command """
+        self.bind_event(event_name)
+        self.window._bind_command(
+            EventCommand(
+                widget=self, key=self.key, event_type=event_name, command=command
+            )
+        )
+
+    @property
+    def state(self):
+        return self.widget.cget("state")
+
 
 class Entry(Widget):
     """Text entry / input box """
@@ -681,7 +697,7 @@ class Entry(Widget):
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
         )
 
-        event = Event(self.widget, window, self.key, EventType.KeyRelease)
+        event = Event(self, window, self.key, EventType.KeyRelease)
         self.widget.bind("<KeyRelease>", window._make_callback(event))
 
         if self._command:
@@ -910,7 +926,7 @@ class LinkLabel(Label):
         width=None,
         padx=None,
         pady=None,
-        events=False,
+        events=True,
         sticky=None,
         tooltip=None,
         anchor=None,
@@ -943,7 +959,7 @@ class LinkLabel(Label):
 
     def _create_widget(self, parent, window: Window, row, col):
         super()._create_widget(parent, window, row, col)
-        event = Event(self.widget, window, self.key, EventType.LinkLabel)
+        event = Event(self, window, self.key, EventType.LinkLabel)
         self.widget.bind("<Button-1>", window._make_callback(event))
         if self.underline_font:
             f = font.Font(self.widget, self.widget.cget("font"))
@@ -2143,4 +2159,3 @@ ListBox = Listbox
 Linklabel = LinkLabel
 Scrolledtext = ScrolledText
 Labelframe = LabelFrame
-
