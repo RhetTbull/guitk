@@ -271,7 +271,6 @@ class Window(Layout, WindowBaseClass):
     ):
         # call _config then subclass's config to initialize
         # layout, title, menu, etc.
-        # self._init_complete = False
 
         self._config()
         self.config()
@@ -342,8 +341,6 @@ class Window(Layout, WindowBaseClass):
 
         if self._topmost:
             self.window.attributes("-topmost", 1)
-
-        # self._init_complete = True
 
         self.setup()
 
@@ -511,9 +508,6 @@ class Window(Layout, WindowBaseClass):
         return _callback
 
     def _handle_event(self, event):
-        # if not self._init_complete:
-        #     return
-
         # only handle events if widget has events=True; Window objects always get events
         if isinstance(event.widget, Widget) and not event.widget.events:
             return
