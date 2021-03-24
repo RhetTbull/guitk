@@ -9,6 +9,9 @@
 """
 
 # TODO: add way to specify tooltip delay
+# TODO: add cursor to all controls
+# TODO: add style to all controls
+# TODO: standardize value_type
 
 import time
 import tkinter as tk
@@ -268,6 +271,8 @@ class Window(Layout, WindowBaseClass):
     ):
         # call _config then subclass's config to initialize
         # layout, title, menu, etc.
+        # self._init_complete = False
+
         self._config()
         self.config()
 
@@ -337,6 +342,8 @@ class Window(Layout, WindowBaseClass):
 
         if self._topmost:
             self.window.attributes("-topmost", 1)
+
+        # self._init_complete = True
 
         self.setup()
 
@@ -504,6 +511,9 @@ class Window(Layout, WindowBaseClass):
         return _callback
 
     def _handle_event(self, event):
+        # if not self._init_complete:
+        #     return
+
         # only handle events if widget has events=True; Window objects always get events
         if isinstance(event.widget, Widget) and not event.widget.events:
             return
@@ -525,8 +535,14 @@ class Window(Layout, WindowBaseClass):
 
     def _handle_commands(self, event):
         for command in self._commands:
-            if command.widget == event.widget:
-                print(command, event)
+            # if command.widget == event.widget:
+            #     print(f"widget = widget: {command.widget}")
+            #     if command.key == event.key:
+            #         print(f"key = key {command.key}")
+            #         if command.event_type == event.event_type:
+            #             print(f"event_type = event_type: {command.event_type}")
+            #         else:
+            #             print(f"{command.event_type} == {event.event_type}")
             if (
                 (command.widget is None or command.widget == event.widget)
                 and (command.key is None or command.key == event.key)
@@ -576,6 +592,7 @@ class Widget:
         cursor=None,
         takefocus=None,
         command=None,
+        value_type=None,
     ):
         self.key = key
         self.disabled = disabled
@@ -599,7 +616,7 @@ class Widget:
         self.widget_type = None
         self._tk = TKRoot()
         self.widget = None
-        self._value = tk.StringVar()
+        self._value = value_type() if value_type is not None else tk.StringVar()
 
         # get set by _create_widget in inherited classes
         self._parent = None
@@ -744,6 +761,7 @@ class Combobox(Widget):
         # validate=None,
         # validatecommand=None,
         values=None,
+        default=None,
         width=None,
         # default=None,
         disabled=False,
@@ -790,6 +808,7 @@ class Combobox(Widget):
         self._style = style
         self._takefocus = takefocus
         self._combobox_values = values or []
+        self._default = default
         self._width = width
 
     def _create_widget(self, parent, window: Window, row, col):
@@ -841,6 +860,9 @@ class Combobox(Widget):
                     command=self._command,
                 )
             )
+
+        if self._default is not None:
+            self.value = self._default
 
         if self.disabled:
             self.widget.state(["disabled"])
@@ -997,6 +1019,7 @@ class Button(Widget):
         rowspan=None,
         padx=None,
         pady=None,
+        width=None,
         events=True,
         sticky=None,
         tooltip=None,
@@ -1024,6 +1047,7 @@ class Button(Widget):
         self.columnspan = columnspan
         self.rowspan = rowspan
         self.tooltip = tooltip
+        self.width = width
 
     @property
     def value(self):
@@ -1037,13 +1061,16 @@ class Button(Widget):
         self.window = window
         self._parent = parent
         event = Event(self, window, self.key, EventType.ButtonPress)
-        self.widget = ttk.Button(
-            parent,
-            text=self.text,
-            anchor=self.anchor,
-            command=window._make_callback(event),
-            takefocus=self.takefocus,
-        )
+
+        # build arg list for Button()
+        # TODO: standardize attribute names
+        kwargs = {}
+        for kw in ["text", "anchor", "width", "takefocus"]:
+            val = getattr(self, f"{kw}")
+            if val is not None:
+                kwargs[kw] = val
+
+        self.widget = ttk.Button(parent, command=window._make_callback(event), **kwargs)
         self._grid(
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
         )
@@ -2154,6 +2181,137 @@ class DebugWindow(Window):
                 lines = self["OUTPUT"].value.split("\n")
                 lines = [l for l in lines if filter in l]
                 self["OUTPUT"].value = "\n".join(lines) + "\n"
+
+
+class Scale(Widget):
+    """ttk.Scale / slider"""
+
+    def __init__(
+        self,
+        from_=None,
+        to=None,
+        value=None,
+        orient=tk.VERTICAL,
+        # interval=None,
+        precision=None,
+        key=None,
+        target_key=None,
+        disabled=False,
+        columnspan=None,
+        rowspan=None,
+        padx=None,
+        pady=None,
+        length=None,
+        events=True,
+        sticky=None,
+        tooltip=None,
+        takefocus=None,
+        command=None,
+        cursor=None,
+        style=None,
+    ):
+        super().__init__(
+            key=key,
+            disabled=disabled,
+            rowspan=rowspan,
+            columnspan=columnspan,
+            padx=padx,
+            pady=pady,
+            events=events,
+            sticky=sticky,
+            tooltip=tooltip,
+            anchor=None,
+            takefocus=takefocus,
+            command=command,
+            value_type=tk.DoubleVar,
+        )
+        self.widget_type = "ttk.Scale"
+        self.key = key or "Scale"
+        self.target_key = target_key
+
+        self._cursor = cursor
+        self._from_ = from_
+        self._to = to
+        self._orient = orient
+        # self._interval = interval
+        self._precision = precision
+        self._style = style
+        self._length = length
+        self._initial_value = value
+        self._takefocus = takefocus
+
+        self.columnspan = columnspan
+        self.rowspan = rowspan
+        self.tooltip = tooltip
+
+    @property
+    def value(self):
+        value = self.widget.get()
+        if self._precision:
+            value = round(float(value), self._precision)
+        return value
+
+    @value.setter
+    def value(self, value):
+        self.widget.set(value)
+
+    def _create_widget(self, parent, window: Window, row, col):
+        self.window = window
+        self._parent = parent
+        event = Event(self, window, self.key, EventType.ScaleUpdate)
+
+        # TODO: standardize attribute names
+        kwargs = {}
+        for kw in ["cursor", "takefocus", "from_", "to", "length", "orient", "style"]:
+            val = getattr(self, f"_{kw}")
+            if val is not None:
+                kwargs[kw] = val
+
+        kwargs["variable"] = self._value
+        if self._initial_value is not None:
+            self._value.set(self._initial_value)
+
+        self.widget = ttk.Scale(parent, command=window._make_callback(event), **kwargs)
+        self._grid(
+            row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
+        )
+
+        if self._command:
+            self.events = True
+            window._bind_command(
+                EventCommand(
+                    widget=self,
+                    key=self.key,
+                    event_type=EventType.ScaleUpdate,
+                    command=self._command,
+                )
+            )
+
+        if self.target_key is not None:
+            self.events = True
+
+            def update_target():
+                print(self.value)
+                self.window[self.target_key].value = self.value
+
+            window._bind_command(
+                EventCommand(
+                    widget=self,
+                    key=self.key,
+                    event_type=EventType.ScaleUpdate,
+                    command=update_target,
+                )
+            )
+
+        if self.disabled:
+            self.widget.state(["disabled"])
+
+        return self.widget
+
+    @property
+    def scale(self):
+        """Return the ttk.Scale widget"""
+        return self.widget
 
 
 # Aliases for classnames as I don't like tkinter's naming convention

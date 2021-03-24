@@ -28,6 +28,7 @@ class EventType(Enum):
     ListboxSelect = "<<ListboxSelect>>"
     ListBoxSelect = "<<ListboxSelect>>"
     OutputWrite = "<<OutputWrite>>"
+    ScaleUpdate = "<<ScaleUpdate>>"
     TreeviewHeading = "<<TreeviewHeading>>"
     TreeViewHeading = "<<TreeviewHeading>>"
     TreeviewSelect = "<<TreeviewSelect>>"
