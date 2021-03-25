@@ -69,6 +69,29 @@ def _map_key_binding_from_shortcut(shortcut):
     return "<" + "-".join(keybinding) + ">"
 
 
+def _interval(from_, to, interval, value, tolerance=1e-9):
+    """ clamp value to an interval between from_ and to range """
+
+    if interval > (to - from_):
+        raise ValueError("Invalid increment")
+
+    if value < from_ or value > to:
+        raise ValueError("Invalid value")
+
+    if abs(value - from_) < tolerance or abs(value - to) < tolerance:
+        return value
+
+    quotient, remainder = divmod(value, interval)
+    if remainder < tolerance:
+        return quotient * interval
+
+    half_increment = interval / 2
+    if remainder > half_increment:
+        return interval * (quotient + 1)
+    else:
+        return interval * quotient
+
+
 class TKRoot:
     """ Singleton that returns a tkinter.TK() object; there can be only one in an app"""
 
@@ -2186,7 +2209,7 @@ class Scale(Widget):
         to=None,
         value=None,
         orient=tk.VERTICAL,
-        # interval=None,
+        interval=None,
         precision=None,
         key=None,
         target_key=None,
@@ -2227,7 +2250,7 @@ class Scale(Widget):
         self._from_ = from_
         self._to = to
         self._orient = orient
-        # self._interval = interval
+        self._interval = interval
         self._precision = precision
         self._style = style
         self._length = length
@@ -2241,6 +2264,8 @@ class Scale(Widget):
     @property
     def value(self):
         value = self.widget.get()
+        if self._interval:
+            value = _interval(self._from_, self._to, self._interval, value)
         if self._precision:
             value = round(float(value), self._precision)
         return value
