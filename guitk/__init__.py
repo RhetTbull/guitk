@@ -771,8 +771,10 @@ class _ttkLabelEntry(ttk.Entry):
         self.frame = ttk.Frame(master)
         ttk.Entry.__init__(self, self.frame, **kw)
         self.label = ttk.Label(self.frame, text=text)
-        self.label.pack(side=tk.LEFT, fill=tk.X)
-        self.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
+        self.label.grid(row=0, column=0)
+        self.grid(row=0, column=1)
+        # self.label.pack(side=tk.LEFT, fill=tk.X)
+        # self.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
 
         # Copy geometry methods of self.frame without overriding Entry
         # methods -- hack!
