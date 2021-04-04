@@ -254,7 +254,7 @@ class DemoWindow(Window):
             ],
             # row 6
             [
-                Output(key=GUI.Output, width=100, height=10, tooltip="Output"),
+                # Output(key=GUI.Output, echo=True, width=100, height=10, tooltip="Output"),
                 Frame(
                     layout=[
                         [

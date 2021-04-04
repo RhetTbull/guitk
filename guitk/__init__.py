@@ -195,13 +195,14 @@ class Layout:
                 widget._create_widget(
                     parent, window, row_count + row_offset, col_count + col_offset
                 )
-                if widget.tooltip:
-                    tooltip = (
-                        widget.tooltip(widget.key)
-                        if callable(widget.tooltip)
-                        else widget.tooltip
+                tooltip = widget.tooltip or window.tooltip
+                if tooltip:
+                    _tooltip = (
+                        tooltip(widget.key)
+                        if callable(tooltip)
+                        else tooltip
                     )
-                    widget._tooltip = Hovertip(widget.widget, tooltip)
+                    widget._tooltip = Hovertip(widget.widget, _tooltip)
                 else:
                     widget._tooltip = None
 
@@ -292,6 +293,7 @@ class Window(Layout, WindowBaseClass):
         topmost=None,
         autoframe=True,
         theme=None,
+        tooltip=None,
     ):
         # call _config then subclass's config to initialize
         # layout, title, menu, etc.
@@ -304,6 +306,7 @@ class Window(Layout, WindowBaseClass):
         self.padx = padx or self.padx
         self.pady = pady or self.pady
         self.theme = theme or self.theme
+        self.tooltip = tooltip or self.tooltip
 
         self._id = id(self)
         self._tk = TKRoot()
@@ -392,6 +395,9 @@ class Window(Layout, WindowBaseClass):
         self.theme = None
         """The ttk theme to use, if None, uses ttk default"""
 
+        self.tooltip = None
+        """ A callable which returns the tooltip text for a given key or a str """
+        
     def config(self):
         pass
 
