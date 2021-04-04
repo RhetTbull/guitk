@@ -18,6 +18,8 @@ import tkinter as tk
 from tkinter import filedialog, font, ttk
 from typing import List, Optional, Union, Any
 from collections import namedtuple
+import platform
+
 
 from .constants import GUITK, EventType
 from .redirect import StdErrRedirect, StdOutRedirect
@@ -50,6 +52,8 @@ __all__ = [
 ]
 
 EventCommand = namedtuple("EventCommand", ["widget", "key", "event_type", "command"])
+
+PLATFORM = platform.system()
 
 
 def _map_key_binding_from_shortcut(shortcut):
@@ -284,14 +288,15 @@ class Window(Layout, WindowBaseClass):
 
     def __init__(
         self,
-        title=None,
         parent=None,
+        title=None,
         padx=None,
         pady=None,
         topmost=None,
         autoframe=True,
         theme=None,
         tooltip=None,
+        modal=None,
     ):
         # call _config then subclass's config to initialize
         # layout, title, menu, etc.
@@ -300,11 +305,12 @@ class Window(Layout, WindowBaseClass):
         self.config()
 
         # override any layout defaults from constructor
-        self.title = title or self.title
-        self.padx = padx or self.padx
-        self.pady = pady or self.pady
-        self.theme = theme or self.theme
-        self.tooltip = tooltip or self.tooltip
+        self.title = title if title is not None else self.title
+        self.padx = padx if padx is not None else self.padx
+        self.pady = pady if pady is not None else self.pady
+        self.theme = theme if theme is not None else self.theme
+        self.tooltip = tooltip if tooltip is not None else self.tooltip
+        self.modal = modal if modal is not None else self.modal
 
         self._id = id(self)
         self._tk = TKRoot()
@@ -364,8 +370,30 @@ class Window(Layout, WindowBaseClass):
         if self.menu:
             self._build_menu()
 
-        if self._topmost:
+        if self._topmost or self.modal:
             self.window.attributes("-topmost", 1)
+
+        if self.modal:
+            windowingsystem = self.root.call("tk", "windowingsystem")
+            if windowingsystem == "aqua":
+                try:
+                    self.root.call(
+                        "::tk::unsupported::MacWindowStyle",
+                        "style",
+                        self._w,
+                        "moveableModal",
+                        "",
+                    )
+                except:
+                    pass
+
+            if self._parent is not None and self._parent.winfo_viewable():
+                self.window.transient(self._parent)
+            self.window.wait_visibility()
+            self.window.grab_set()
+            self.window.wait_window()
+        
+        # TODO: add geometry code to ensure window appears in good spot relative to parent
 
         self.setup()
 
@@ -395,6 +423,9 @@ class Window(Layout, WindowBaseClass):
 
         self.tooltip = None
         """ A callable which returns the tooltip text for a given key or a str """
+
+        self.modal = False
+        """ Set to True to create modal window """
 
     def config(self):
         pass
@@ -522,6 +553,10 @@ class Window(Layout, WindowBaseClass):
         for widget in self._widgets:
             if type(widget) == Output:
                 widget.disable_redirect()
+
+        if self.modal:
+            self.window.grab_release()
+
         self.teardown()
         self._parent.focus_set()
         self.window.destroy()

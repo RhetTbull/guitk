@@ -29,6 +29,12 @@ def _list_files(path, tree):
     tree.selection_set(pyfiles)
 
 
+class ModalWindow(Window):
+    def config(self):
+        self.layout = [[LabelEntry("Enter some text")]]
+        self.modal = True
+
+
 class DemoWindow(Window):
     """Demo guitk widgets """
 
@@ -60,6 +66,7 @@ class DemoWindow(Window):
         TreeHeadingSize = auto()
         TreeHeadingFilename = auto()
         TreePythonFile = auto()
+        ButtonModalWindow = auto()
 
     def config(self):
         GUI = self.GUI  # shortcut for constants
@@ -108,7 +115,12 @@ class DemoWindow(Window):
                 ),
             ],
             [  # row 2
-                LabelEntry("Enter some text", key=GUI.TextEntry, events=True, tooltip="LabelEntry",),
+                LabelEntry(
+                    "Enter some text",
+                    key=GUI.TextEntry,
+                    events=True,
+                    tooltip="LabelEntry",
+                ),
                 Label("You entered: ", tooltip="Label; updated as you type in Entry"),
                 Label("", key=GUI.TextLabel),
             ],
@@ -254,7 +266,7 @@ class DemoWindow(Window):
             ],
             # row 6
             [
-                # Output(key=GUI.Output, echo=True, width=100, height=10, tooltip="Output"),
+                Output(key=GUI.Output, echo=True, width=100, height=10, tooltip="Output"),
                 Frame(
                     layout=[
                         [
@@ -286,8 +298,10 @@ class DemoWindow(Window):
                             )
                         ],
                     ]
-                ),
+                )
             ],
+            # row 7
+            [Button("Modal Window", key=GUI.ButtonModalWindow)],
         ]
 
     def setup(self):
@@ -426,6 +440,9 @@ class DemoWindow(Window):
         if event.key == GUI.DebugWindow:
             # open debug window
             DebugWindow()
+
+        if event.key == GUI.ButtonModalWindow:
+            ModalWindow(parent=self.window)
 
 
 if __name__ == "__main__":
