@@ -197,12 +197,10 @@ class Layout:
                 )
                 tooltip = widget.tooltip or window.tooltip
                 if tooltip:
-                    _tooltip = (
-                        tooltip(widget.key)
-                        if callable(tooltip)
-                        else tooltip
+                    _tooltip = tooltip(widget.key) if callable(tooltip) else tooltip
+                    widget._tooltip = (
+                        Hovertip(widget.widget, _tooltip) if _tooltip else None
                     )
-                    widget._tooltip = Hovertip(widget.widget, _tooltip)
                 else:
                     widget._tooltip = None
 
@@ -397,7 +395,7 @@ class Window(Layout, WindowBaseClass):
 
         self.tooltip = None
         """ A callable which returns the tooltip text for a given key or a str """
-        
+
     def config(self):
         pass
 
@@ -779,8 +777,6 @@ class _ttkLabelEntry(ttk.Entry):
         self.label = ttk.Label(self.frame, text=text)
         self.label.grid(row=0, column=0)
         self.grid(row=0, column=1)
-        # self.label.pack(side=tk.LEFT, fill=tk.X)
-        # self.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
 
         # Copy geometry methods of self.frame without overriding Entry
         # methods -- hack!
