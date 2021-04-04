@@ -108,8 +108,7 @@ class DemoWindow(Window):
                 ),
             ],
             [  # row 2
-                Label("Enter some text", tooltip="Label"),
-                Entry(key=GUI.TextEntry, events=True, tooltip="Entry"),
+                LabelEntry("Enter some text", key=GUI.TextEntry, events=True, tooltip="LabelEntry",),
                 Label("You entered: ", tooltip="Label; updated as you type in Entry"),
                 Label("", key=GUI.TextLabel),
             ],
