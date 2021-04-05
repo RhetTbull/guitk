@@ -391,11 +391,13 @@ class Window(Layout, WindowBaseClass):
                 self.window.transient(self._parent)
             self.window.wait_visibility()
             self.window.grab_set()
-            self.window.wait_window()
         
         # TODO: add geometry code to ensure window appears in good spot relative to parent
 
         self.setup()
+
+        if self.modal:
+            self.window.wait_window()
 
     def _config(self):
         self.title = "My Window"
