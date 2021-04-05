@@ -8,7 +8,7 @@ class ShowMeATree(guitk.Window):
     def config(self):
         self.title = "Tree View"
         self.layout = [
-            [guitk.Treeview(key="TREE", headings=["Filename", "Size"], show="headings")]
+            [guitk.Treeview(key="TREE", headings=["Filename", "Size"], show="headings", vscrollbar=True)]
         ]
 
     def list_files(self, path, tree):

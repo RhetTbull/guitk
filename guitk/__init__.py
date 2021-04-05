@@ -391,7 +391,7 @@ class Window(Layout, WindowBaseClass):
                 self.window.transient(self._parent)
             self.window.wait_visibility()
             self.window.grab_set()
-        
+
         # TODO: add geometry code to ensure window appears in good spot relative to parent
 
         self.setup()
@@ -2058,7 +2058,41 @@ class LabelFrame(_Frame):
         )
 
 
-# TODO: Add scroll bars to Treeview
+class _ttkScrolledTreeView(ttk.Treeview):
+    """ScrolledTreeview class with ttk.Treeview
+
+    Lifted from cpython source with edits to use ttk scrollbar:
+    https://github.com/python/cpython/blob/3.9/Lib/tkinter/scrolledtext.py
+    """
+
+    def __init__(self, master=None, vscrollbar=None, **kw):
+        self.frame = ttk.Frame(master)
+        if vscrollbar:
+            self.vbar = ttk.Scrollbar(self.frame)
+            self.vbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+            kw.update({"yscrollcommand": self.vbar.set})
+
+        ttk.Treeview.__init__(self, self.frame, **kw)
+        self.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+        if vscrollbar:
+            self.vbar["command"] = self.yview
+
+        # Copy geometry methods of self.frame without overriding Text
+        # methods -- hack!
+        text_meths = vars(tk.Text).keys()
+        methods = vars(tk.Pack).keys() | vars(tk.Grid).keys() | vars(tk.Place).keys()
+        methods = methods.difference(text_meths)
+
+        for m in methods:
+            if m[0] != "_" and m != "config" and m != "configure":
+                setattr(self, m, getattr(self.frame, m))
+
+    def __str__(self):
+        return str(self.frame)
+
+
 class Treeview(Widget):
     def __init__(
         self,
@@ -2083,6 +2117,7 @@ class Treeview(Widget):
         tooltip=None,
         anchor=None,
         command=None,
+        vscrollbar=None,
     ):
         super().__init__(
             key=key,
@@ -2129,6 +2164,7 @@ class Treeview(Widget):
         self.sticky = sticky or ""
         self.tooltip = tooltip
         self.anchor = anchor
+        self.vscrollbar = vscrollbar
 
     def _create_widget(self, parent, window: Window, row, col):
         self.window = window
@@ -2151,7 +2187,7 @@ class Treeview(Widget):
             if val is not None:
                 kwargs[kw] = val
 
-        self.widget = ttk.Treeview(parent, **kwargs)
+        self.widget = _ttkScrolledTreeView(parent, vscrollbar=self.vscrollbar, **kwargs)
 
         self._grid(
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
@@ -2243,6 +2279,7 @@ class Listbox(Treeview):
         tooltip=None,
         anchor=None,
         command=None,
+        vscrollbar=None,
     ):
         self.key = key or "Listbox"
         self.widget_type = "guitk.Listbox"
@@ -2274,6 +2311,7 @@ class Listbox(Treeview):
             style=style,
             takefocus=takefocus,
             command=command,
+            vscrollbar=vscrollbar
         )
 
     def _create_widget(self, parent, window: Window, row, col):
