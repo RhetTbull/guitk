@@ -394,10 +394,16 @@ class Window(Layout, WindowBaseClass):
 
         # TODO: add geometry code to ensure window appears in good spot relative to parent
 
+        self.events = True
+
         self.setup()
 
         if self.modal:
             self.window.wait_window()
+
+        self._bind_timer_event(
+            100, EventType.WindowFinishedLoading.value, EventType.WindowFinishedLoading
+        )
 
     def _config(self):
         self.title = "My Window"
@@ -475,7 +481,9 @@ class Window(Layout, WindowBaseClass):
     def bind_timer_event(self, delay, event_name, repeat=False):
         """ Create a new virtual event `event_name` that fires after `delay` ms, 
         repeats every `delay` ms if repeat=True, otherwise fires once """
+        return self._bind_timer_event(delay, event_name, EventType.VirtualEvent, repeat)
 
+    def _bind_timer_event(self, delay, event_name, event_type, repeat=False):
         # create a unique name for the timer
         timer_id = f"{event_name}_{time.time_ns()}"
 
@@ -486,7 +494,7 @@ class Window(Layout, WindowBaseClass):
                     delay, _generate_event
                 )
 
-        event = Event(self, self, event_name, EventType.VirtualEvent)
+        event = Event(self, self, event_name, event_type)
         self.root.bind(event_name, self._make_callback(event))
         self._timer_events[timer_id] = self._tk.root.after(delay, _generate_event)
         return timer_id
@@ -551,13 +559,25 @@ class Window(Layout, WindowBaseClass):
             except Exception:
                 pass
 
-        # disable any stdout/stderr redirection
+        # disable event processing in _handle_event
+        self.events = False
+
+        # disable any stdout/stderr redirection and event handling
         for widget in self._widgets:
+            widget.events = False
             if type(widget) == Output:
                 widget.disable_redirect()
 
         if self.modal:
             self.window.grab_release()
+
+        # cancel any timer events
+        for timer_id in self._timer_events:
+            try:
+                after_id = self._timer_events[timer_id]
+                self._tk.root.after_cancel(after_id)
+            except Exception:
+                pass
 
         self.teardown()
         self._parent.focus_set()
@@ -574,7 +594,7 @@ class Window(Layout, WindowBaseClass):
 
     def _handle_event(self, event):
         # only handle events if widget has events=True; Window objects always get events
-        if isinstance(event.widget, Widget) and not event.widget.events:
+        if isinstance(event.widget, (Widget, Window)) and not event.widget.events:
             return
 
         # filter events for this window
@@ -594,14 +614,6 @@ class Window(Layout, WindowBaseClass):
 
     def _handle_commands(self, event):
         for command in self._commands:
-            # if command.widget == event.widget:
-            #     print(f"widget = widget: {command.widget}")
-            #     if command.key == event.key:
-            #         print(f"key = key {command.key}")
-            #         if command.event_type == event.event_type:
-            #             print(f"event_type = event_type: {command.event_type}")
-            #         else:
-            #             print(f"{command.event_type} == {event.event_type}")
             if (
                 (command.widget is None or command.widget == event.widget)
                 and (command.key is None or command.key == event.key)
@@ -1279,6 +1291,10 @@ class BrowseFileButton(Button):
         sticky=None,
         tooltip=None,
         anchor=None,
+        **options,
+        # initialdir=None,
+        # filetypes=None,
+        # title=None,
     ):
         super().__init__(
             text,
@@ -1296,6 +1312,7 @@ class BrowseFileButton(Button):
         self.target_key = target_key
         self.widget_type = "guitk.BrowseFileButton"
         self._filename = None
+        self._options = options
 
     def _create_widget(self, parent, window: Window, row, col):
         self.window = window
@@ -1316,7 +1333,7 @@ class BrowseFileButton(Button):
         return self._filename
 
     def browse_dialog(self):
-        self._filename = filedialog.askopenfilename()
+        self._filename = filedialog.askopenfilename(**self._options)
         if self.target_key:
             self.window[self.target_key].value = self._filename
         event = Event(self, self.window, self.key, EventType.BrowseFile)
@@ -1338,6 +1355,7 @@ class BrowseDirectoryButton(Button):
         sticky=None,
         tooltip=None,
         anchor=None,
+        **options,
     ):
         super().__init__(
             text,
@@ -1355,6 +1373,7 @@ class BrowseDirectoryButton(Button):
         self.target_key = target_key
         self.widget_type = "guitk.BrowseDirectoryButton"
         self._dirname = None
+        self._options = options
 
     def _create_widget(self, parent, window: Window, row, col):
         self.window = window
@@ -1375,7 +1394,7 @@ class BrowseDirectoryButton(Button):
         return self._dirname
 
     def browse_dialog(self):
-        self._dirname = filedialog.askdirectory()
+        self._dirname = filedialog.askdirectory(**self._options)
         if self.target_key:
             self.window[self.target_key].value = self._dirname
         event = Event(self, self.window, self.key, EventType.BrowseDirectory)
@@ -2311,7 +2330,7 @@ class Listbox(Treeview):
             style=style,
             takefocus=takefocus,
             command=command,
-            vscrollbar=vscrollbar
+            vscrollbar=vscrollbar,
         )
 
     def _create_widget(self, parent, window: Window, row, col):
@@ -2498,7 +2517,6 @@ class Scale(Widget):
             self.events = True
 
             def update_target():
-                print(self.value)
                 self.window[self.target_key].value = self.value
 
             window._bind_command(

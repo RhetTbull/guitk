@@ -38,4 +38,5 @@ class EventType(Enum):
     WM_DELETE_WINDOW = "WM_DELETE_WINDOW"
     DeleteWindow = "WM_DELETE_WINDOW"
     Quit = "WM_DELETE_WINDOW"
+    WindowFinishedLoading = "<<WindowFinishedLoading>>" 
 
