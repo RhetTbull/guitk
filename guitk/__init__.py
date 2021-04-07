@@ -13,13 +13,13 @@
 # TODO: add style to all controls
 # TODO: standardize value_type
 
+import pathlib
+import platform
 import time
 import tkinter as tk
-from tkinter import filedialog, font, ttk
-from typing import List, Optional, Union, Any
 from collections import namedtuple
-import platform
-
+from tkinter import filedialog, font, ttk
+from typing import Any, List, Optional, Union
 
 from .constants import GUITK, EventType
 from .redirect import StdErrRedirect, StdOutRedirect
@@ -138,8 +138,9 @@ class TKRoot:
             pass
         if self.first_window and not self.windows:
             # last window
-            self.root.destroy()
-            del self.root
+            self.root.quit()
+            self.mainloop_is_running = False
+            self.first_window = False
 
     def get_children(self, window):
         """Return child windows of parent window"""
@@ -1291,6 +1292,7 @@ class BrowseFileButton(Button):
         sticky=None,
         tooltip=None,
         anchor=None,
+        filename_only=None,
         **options,
         # initialdir=None,
         # filetypes=None,
@@ -1313,6 +1315,7 @@ class BrowseFileButton(Button):
         self.widget_type = "guitk.BrowseFileButton"
         self._filename = None
         self._options = options
+        self._filename_only = filename_only
 
     def _create_widget(self, parent, window: Window, row, col):
         self.window = window
@@ -1334,7 +1337,10 @@ class BrowseFileButton(Button):
 
     def browse_dialog(self):
         self._filename = filedialog.askopenfilename(**self._options)
-        if self.target_key:
+        if self._filename_only and self._filename:
+            # only want the name, not the path
+            self._filename = str(pathlib.Path(self._filename).name)
+        if self.target_key and self._filename:
             self.window[self.target_key].value = self._filename
         event = Event(self, self.window, self.key, EventType.BrowseFile)
         self.window._handle_event(event)
@@ -1395,7 +1401,7 @@ class BrowseDirectoryButton(Button):
 
     def browse_dialog(self):
         self._dirname = filedialog.askdirectory(**self._options)
-        if self.target_key:
+        if self.target_key and self._dirname:
             self.window[self.target_key].value = self._dirname
         event = Event(self, self.window, self.key, EventType.BrowseDirectory)
         self.window._handle_event(event)
@@ -2549,4 +2555,3 @@ ListBox = Listbox
 Linklabel = LinkLabel
 Scrolledtext = ScrolledText
 Labelframe = LabelFrame
-
