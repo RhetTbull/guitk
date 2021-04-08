@@ -1,5 +1,5 @@
-""" Set of classes to simplify building a GUI app with tkinter
-    Inspired by PySimpleGUI but built in a cleanroom manner (did not use PySimpleGUI code)
+""" Set of classes to simplify building a GUI app with tkinter.
+    Inspired by PySimpleGUI. 
 
     No dependencies outside python standard library.
 
@@ -97,7 +97,7 @@ def _interval(from_, to, interval, value, tolerance=1e-9):
         return interval * quotient
 
 
-class TKRoot:
+class _TKRoot:
     """ Singleton that returns a tkinter.TK() object; there can be only one in an app"""
 
     def __new__(cls, *args, **kwargs):
@@ -166,12 +166,12 @@ class TKRoot:
         s.theme_use(theme_name)
 
 
-class WindowBaseClass:
+class _WindowBaseClass:
     # only needed to keep typing happy
     pass
 
 
-class Layout:
+class _Layout:
     """Mixin class to provide layout"""
 
     layout = []
@@ -179,7 +179,7 @@ class Layout:
     def __init__(self, *args, **kwargs):
         pass
 
-    def _layout(self, parent, window: WindowBaseClass, autoframe):
+    def _layout(self, parent, window: _WindowBaseClass, autoframe):
         # as this is a mixin, make sure class being mixed into has necessary attributes
 
         row_offset = 0
@@ -226,7 +226,7 @@ class Menu:
         self._separator = separator
         self.window = None
 
-    def _create_widget(self, parent, window: WindowBaseClass):
+    def _create_widget(self, parent, window: _WindowBaseClass):
         self.window = window
         menu = tk.Menu(parent)
         if self._underline is None:
@@ -251,7 +251,7 @@ class Command(Menu):
         self._parent = None
         self._key = None
 
-    def _create_widget(self, parent, window: WindowBaseClass, path):
+    def _create_widget(self, parent, window: _WindowBaseClass, path):
         self._parent = parent
         self.window = window
         self._key = path
@@ -280,7 +280,7 @@ class Command(Menu):
         )
 
 
-class Window(Layout, WindowBaseClass):
+class Window(_Layout, _WindowBaseClass):
     """Basic Window class from which all windows are derived
     
     Notes:
@@ -314,7 +314,7 @@ class Window(Layout, WindowBaseClass):
         self.modal = modal if modal is not None else self.modal
 
         self._id = id(self)
-        self._tk = TKRoot()
+        self._tk = _TKRoot()
         self._parent = self._tk.root if not parent else parent
         self._topmost = topmost
 
@@ -335,8 +335,8 @@ class Window(Layout, WindowBaseClass):
         self._radiobuttons = {}
         """ will hold group name/variable for radio buttons in the window """
 
-        self.mainframe = ttk.Frame(self.window, padding="3 3 12 12")
-        self.mainframe.grid(column=0, row=0, sticky=(tk.N, tk.W, tk.E, tk.S))
+        self._mainframe = ttk.Frame(self.window, padding="3 3 12 12")
+        self._mainframe.grid(column=0, row=0, sticky=(tk.N, tk.W, tk.E, tk.S))
         self.window.columnconfigure(0, weight=1)
         self.window.rowconfigure(0, weight=1)
 
@@ -356,7 +356,7 @@ class Window(Layout, WindowBaseClass):
             ]
 
         self._commands = []
-        self._layout(self.mainframe, self, autoframe=autoframe)
+        self._layout(self._mainframe, self, autoframe=autoframe)
 
         # apply theme if necessary
         if self.theme is not None:
@@ -647,7 +647,7 @@ class Event:
 
 
 class Widget:
-    """Basic abstract base class for all tk widget"""
+    """Basic abstract base class for all tk widgets"""
 
     def __init__(
         self,
@@ -686,7 +686,7 @@ class Widget:
         self._commands = {}
 
         self.widget_type = None
-        self._tk = TKRoot()
+        self._tk = _TKRoot()
         self.widget = None
         self._value = value_type() if value_type is not None else tk.StringVar()
 
@@ -981,15 +981,15 @@ class Combobox(Widget):
         self._autosize = autosize
 
         # ttk.Combobox args
-        self._cursor = cursor  # TODO: take cursor out of Widget?
-        self._exportselection = exportselection
-        self._height = height
-        self._justify = justify
-        self._style = style
-        self._takefocus = takefocus
-        self._combobox_values = values or []
-        self._default = default
-        self._width = width
+        self.cursor = cursor  # TODO: take cursor out of Widget?
+        self.exportselection = exportselection
+        self.height = height
+        self.justify = justify
+        self.style = style
+        self.takefocus = takefocus
+        self.combobox_values = values or []
+        self.default = default
+        self.width = width
 
     def _create_widget(self, parent, window: Window, row, col):
         self.window = window
@@ -1006,15 +1006,15 @@ class Combobox(Widget):
             "takefocus",
             "width",
         ]:
-            val = getattr(self, f"_{kw}")
+            val = getattr(self, kw)
             if val is not None:
                 kwargs[kw] = val
-        if self._combobox_values is not None:
-            kwargs["values"] = self._combobox_values
+        if self.combobox_values is not None:
+            kwargs["values"] = self.combobox_values
 
         if self._autosize:
             # automatically set width, override any width value provided
-            width = len(max(self._combobox_values, key=len))
+            width = len(max(self.combobox_values, key=len))
             kwargs["width"] = width + 1
 
         self.widget = ttk.Combobox(parent, textvariable=self._value, **kwargs)
@@ -1041,8 +1041,8 @@ class Combobox(Widget):
                 )
             )
 
-        if self._default is not None:
-            self.value = self._default
+        if self.default is not None:
+            self.value = self.default
 
         if self.disabled:
             self.widget.state(["disabled"])
@@ -1875,7 +1875,7 @@ class Output(ScrolledText):
             r.deregister(id_)
 
 
-class _Frame(Widget, Layout):
+class _Frame(Widget, _Layout):
     """Frame base class for Frame and LabelFrame"""
 
     def __init__(
