@@ -219,7 +219,12 @@ class _Layout:
 
 
 class Menu:
-    def __init__(self, label, underline=None, separator=False) -> None:
+    def __init__(
+        self,
+        label: str,
+        underline: Optional[bool] = None,
+        separator: Optional[bool] = False,
+    ) -> None:
         self._label = label
         self._menu = None
         self._underline = underline
@@ -243,7 +248,13 @@ class Menu:
 
 
 class Command(Menu):
-    def __init__(self, label, separator=False, disabled=False, shortcut=None):
+    def __init__(
+        self,
+        label: str,
+        separator: Optional[bool] = False,
+        disabled: Optional[bool] = False,
+        shortcut: Optional[str] = None,
+    ):
         self._label = label
         self._separator = separator  # add separator line after this command
         self._disabled = disabled
