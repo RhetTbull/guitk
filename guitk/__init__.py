@@ -611,10 +611,6 @@ class Window(_Layout, _WindowBaseClass):
 
         # filter events for this window
         if event.id == self._id:
-            event.values = {
-                elem.key: elem.value for elem in self._widgets if type(elem) != Output
-            }
-
             # handle custom commands
             self._handle_commands(event)
 
@@ -651,10 +647,9 @@ class Event:
         self.key = key
         self.event_type = event_type
         self.event = None  # placeholder for Tk event
-        self.values = {}
-
+    
     def __str__(self):
-        return f"id={self.id}, widget={self.widget}, key={self.key}, event_type={self.event_type}, event={self.event}, values={self.values}"
+        return f"id={self.id}, widget={self.widget}, key={self.key}, event_type={self.event_type}, event={self.event}"
 
 
 class Widget:

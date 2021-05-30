@@ -72,19 +72,19 @@ class OutputDemo(guitk.Window):
 
     def handle_event(self, event):
         if event.key == "PRINT_STDOUT":
-            value = event.values["STDOUT"]
+            value = self["STDOUT"].value
             print(value)
 
         if event.key == "PRINT_STDERR":
-            value = event.values["STDERR"]
+            value = self["STDERR"].value
             print(value, file=sys.stderr)
 
         if event.key == "ECHO_STDERR":
-            value = event.values["ECHO_STDERR"]
+            value = self["ECHO_STDERR"].value
             self["OUTPUT_STDERR"].echo = value
 
         if event.key == "ECHO_STDOUT":
-            value = event.values["ECHO_STDOUT"]
+            value = self["ECHO_STDOUT"].value
             self["OUTPUT_STDOUT"].echo = value
 
         if event.key == "STOP_STDOUT":

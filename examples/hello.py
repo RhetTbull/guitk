@@ -20,7 +20,7 @@ class HelloWindow(guitk.Window):
     # every guitk.Window will call self.handle_event to handle GUI events
     # event is a guitk.Event object
     def handle_event(self, event):
-        print(f"Hello {event.values['name']}")
+        print(f"Hello {self['name'].value}")
 
 
 # run your event loop

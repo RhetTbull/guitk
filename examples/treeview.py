@@ -8,7 +8,14 @@ class ShowMeATree(guitk.Window):
     def config(self):
         self.title = "Tree View"
         self.layout = [
-            [guitk.Treeview(key="TREE", headings=["Filename", "Size"], show="headings", vscrollbar=True)]
+            [
+                guitk.Treeview(
+                    key="TREE",
+                    headings=["Filename", "Size"],
+                    show="headings",
+                    vscrollbar=True,
+                )
+            ]
         ]
 
     def list_files(self, path, tree):
@@ -60,12 +67,12 @@ class ShowMeATree(guitk.Window):
             ]
 
         if event.event_type == guitk.EventType.TreeviewSelect:
-            print(f"You selected file(s): {event.values}")
+            print(event)
+            print(f"You selected file(s): {self[event.key].value}")
 
         if event.key == "PYTHON_FILE":
-            print(f"python file: {event.values}")
+            print(f"python file: {self['TREE'].value}")
 
 
 if __name__ == "__main__":
     ShowMeATree().run()
-

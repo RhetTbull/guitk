@@ -55,11 +55,11 @@ class HelloWorld(guitk.Window):
         if event.key == "Ok":
             # set the output Label to the value of the Entry box
             # the Window class acts like a dictionary for looking up guitk element objects by key
-            name = event.values["ENTRY_NAME"]
+            name = self["ENTRY_NAME"].value
             print(f"Hello {name}")
             self["OUTPUT"].value = f"Hello {name}! Thanks for trying guitk."
 
-        if event.key == "CHECK_UPPER" and event.values["CHECK_UPPER"]:
+        if event.key == "CHECK_UPPER" and self["CHECK_UPPER"].value:
             # True if checked
             # "Upper case" check button is checked, so make text upper case
             self["OUTPUT"].value = self["OUTPUT"].value.upper()
@@ -68,7 +68,7 @@ class HelloWorld(guitk.Window):
             # change label text color to green if needed
             # use .widget to access the underlying ttk element for each object
             # tkinter is not abstracted -- you can easily use tkinter methods and properties if needed
-            if event.values["CHECK_GREEN"]:
+            if self["CHECK_GREEN"].value:
                 # checked
                 self["OUTPUT"].widget["foreground"] = "green"
             else:

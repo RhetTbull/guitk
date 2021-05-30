@@ -31,7 +31,7 @@ class TimerWindow(guitk.Window):
 
         if event.key == "Start Timer":
             # this simple demo assumes only one timer running at a time
-            repeat = event.values["REPEAT"]  # value of Repeat Checkbutton
+            repeat = self["REPEAT"].value  # value of Repeat Checkbutton
             self.data["timer_id"] = self.bind_timer_event(
                 2000, "<<MyTimer>>", repeat=repeat
             )

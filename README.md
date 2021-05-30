@@ -1,3 +1,5 @@
+<!-- DO NOT EDIT README.md, instead edit README.mdpp and process with MarkdownPP using build_readme.sh -->
+
 # Python GUI Toolkit for TK (guitk)
 
 ## Synopsis
@@ -11,9 +13,13 @@ guitk is an experiment to design a lightweight framework that simplifies creatin
 
 import guitk
 
+
+# subclass guitk.Window as the starting point for your app's main window
 class HelloWindow(guitk.Window):
 
     def config(self):
+        # define a layout for the window
+        # you must have a class variable named `layout` or you'll get an empty window
         self.layout = [
             [guitk.Label("What's your name?")],
             [guitk.Entry(key="name")],
@@ -21,9 +27,14 @@ class HelloWindow(guitk.Window):
         ]
         self.title = "Hello, World"
 
+    # define your event loop
+    # every guitk.Window will call self.handle_event to handle GUI events
+    # event is a guitk.Event object
     def handle_event(self, event):
-        print(f"Hello {event.values['name']}")
+        print(f"Hello {self['name'].value}")
 
+
+# run your event loop
 if __name__ == "__main__":
     HelloWindow().run()
 ```
@@ -65,7 +76,7 @@ import guitk
 # subclass guitk.Window as the starting point for your app's main window
 class HelloWorld(guitk.Window):
 
-    # every Window class needs a config() method that 
+    # every Window class needs a config() method that
     # defines the title and the layout (and optionally menu and other other settings)
     def config(self):
         # Title for the window
@@ -86,8 +97,8 @@ class HelloWorld(guitk.Window):
     # every guitk.Window will call self.handle_event to handle GUI events
     # event is a guitk.Event object
     def handle_event(self, event):
-        # the value of each widget can be read using event.values["KEYNAME"] 
-        name = event.values["ENTRY_NAME"]
+        # the value of each widget can be read using event.values["KEYNAME"]
+        name = self["ENTRY_NAME"].value
 
         if event.key == "Quit":
             # a key wasn't supplied in `guitk.Button("Quit")` so guitk uses the name of the button
@@ -166,9 +177,9 @@ class LayoutDemo(guitk.Window):
 
     # Interact with the Window using an event Loop
     def handle_event(self, event):
-        if event.event_type == guitk.EventType.BUTTON_PRESS:
+        if event.event_type == guitk.EventType.ButtonPress:
             # print the key for the button that was pressed
-            print(event.values[event.key])
+            print(self[event.key].value)
 
 
 if __name__ == "__main__":
@@ -207,8 +218,8 @@ class HelloWorld(guitk.Window):
                     ),
                     guitk.Frame(
                         layout=[
-                            [None, guitk.CheckButton("Upper case", key="CHECK_UPPER")],
-                            [None, guitk.CheckButton("Green text", key="CHECK_GREEN")],
+                            [None, guitk.Checkbutton("Upper case", key="CHECK_UPPER")],
+                            [None, guitk.Checkbutton("Green text", key="CHECK_GREEN")],
                         ],
                         sticky="n",
                     ),
@@ -237,11 +248,11 @@ class HelloWorld(guitk.Window):
         if event.key == "Ok":
             # set the output Label to the value of the Entry box
             # the Window class acts like a dictionary for looking up guitk element objects by key
-            name = event.values["ENTRY_NAME"]
+            name = self["ENTRY_NAME"].value
             print(f"Hello {name}")
             self["OUTPUT"].value = f"Hello {name}! Thanks for trying guitk."
 
-        if event.key == "CHECK_UPPER" and event.values["CHECK_UPPER"]:
+        if event.key == "CHECK_UPPER" and self["CHECK_UPPER"].value:
             # True if checked
             # "Upper case" check button is checked, so make text upper case
             self["OUTPUT"].value = self["OUTPUT"].value.upper()
@@ -250,7 +261,7 @@ class HelloWorld(guitk.Window):
             # change label text color to green if needed
             # use .widget to access the underlying ttk element for each object
             # tkinter is not abstracted -- you can easily use tkinter methods and properties if needed
-            if event.values["CHECK_GREEN"]:
+            if self["CHECK_GREEN"].value:
                 # checked
                 self["OUTPUT"].widget["foreground"] = "green"
             else:
@@ -277,22 +288,18 @@ import guitk
 
 
 class TimerWindow(guitk.Window):
-    # Define the window's contents
-    layout = [
-        [guitk.Label("Press Start Timer to fire event after 2000 ms")],
-        [guitk.Label("", width=60, key="OUTPUT")],
-        [
-            guitk.Frame(
-                layout=[
-                    [
-                        guitk.Button("Start Timer"),
-                        guitk.Button("Cancel Timer"),
-                        guitk.CheckButton("Repeat", key="REPEAT"),
-                    ]
-                ]
-            )
-        ],
-    ]
+    def config(self):
+        self.title = "Timer Window"
+
+        self.layout = [
+            [guitk.Label("Press Start Timer to fire event after 2000 ms")],
+            [guitk.Label("", width=60, key="OUTPUT")],
+            [
+                guitk.Button("Start Timer"),
+                guitk.Button("Cancel Timer"),
+                guitk.Checkbutton("Repeat", key="REPEAT"),
+            ],
+        ]
 
     def setup(self):
         # store the id of the running timer so it can be cancelled
@@ -305,7 +312,7 @@ class TimerWindow(guitk.Window):
 
         if event.key == "Start Timer":
             # this simple demo assumes only one timer running at a time
-            repeat = event.values["REPEAT"]  # value of Repeat CheckButton
+            repeat = self["REPEAT"].value  # value of Repeat Checkbutton
             self.data["timer_id"] = self.bind_timer_event(
                 2000, "<<MyTimer>>", repeat=repeat
             )
@@ -325,7 +332,7 @@ class TimerWindow(guitk.Window):
 
 if __name__ == "__main__":
     # add some padding around GUI elements to make it prettier
-    TimerWindow("Timer Window", padx=5, pady=5).run()
+    TimerWindow().run()
 ```
 
 ![bind_timer_event example](examples/bind_timer_event.py.png "Creating timed virtual events.")

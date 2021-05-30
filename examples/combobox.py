@@ -21,7 +21,8 @@ class ComboboxWindow(guitk.Window):
         ]
 
     def handle_event(self, event):
-        print(event)
+        if event.key in ["COMBOBOX1", "COMBOBOX2"]:
+            print(event, self[event.key].value)
 
 
 if __name__ == "__main__":

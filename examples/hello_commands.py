@@ -52,7 +52,7 @@ class HelloWorld(guitk.Window):
 
         if event.key == "Ok":
             # set the output Label to the value of the Entry box
-            name = event.values["ENTRY_NAME"]
+            name = self["ENTRY_NAME"].value
             self["OUTPUT"].value = f"Hello {name}! Thanks for trying guitk."
 
 

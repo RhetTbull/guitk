@@ -28,7 +28,7 @@ class HelloWorld(guitk.Window):
     # event is a guitk.Event object
     def handle_event(self, event):
         # the value of each widget can be read using event.values["KEYNAME"]
-        name = event.values["ENTRY_NAME"]
+        name = self["ENTRY_NAME"].value
 
         if event.key == "Quit":
             # a key wasn't supplied in `guitk.Button("Quit")` so guitk uses the name of the button

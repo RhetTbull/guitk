@@ -23,10 +23,7 @@ class ListWindow(guitk.Window):
     def handle_event(self, event):
         # CapWords aliases apply to event types as well
         if event.event_type == guitk.EventType.ListboxSelect:
-            print(f"event! {event}")
-        if event.event_type == guitk.EventType.ListBoxSelect:
-            print(f"event! {event}")
-
+            print(f"event! {event}, {self[event.key].value}")
 
 if __name__ == "__main__":
     ListWindow().run()

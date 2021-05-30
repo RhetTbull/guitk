@@ -19,8 +19,7 @@ class HelloWorld(guitk.Window):
 
         if event.key == "Ok":
             # set the output Label to the value of the Entry box
-            name = event.values["ENTRY_NAME"]
-            self["OUTPUT"].value = f"Hello {name}! Thanks for trying guitk."
+            self["OUTPUT"].value = f"Hello {self['ENTRY_NAME'].value}! Thanks for trying guitk."
 
 
 if __name__ == "__main__":
