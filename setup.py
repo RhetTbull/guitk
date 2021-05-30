@@ -40,7 +40,7 @@ with open(os.path.join(this_directory, "README.rst"), encoding="utf-8") as f:
 
 setup(
     name="guitk",
-    version="0.0.2",
+    version="0.0.3",
     description="Python wrapper around Apple Photos applescript interface",
     long_description=about["long_description"],
     long_description_content_type="text/x-rst",
