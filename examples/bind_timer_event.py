@@ -50,5 +50,4 @@ class TimerWindow(guitk.Window):
 
 
 if __name__ == "__main__":
-    # add some padding around GUI elements to make it prettier
     TimerWindow().run()
