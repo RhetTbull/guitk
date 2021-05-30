@@ -97,7 +97,7 @@ class HelloWorld(guitk.Window):
     # every guitk.Window will call self.handle_event to handle GUI events
     # event is a guitk.Event object
     def handle_event(self, event):
-        # the value of each widget can be read using event.values["KEYNAME"]
+        # the value of each widget can be read using self["KEYNAME"].value
         name = self["ENTRY_NAME"].value
 
         if event.key == "Quit":

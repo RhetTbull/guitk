@@ -331,10 +331,10 @@ class DemoWindow(Window):
         print(event)
         GUI = self.GUI
         if event.event_type == EventType.BrowseFile:
-            print(f"You chose file {event.values[GUI.FileEntry]}")
+            print(f"You chose file {self[GUI.FileEntry].value}")
 
         if event.event_type == EventType.BrowseDirectory:
-            print(f"You chose directory {event.values[GUI.DirectoryEntry]}")
+            print(f"You chose directory {self[GUI.DirectoryEntry].value}")
 
         if event.key == GUI.TextEntry:
             self[GUI.TextLabel].value = self[GUI.TextEntry].value
@@ -395,10 +395,10 @@ class DemoWindow(Window):
             print("This text went to stderr", file=sys.stderr)
 
         if event.key == GUI.RadioButtons1:
-            print(f"Radiobuttons1 value is {event.values[GUI.RadioButtons1]}")
+            print(f"Radiobuttons1 value is {self[GUI.RadioButtons1].value}")
 
         if event.key == GUI.RadioButtons2:
-            print(f"Radiobuttons2 value is {event.values[GUI.RadioButtons2]}")
+            print(f"Radiobuttons2 value is {self[GUI.RadioButtons2].value}")
 
         if event.key == GUI.TreeHeadingSize:
             self[GUI.TreeView].sort_on_column(
@@ -419,23 +419,23 @@ class DemoWindow(Window):
             ]
 
         if event.event_type == guitk.EventType.TreeviewSelect:
-            print(f"You selected file(s): {event.values[GUI.TreeView]}")
+            print(f"You selected file(s): {self[GUI.TreeView].value}")
 
         if event.key == GUI.TreePythonFile:
-            print(f"You hit Return on a python file: {event.values[GUI.TreeView]}")
+            print(f"You hit Return on a python file: {self[GUI.TreeView].value}")
 
         if event.key == GUI.ListBox:
-            print(f"You selected {event.values[GUI.ListBox]}")
+            print(f"You selected {self[GUI.ListBox].value}")
             docstring = None
             try:
-                docstring = getattr(guitk, event.values[GUI.ListBox][0]).__doc__
+                docstring = getattr(guitk, self[GUI.ListBox].value[0]).__doc__
             except AttributeError:
                 pass
             docstring = docstring or "doc string not found"
             self[GUI.TextDocStrings].value = docstring
 
         if event.key == GUI.ComboBox:
-            print(f"Combobox: {event.values[GUI.ComboBox]}")
+            print(f"Combobox: {self[GUI.ComboBox].value}")
 
         if event.key == GUI.DebugWindow:
             # open debug window
