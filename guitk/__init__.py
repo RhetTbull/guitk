@@ -17,6 +17,9 @@ from .constants import GUITK, EventType
 from .tkroot import *
 from .widgets import *
 
+__version__ = "0.0.1"
+__author__ = "Rhet Turnbull"
+
 __all__ = [
     "BrowseDirectoryButton",
     "BrowseFileButton",
@@ -43,7 +46,6 @@ __all__ = [
     "Treeview",
     "Window",
 ]
-
 
 # Aliases for classnames as I don't like tkinter's naming convention
 # You can use either CapWords or Firstword names in guitk
