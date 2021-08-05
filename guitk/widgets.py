@@ -1,4 +1,4 @@
-""" Window and Widget classes """
+""" Window, Layout, and Widget classes """
 
 import pathlib
 import time

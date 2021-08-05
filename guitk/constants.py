@@ -4,7 +4,7 @@ from enum import Enum, auto
 
 
 class GUITK(Enum):
-    """Constants used internally by guitk """
+    """Constants used internally by guitk"""
 
     ELEMENT_FRAME = ("Frame",)
     ELEMENT_LABEL_FRAME = "LabelFrame"
@@ -38,5 +38,4 @@ class EventType(Enum):
     WM_DELETE_WINDOW = "WM_DELETE_WINDOW"
     DeleteWindow = "WM_DELETE_WINDOW"
     Quit = "WM_DELETE_WINDOW"
-    WindowFinishedLoading = "<<WindowFinishedLoading>>" 
-
+    WindowFinishedLoading = "<<WindowFinishedLoading>>"
