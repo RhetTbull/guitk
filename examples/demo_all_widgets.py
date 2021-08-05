@@ -439,7 +439,7 @@ class DemoWindow(Window):
 
         if event.key == GUI.DebugWindow:
             # open debug window
-            DebugWindow()
+            DebugWindow(parent=self.window)
 
         if event.key == GUI.ButtonModalWindow:
             ModalWindow(parent=self.window)
