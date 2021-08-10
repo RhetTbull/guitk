@@ -238,6 +238,9 @@ class Window(_Layout, _WindowBaseClass):
         self._timer_events = {}
         """ timer events that have been set by bind_timer_event, stores most recent after() id for event"""
 
+        self._timer_events_cancelled = {}
+        """ timer events that have been set by bind_timer_event but then cancelled """
+
         self._return_value = None
         """ value returned from run() if set in quit() """
 
@@ -400,9 +403,12 @@ class Window(_Layout, _WindowBaseClass):
         # create a unique name for the timer
         timer_id = f"{event_name}_{time.time_ns()}"
 
+        # callback that generates event and respawns the timer if repeat=True
+        # when cancelling with cancel_timer_event, sometimes the call to after_cancel doesn't apparently work so check
+        # if timer_id is in _timer_events_cancelled before respawning
         def _generate_event():
             self.root.event_generate(event_name)
-            if repeat:
+            if repeat and timer_id not in self._timer_events_cancelled:
                 self._timer_events[timer_id] = self._tk.root.after(
                     delay, _generate_event
                 )
@@ -417,8 +423,12 @@ class Window(_Layout, _WindowBaseClass):
         try:
             after_id = self._timer_events[timer_id]
             self.root.after_cancel(after_id)
-        except Exception:
-            pass
+            self._timer_events.pop(timer_id)
+            self._timer_events_cancelled[timer_id] = after_id 
+        except KeyError:
+            raise ValueError(f"Timer event {timer_id} not found")
+        except Exception as e:
+            raise e
 
     def run(self):
         self._tk.run_mainloop()
@@ -574,7 +584,7 @@ class Widget:
         value_type=None,
     ):
         self.key = key
-        self.disabled = disabled
+        self._disabled = disabled
         self.columnspan = columnspan
         self.rowspan = rowspan
         self.padx = padx
@@ -638,7 +648,15 @@ class Widget:
 
     @property
     def state(self):
-        return self.widget.cget("state")
+        return self.widget["state"]
+
+    @property
+    def disabled(self):
+        return self.widget["state"] == "disabled"
+
+    @disabled.setter
+    def disabled(self, value):
+        self.widget["state"] = "disabled" if value else "normal"
 
 
 class Label(Widget):
@@ -695,7 +713,7 @@ class Label(Widget):
         self._grid(
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
         )
-        if self.disabled:
+        if self._disabled:
             self.widget.state(["disabled"])
         return self.widget
 
@@ -816,7 +834,7 @@ class _Frame(Widget, _Layout):
         if self.width or self.height:
             self.widget.grid_propagate(0)
 
-        if self.disabled:
+        if self._disabled:
             self.widget.state(["disabled"])
         return self.widget
 
@@ -950,7 +968,7 @@ class Button(Widget):
                 )
             )
 
-        if self.disabled:
+        if self._disabled:
             self.widget.state(["disabled"])
 
         return self.widget
@@ -1034,7 +1052,7 @@ class Entry(Widget):
                 )
             )
 
-        if self.disabled:
+        if self._disabled:
             self.widget.state(["disabled"])
         return self.widget
 
@@ -1141,7 +1159,7 @@ class LabelEntry(Entry):
                 )
             )
 
-        if self.disabled:
+        if self._disabled:
             self.widget.state(["disabled"])
         return self.widget
 
@@ -1270,7 +1288,7 @@ class Combobox(Widget):
         if self.default is not None:
             self.value = self.default
 
-        if self.disabled:
+        if self._disabled:
             self.widget.state(["disabled"])
 
         if self._readonly:
@@ -1398,7 +1416,7 @@ class BrowseFileButton(Button):
         self._grid(
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
         )
-        if self.disabled:
+        if self._disabled:
             self.widget.state(["disabled"])
 
         return self.widget
@@ -1462,7 +1480,7 @@ class BrowseDirectoryButton(Button):
         self._grid(
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
         )
-        if self.disabled:
+        if self._disabled:
             self.widget.state(["disabled"])
 
         return self.widget
@@ -1544,7 +1562,7 @@ class Checkbutton(Widget):
                 )
             )
 
-        if self.disabled:
+        if self._disabled:
             self.widget.state(["disabled"])
         return self.widget
 
@@ -1646,7 +1664,7 @@ class Radiobutton(Widget):
                 )
             )
 
-        if self.disabled:
+        if self._disabled:
             self.widget.state(["disabled"])
 
         if self.selected:
@@ -1725,7 +1743,7 @@ class Text(Widget):
                 )
             )
 
-        if self.disabled:
+        if self._disabled:
             self.widget["state"] = "disabled"
         return self.widget
 
@@ -1839,7 +1857,7 @@ class ScrolledText(Text):
                 )
             )
 
-        if self.disabled:
+        if self._disabled:
             self.widget["state"] = "disabled"
 
         self.value = self._value
@@ -2083,7 +2101,7 @@ class Treeview(Widget):
         self._takefocus = takefocus
         self._cursor = cursor
 
-        self.disabled = disabled
+        self._disabled = disabled
         self.columnspan = columnspan
         self.rowspan = rowspan
         self.padx = padx
@@ -2126,7 +2144,7 @@ class Treeview(Widget):
             for column, heading in zip(self._columns, self._headings):
                 self.widget.heading(column, text=heading)
 
-        if self.disabled:
+        if self._disabled:
             self.widget.state(["disabled"])
 
         event = Event(self, window, self.key, EventType.TreeviewSelect)
@@ -2382,7 +2400,7 @@ class Scale(Widget):
         value = self.widget.get()
         if self._interval:
             value = _interval(self._from_, self._to, self._interval, value)
-        if self._precision:
+        if self._precision is not None:
             value = round(float(value), self._precision)
         return value
 
@@ -2437,7 +2455,7 @@ class Scale(Widget):
                 )
             )
 
-        if self.disabled:
+        if self._disabled:
             self.widget.state(["disabled"])
 
         return self.widget
@@ -2447,6 +2465,94 @@ class Scale(Widget):
         """Return the ttk.Scale widget"""
         return self.widget
 
+
+class Progressbar(Widget):
+    """ttk.Progressbar"""
+
+    def __init__(
+        self,
+        value=None,
+        key=None,
+        orient=tk.HORIZONTAL,
+        length=200,
+        mode="determinate",
+        maximum=100,
+        disabled=False,
+        columnspan=None,
+        rowspan=None,
+        padx=None,
+        pady=None,
+        sticky=None,
+        tooltip=None,
+        style=None,
+        events=True,
+    ):
+        super().__init__(
+            key=key,
+            disabled=disabled,
+            rowspan=rowspan,
+            columnspan=columnspan,
+            padx=padx,
+            pady=pady,
+            events=events,
+            sticky=sticky,
+            tooltip=tooltip,
+            anchor=None,
+            value_type=tk.DoubleVar,
+        )
+        self.widget_type = "ttk.Progressbar"
+        self.key = key or "Progressbar"
+
+        self.orient = orient
+        self.length = length
+        self.mode = mode
+        self.maximum = maximum
+        self.style = style
+        self._initial_value = value
+
+        self.columnspan = columnspan
+        self.rowspan = rowspan
+        self.tooltip = tooltip
+
+    @property
+    def value(self):
+        return self.widget["value"]
+
+    @value.setter
+    def value(self, value):
+        self._value.set(float(value))
+
+    def _create_widget(self, parent, window: Window, row, col):
+        self.window = window
+        self._parent = parent
+
+        kwargs = {}
+        for kw in ["length", "orient", "mode", "maximum"]:
+            val = getattr(self, kw)
+            if val is not None:
+                kwargs[kw] = val
+
+        kwargs["variable"] = self._value
+        if self._initial_value is not None:
+            self._value.set(self._initial_value)
+
+        self.widget = ttk.Progressbar(parent, **kwargs)
+        self._grid(
+            row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
+        )
+
+        if self._disabled:
+            self.widget.state(["disabled"])
+
+        return self.widget
+
+    @property
+    def progressbar(self):
+        """Return the ttk.Progressbar widget"""
+        return self.widget
+
+    def stop(self):
+        self.widget.stop()
 
 __all__ = [
     "BrowseDirectoryButton",
@@ -2474,4 +2580,5 @@ __all__ = [
     "Treeview",
     "Widget",
     "Window",
+    "Progressbar",
 ]

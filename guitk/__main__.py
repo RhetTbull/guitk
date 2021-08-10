@@ -38,6 +38,36 @@ class ModalWindow(Window):
         self.modal = True
 
 
+class ProgressWindow(Window):
+    class GUI(Enum):
+        ProgressBar = auto()
+        ButtonStart = auto()
+        ButtonStop = auto()
+
+    def config(self):
+        GUI = self.GUI
+        self.layout = [
+            [Progressbar(key=GUI.ProgressBar)],
+            [Button("Start", key=GUI.ButtonStart), Button("Stop", key=GUI.ButtonStop)],
+        ]
+        self.modal = True
+
+    def setup(self):
+        self._demo_timer_id = None
+
+    def handle_event(self, event):
+        GUI = self.GUI
+        if event.key == GUI.ButtonStart:
+            self._demo_timer_id = self.bind_timer_event(500, "<<Start>>", repeat=True)
+
+        if event.key == "<<Start>>":
+            self[GUI.ProgressBar].value += 10
+
+        if event.key == GUI.ButtonStop:
+            self[GUI.ProgressBar].progressbar.stop()
+            self.cancel_timer_event(self._demo_timer_id)
+
+
 class DemoWindow(Window):
     """Demo guitk widgets"""
 
@@ -70,6 +100,7 @@ class DemoWindow(Window):
         TreeHeadingFilename = auto()
         TreePythonFile = auto()
         ButtonModalWindow = auto()
+        ButtonProgressWindow = auto()
 
     def config(self):
         GUI = self.GUI  # shortcut for constants
@@ -306,7 +337,10 @@ class DemoWindow(Window):
                 ),
             ],
             # row 7
-            [Button("Modal Window", key=GUI.ButtonModalWindow)],
+            [
+                Button("Modal Window", key=GUI.ButtonModalWindow),
+                Button("Progress Bar", key=GUI.ButtonProgressWindow),
+            ],
         ]
 
     def setup(self):
@@ -448,6 +482,9 @@ class DemoWindow(Window):
 
         if event.key == GUI.ButtonModalWindow:
             ModalWindow(parent=self.window)
+
+        if event.key == GUI.ButtonProgressWindow:
+            ProgressWindow(parent=self.window)
 
 
 if __name__ == "__main__":

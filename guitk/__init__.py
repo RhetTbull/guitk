@@ -20,11 +20,25 @@ from .widgets import *
 __version__ = "0.0.1"
 __author__ = "Rhet Turnbull"
 
+# Aliases for classnames as I don't like tkinter's naming convention
+# You can use either CapWords or Firstword names in guitk
+ComboBox = Combobox
+CheckButton = Checkbutton
+RadioButton = Radiobutton
+TreeView = Treeview
+ListBox = Listbox
+Linklabel = LinkLabel
+Scrolledtext = ScrolledText
+Labelframe = LabelFrame
+ProgressBar = Progressbar
+
 __all__ = [
     "BrowseDirectoryButton",
     "BrowseFileButton",
     "Button",
+    "CheckButton",
     "Checkbutton",
+    "ComboBox",
     "Combobox",
     "Command",
     "DebugWindow",
@@ -36,24 +50,23 @@ __all__ = [
     "Label",
     "LabelEntry",
     "LabelFrame",
+    "Labelframe",
     "LinkLabel",
+    "Linklabel",
+    "ListBox",
     "Listbox",
     "Menu",
     "Output",
+    "ProgressBar",
+    "Progressbar"
+    "RadioButton",
     "Radiobutton",
     "ScrolledText",
+    "Scrolledtext",
     "Text",
+    "TreeView",
     "Treeview",
     "Window",
 ]
 
-# Aliases for classnames as I don't like tkinter's naming convention
-# You can use either CapWords or Firstword names in guitk
-ComboBox = Combobox
-CheckButton = Checkbutton
-RadioButton = Radiobutton
-TreeView = Treeview
-ListBox = Listbox
-Linklabel = LinkLabel
-Scrolledtext = ScrolledText
-Labelframe = LabelFrame
+
