@@ -122,7 +122,13 @@ class DemoWindow(Window):
                 Command("Save As"),
             ],
             Menu("Edit"): [Command("Copy", shortcut="Cmd+C"), Command("Paste")],
-            Menu("Debug"): [Command("Open Debug Window", shortcut="Alt+Ctrl+X")],
+            Menu("Debug"): [
+                Command(
+                    "Open Debug Window",
+                    shortcut="Alt+Ctrl+X",
+                    command=self.on_debug_window,
+                )
+            ],
             Menu("Help"): [Command("About")],
         }
 
@@ -378,6 +384,10 @@ class DemoWindow(Window):
     def teardown(self):
         """gets called right before window is destroyed"""
         print(f"Tearing down")
+
+    def on_debug_window(self):
+        print("Opening debug window")
+        DebugWindow(parent=self.window)
 
     def handle_event(self, event):
         print(event)

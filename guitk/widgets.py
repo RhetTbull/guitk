@@ -5,7 +5,7 @@ import time
 import tkinter as tk
 from collections import namedtuple
 from tkinter import filedialog, font, ttk
-from typing import Any, List, Optional, Union
+from typing import Any, List, Optional, Union, Callable
 
 from .constants import GUITK, EventType
 from .redirect import StdErrRedirect, StdOutRedirect
@@ -164,30 +164,38 @@ class Command(Menu):
         separator: Optional[bool] = False,
         disabled: Optional[bool] = False,
         shortcut: Optional[str] = None,
+        key: Optional[str] = None,
+        command: Optional[Callable] = None,
     ):
         self._label = label
         self._separator = separator  # add separator line after this command
         self._disabled = disabled
         self._shortcut = shortcut
         self._parent = None
-        self._key = None
+        self._key = key
+        self._command = command
 
     def _create_widget(self, parent, window: _WindowBaseClass, path):
         self._parent = parent
         self.window = window
-        self._key = path
+        self._key = self._key or path
         callback = (
             self.window._make_callback(
-                Event(self, self.window, self._key, "MENU_COMMAND")
+                Event(self, self.window, self._key, EventType.MenuCommand)
             ),
         )
         parent.add_command(
             label=self._label,
             command=self.window._make_callback(
-                Event(self, self.window, self._key, "MENU_COMMAND")
+                Event(self, self.window, self._key, EventType.MenuCommand)
             ),
             accelerator=self._shortcut,
         )
+
+        if self._command:
+            self.window.bind_command(
+                key=self._key, event_type=EventType.MenuCommand, command=self._command
+            )
 
         if self._separator:
             parent.add_separator()
@@ -196,7 +204,7 @@ class Command(Menu):
         window.window.bind_all(
             key_binding,
             self.window._make_callback(
-                Event(self, self.window, self._key, "MENU_COMMAND")
+                Event(self, self.window, self._key, EventType.MenuCommand)
             ),
         )
 
@@ -365,8 +373,8 @@ class Window(_Layout, _WindowBaseClass):
 
     def handle_event(self, event):
         """Handle event objects, inheriting classes should implement handle_event"""
-        if event.key == "Quit":
-            self.quit()
+        if event.event_type == EventType.Quit:
+            self.quit(self._return_value)
 
     def setup(self):
         """Perform any needed setup for the window.
@@ -403,9 +411,13 @@ class Window(_Layout, _WindowBaseClass):
     def _bind_command(self, event_command: EventCommand):
         self._commands.append(event_command)
 
-    def bind_timer_event(self, delay, event_name, repeat=False):
+    def bind_timer_event(self, delay, event_name, repeat=False, command=None):
         """Create a new virtual event `event_name` that fires after `delay` ms,
         repeats every `delay` ms if repeat=True, otherwise fires once"""
+        if command:
+            self.bind_command(
+                key=event_name, event_type=EventType.VirtualEvent, command=command
+            )
         return self._bind_timer_event(delay, event_name, EventType.VirtualEvent, repeat)
 
     def _bind_timer_event(self, delay, event_name, event_type, repeat=False):
@@ -566,7 +578,7 @@ class Event:
         self.widget = widget
         self.key = key
         self.event_type = event_type
-        self.event = None  # placeholder for Tk event
+        self.event = None  # placeholder for Tk event, will be set in _make_callback
 
     def __str__(self):
         return f"id={self.id}, widget={self.widget}, key={self.key}, event_type={self.event_type}, event={self.event}"
@@ -2580,6 +2592,7 @@ class Notebook(Widget, _Layout):
         tooltip=None,
         style=None,
         events=True,
+        command=None,
     ):
         super().__init__(
             key=key,
@@ -2592,6 +2605,7 @@ class Notebook(Widget, _Layout):
             sticky=sticky,
             tooltip=tooltip,
             anchor=None,
+            command=command,
         )
         self.widget_type = "ttk.Notebook"
         self.key = key or "Notebook"
@@ -2628,6 +2642,19 @@ class Notebook(Widget, _Layout):
         if self.tabs:
             for tab in self.tabs:
                 self.add(tab, self.tabs[tab])
+
+        if self._command:
+            self.events = True
+            window._bind_command(
+                # the actual widget will be a tk widget in form widget=.!toplevel.!frame.!notebook, so it won't match self.widget
+                # so set widget=None or _handle_commands won't correctly handle the command
+                EventCommand(
+                    widget=None,
+                    key=self.key,
+                    event_type=EventType.NotebookTabChanged,
+                    command=self._command,
+                )
+            )
 
         if self._disabled:
             self.widget.state(["disabled"])
