@@ -31,6 +31,7 @@ Linklabel = LinkLabel
 Scrolledtext = ScrolledText
 Labelframe = LabelFrame
 ProgressBar = Progressbar
+NoteBook = Notebook
 
 __all__ = [
     "BrowseDirectoryButton",
@@ -56,6 +57,8 @@ __all__ = [
     "ListBox",
     "Listbox",
     "Menu",
+    "NoteBook",
+    "Notebook",
     "Output",
     "ProgressBar",
     "Progressbar"

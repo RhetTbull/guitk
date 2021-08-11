@@ -71,7 +71,7 @@ class ProgressWindow(guitk.Window):
         if event.key == "STOP":
             print("Stopped")
             self.cancel_timer_event(self._demo_timer_id)
-            self["progress2"].stop()
+            self["progress2"].progressbar.stop()
             self["progress2"].value = 0
             self["START"].disabled = False
             self["STOP"].disabled = True

@@ -7,6 +7,7 @@ from enum import Enum, auto
 from .constants import EventType
 from .widgets import *
 from .widgets import __all__ as ALL_WIDGETS
+from .widgets import _get_docstring
 
 dummy_text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras tempus neque in vehicula hendrerit. Nam non posuere ante. Nunc libero libero, tempus eget enim vitae, egestas hendrerit tortor. Vivamus et egestas felis. Aliquam erat volutpat. Nulla facilisi. Aliquam hendrerit, nibh nec tempor lobortis, purus nisl vehicula ex, dapibus fermentum mauris nibh id nulla. Vivamus non pretium quam. Phasellus elementum commodo nisl. Nullam eu faucibus augue. Vivamus pulvinar metus vehicula urna porttitor euismod. "
 
@@ -125,7 +126,7 @@ class DemoWindow(Window):
             Menu("Help"): [Command("About")],
         }
 
-        self.layout = [
+        tab1 = [
             [  # row 1
                 Label("File", tooltip="Label"),
                 Entry(
@@ -298,7 +299,24 @@ class DemoWindow(Window):
                     autoframe=False,
                 ),
             ],
-            # row 6
+        ]
+
+        tab2 = [
+            [
+                Frame(
+                    layout=[
+                        [
+                            Button("Modal Window", key=GUI.ButtonModalWindow),
+                            Button("Progress Bar", key=GUI.ButtonProgressWindow),
+                        ]
+                    ],
+                    padding=3,
+                )
+            ]
+        ]
+
+        self.layout = [
+            [Notebook(tabs={"Tab 1": tab1, "Tab 2": tab2})],
             [
                 Output(
                     key=GUI.Output, echo=True, width=100, height=10, tooltip="Output"
@@ -335,11 +353,6 @@ class DemoWindow(Window):
                         ],
                     ]
                 ),
-            ],
-            # row 7
-            [
-                Button("Modal Window", key=GUI.ButtonModalWindow),
-                Button("Progress Bar", key=GUI.ButtonProgressWindow),
             ],
         ]
 
@@ -467,7 +480,7 @@ class DemoWindow(Window):
             print(f"You selected {self[GUI.ListBox].value}")
             docstring = None
             try:
-                docstring = getattr(guitk, self[GUI.ListBox].value[0]).__doc__
+                docstring = _get_docstring(self[GUI.ListBox].value[0])
             except AttributeError:
                 pass
             docstring = docstring or "doc string not found"

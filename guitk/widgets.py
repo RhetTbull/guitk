@@ -56,6 +56,15 @@ def _interval(from_, to, interval, value, tolerance=1e-9):
         return interval * quotient
 
 
+def _get_docstring(name):
+    """Return the docstring of an object with name"""
+    try:
+        obj = globals()[name]
+    except KeyError:
+        raise ValueError("Invalid object name")
+    return obj.__doc__ or ""
+
+
 class _WindowBaseClass:
     # only needed to keep typing happy
     pass
@@ -424,7 +433,7 @@ class Window(_Layout, _WindowBaseClass):
             after_id = self._timer_events[timer_id]
             self.root.after_cancel(after_id)
             self._timer_events.pop(timer_id)
-            self._timer_events_cancelled[timer_id] = after_id 
+            self._timer_events_cancelled[timer_id] = after_id
         except KeyError:
             raise ValueError(f"Timer event {timer_id} not found")
         except Exception as e:
@@ -2554,6 +2563,90 @@ class Progressbar(Widget):
     def stop(self):
         self.widget.stop()
 
+
+class Notebook(Widget, _Layout):
+    """ttk.Notebook"""
+
+    def __init__(
+        self,
+        key=None,
+        tabs=None,
+        disabled=False,
+        columnspan=None,
+        rowspan=None,
+        padx=None,
+        pady=None,
+        sticky=None,
+        tooltip=None,
+        style=None,
+        events=True,
+    ):
+        super().__init__(
+            key=key,
+            disabled=disabled,
+            rowspan=rowspan,
+            columnspan=columnspan,
+            padx=padx,
+            pady=pady,
+            events=events,
+            sticky=sticky,
+            tooltip=tooltip,
+            anchor=None,
+        )
+        self.widget_type = "ttk.Notebook"
+        self.key = key or "Notebook"
+
+        self.style = style
+
+        self.columnspan = columnspan
+        self.rowspan = rowspan
+        self.tooltip = tooltip
+        self.tabs = tabs
+
+    def _create_widget(self, parent, window: Window, row, col):
+        self.window = window
+        self._parent = parent
+
+        kwargs = {}
+        for kw in ["style"]:
+            val = getattr(self, kw)
+            if val is not None:
+                kwargs[kw] = val
+
+        self.widget = ttk.Notebook(parent, **kwargs)
+        self._grid(
+            row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
+        )
+
+        if self.tabs:
+            for tab in self.tabs:
+                self.add(tab, self.tabs[tab])
+
+        if self._disabled:
+            self.widget.state(["disabled"])
+
+        return self.widget
+
+    def add(self, text, layout, **kwargs):
+        """Add a layout to the Notebook as new tab"""
+        frame = Frame(layout=layout)
+        frame_ = frame._create_widget(self.widget, self.window, 0, 0)
+        kwargs["text"] = text
+        self.notebook.add(frame_, **kwargs)
+
+    def insert(self, pos, text, layout, **kwargs):
+        """Insert a layout to the Notebook as new tab at position pos"""
+        frame = Frame(layout=layout)
+        frame_ = frame._create_widget(self.widget, self.window, 0, 0)
+        kwargs["text"] = text
+        self.notebook.insert(pos, frame_, **kwargs)
+
+    @property
+    def notebook(self):
+        """Return the ttk.Notebook widget"""
+        return self.widget
+
+
 __all__ = [
     "BrowseDirectoryButton",
     "BrowseFileButton",
@@ -2572,6 +2665,7 @@ __all__ = [
     "LinkLabel",
     "Listbox",
     "Menu",
+    "Notebook",
     "Output",
     "Radiobutton",
     "Scale",
