@@ -39,3 +39,4 @@ class EventType(Enum):
     DeleteWindow = "WM_DELETE_WINDOW"
     Quit = "WM_DELETE_WINDOW"
     WindowFinishedLoading = "<<WindowFinishedLoading>>"
+    NotebookTabChanged = "<<NotebookTabChanged>>"

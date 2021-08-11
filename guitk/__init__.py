@@ -13,7 +13,7 @@
 # TODO: add style to all controls
 # TODO: standardize value_type
 
-from .constants import GUITK, EventType
+from .constants import EventType
 from .tkroot import *
 from .widgets import *
 

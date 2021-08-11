@@ -2618,6 +2618,13 @@ class Notebook(Widget, _Layout):
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
         )
 
+        event_tab_change = Event(
+            self.widget, window, self.key, EventType.NotebookTabChanged
+        )
+        self.widget.bind(
+            "<<NotebookTabChanged>>", window._make_callback(event_tab_change)
+        )
+
         if self.tabs:
             for tab in self.tabs:
                 self.add(tab, self.tabs[tab])
