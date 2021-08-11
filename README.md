@@ -55,9 +55,9 @@ guitk is my attempt to provide an event-loop interface to tkinter.  It is not in
 
 * I develop on a Mac and PySimple GUI has a number of [issues](https://github.com/PySimpleGUI/PySimpleGUI/issues?q=is%3Aopen+is%3Aissue+label%3A%22Mac+Specific+Issue%22) running under MacOS and is not as well supported on the Mac.
 * PySimpleGUI is licensed under a modified LGPL3 license with several added stipulations such as prohibitions on re-posting the code and removal of any comments from the code that don't meet my personal definition of Free Software. 
-* PySimpleGUI source code is a bit of a mess.  I considered attempting to tackle some of the existing MacOS issues but the license stipulations and state of the source code dissuaded me.
+* PySimpleGUI source code did not appear to me to be easy to hack on.  I considered attempting to tackle some of the existing MacOS issues but the license stipulations and state of the source code dissuaded me.
 
-Again, if you can live with these concerns, I highly recommend you consider PySimpleGUI.
+If these issues don't concern you, I recommend you consider PySimpleGUI.
 
 ## Installation
 
