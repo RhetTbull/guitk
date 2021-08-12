@@ -100,6 +100,10 @@ You can access the underlying ttk widget, for example, to change style.  guitk a
 
 Not much documentation at this point.  Take a look at the [examples](https://github.com/RhetTbull/guitk/tree/main/examples) directory for a number of self-documenting examples on use of various widgets.
 
+## Testing
+
+There are currently no automated tests as I haven't figured out how to do these with tkinter.  You can run `python3 -m guitk` which opens a window with examples of all the widgets.  I currently use this for testing to ensure each widget still works but it's a manual process. 
+
 ## Contributors
 
 Contributions welcome! If this project interests you, open an Issue or send a PR!
