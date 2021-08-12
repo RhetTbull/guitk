@@ -386,7 +386,6 @@ class DemoWindow(Window):
         print(f"Tearing down")
 
     def on_debug_window(self):
-        print("Opening debug window")
         DebugWindow(parent=self.window)
 
     def handle_event(self, event):
