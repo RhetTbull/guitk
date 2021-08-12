@@ -458,6 +458,10 @@ if __name__ == "__main__":
     ClickMe().run()
 ```
 
+## Documentation
+
+Not much documentation at this point.  Take a look at the [examples](https://github.com/RhetTbull/guitk/tree/main/examples) directory for a number of self-documenting examples on use of various widgets.
+
 ## Contributors
 
 Contributions welcome! If this project interests you, open an Issue or send a PR!
