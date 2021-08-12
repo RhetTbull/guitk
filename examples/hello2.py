@@ -9,6 +9,9 @@ class HelloWorld(guitk.Window):
     # every Window class needs a config() method that
     # defines the title and the layout (and optionally menu and other other settings)
     def config(self):
+        # Your Window class needs to define a config() method that describes the layout, title, etc for your app
+        # config() is called by the Window class when the Window is created
+
         # Title for the window
         self.title = "Hello, World"
 
@@ -23,8 +26,20 @@ class HelloWorld(guitk.Window):
             [guitk.Button("Ok"), guitk.Button("Quit")],
         ]
 
+    def setup(self):
+        # your setup() method is called by the Window class after config() just before the Window is displayed
+        # use this to initialize any internal state you need
+        # you do not need to provide a setup() method if no inialization is needed
+        print("setup")
+
+    def teardown(self):
+        # your teardown() method is called by the Window class after the Window is closed
+        # use this to clean up before the Window is destroyed
+        # you do not need to provide a teardown() method if no cleanup is needed
+        print("teardown")
+
     # Interact with the Window using an event Loop
-    # every guitk.Window will call self.handle_event to handle GUI events
+    # every guitk.Window will call self.handle_event() to handle GUI events
     # event is a guitk.Event object
     def handle_event(self, event):
         name = self["ENTRY_NAME"].value

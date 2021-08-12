@@ -8,6 +8,8 @@ guitk is an experiment to design a lightweight framework that simplifies creatin
 
 ## Code Example
 
+![hello.py example](examples/hello.py.png "Hello World example")
+
 ```python
 """Simple Hello World example using guitk """
 
@@ -31,7 +33,8 @@ class HelloWindow(guitk.Window):
     # every guitk.Window will call self.handle_event to handle GUI events
     # event is a guitk.Event object
     def handle_event(self, event):
-        print(f"Hello {self['name'].value}")
+        if event.key == "Ok":
+            print(f"Hello {self['name'].value}")
 
 
 # run your event loop
@@ -39,15 +42,13 @@ if __name__ == "__main__":
     HelloWindow().run()
 ```
 
-![hello.py example](examples/hello.py.png "Hello World example")
-
 ## Motivation
 
 I did not set out to create yet another python GUI framework -- there are already many of these, some of them quite good.  I wanted to create a simple GUI for [another python project](https://github.com/RhetTbull/osxphotos) and started down the path using [PySimpleGUI](https://github.com/PySimpleGUI/PySimpleGUI).  PySimpleGUI has an amazingly simple interface that allows creation of nice looking GUIs with just a few lines of code.  Unfortunately, after spending some time prototyping with PySimpleGUI, I discovered a few issues with PySimpleGUI (see below).  I evaluated several other GUI frameworks including [Toga](https://github.com/beeware/toga), [wxPython](https://www.wxpython.org/), [pyglet](https://github.com/pyglet/pyglet), [remi](https://github.com/dddomodossola/remi), and [tkinter](https://docs.python.org/3/library/tkinter.html).  None of these was as simple as PySimpleGUI and several had other issues, e.g. errors running under MacOS, steep learning curve, etc. 
 
-I settled on using tkinter because it's included with python, well-supported on multiple platforms, and relatively light-weight.  However, I found tkinter took a bit too much boiler plate compared to PySimpleGUI and the callback style of programming GUI actions didn't fit my brain as well as the single event-loop used in PySimpleGUI.  
+I settled on using tkinter because it's included with python, well-supported on multiple platforms, and relatively light-weight.  However, I found tkinter took a bit too much boiler plate compared to PySimpleGUI and I missed the simplicity of PySimpleGUI's single event loop for quick prototyping.  
 
-guitk is my attempt to provide an event-loop interface to tkinter.  It is not intended to abstract away the tkinter interface and you'll need some knowledge of tkinter to use guitk.  I highly recommend Mark Roseman's excellent [Modern Tkinter for Busy Python Developers](https://tkdocs.com/book.html) book as a starting point.
+guitk is my attempt to provide an event-loop interface to tkinter.  It is not intended to abstract away the tkinter interface and you'll need some knowledge of tkinter to use guitk.  I highly recommend Mark Roseman's excellent [Modern Tkinter for Busy Python Developers](https://tkdocs.com/book.html) book as a starting point.  guitk also provides a callback style interface if you prefer that over a single event-loop.
 
 ### Why not just use PySimpleGUI?
 
@@ -55,7 +56,7 @@ guitk is my attempt to provide an event-loop interface to tkinter.  It is not in
 
 * I develop on a Mac and PySimple GUI has a number of [issues](https://github.com/PySimpleGUI/PySimpleGUI/issues?q=is%3Aopen+is%3Aissue+label%3A%22Mac+Specific+Issue%22) running under MacOS and is not as well supported on the Mac.
 * PySimpleGUI is licensed under a modified LGPL3 license with several added stipulations such as prohibitions on re-posting the code and removal of any comments from the code that don't meet my personal definition of Free Software. 
-* PySimpleGUI source code did not appear to me to be easy to hack on.  I considered attempting to tackle some of the existing MacOS issues but the license stipulations and state of the source code dissuaded me.
+* PySimpleGUI source code did not appear to me to be easy to hack on.  I considered attempting to tackle some of the existing MacOS issues but the license stipulations and the source code dissuaded me.
 
 If these issues don't concern you, I recommend you consider PySimpleGUI.
 
@@ -65,7 +66,11 @@ If these issues don't concern you, I recommend you consider PySimpleGUI.
 * `cd guitk`
 * `python3 setup.py install`
 
+Once this gets past the early alpha stage, I'll package for PyPI.
+
 ## Anatomy of a guitk program 
+
+![hello2.py example](examples/hello2.py.png "Hello World example")
 
 ```python
 """Hello World example using guitk """
@@ -79,6 +84,9 @@ class HelloWorld(guitk.Window):
     # every Window class needs a config() method that
     # defines the title and the layout (and optionally menu and other other settings)
     def config(self):
+        # Your Window class needs to define a config() method that describes the layout, title, etc for your app
+        # config() is called by the Window class when the Window is created
+
         # Title for the window
         self.title = "Hello, World"
 
@@ -93,8 +101,20 @@ class HelloWorld(guitk.Window):
             [guitk.Button("Ok"), guitk.Button("Quit")],
         ]
 
+    def setup(self):
+        # your setup() method is called by the Window class after config() just before the Window is displayed
+        # use this to initialize any internal state you need
+        # you do not need to provide a setup() method if no inialization is needed
+        print("setup")
+
+    def teardown(self):
+        # your teardown() method is called by the Window class after the Window is closed
+        # use this to clean up before the Window is destroyed
+        # you do not need to provide a teardown() method if no cleanup is needed
+        print("teardown")
+
     # Interact with the Window using an event Loop
-    # every guitk.Window will call self.handle_event to handle GUI events
+    # every guitk.Window will call self.handle_event() to handle GUI events
     # event is a guitk.Event object
     def handle_event(self, event):
         name = self["ENTRY_NAME"].value
@@ -119,8 +139,6 @@ if __name__ == "__main__":
     name = HelloWorld().run()
     print(f"HelloWorld: {name}")
 ```
-
-![hello2.py example](examples/hello2.py.png "Hello World example")
 
 guitk supports both an event-loop style of app-development (very similar to how PySimpleGUI works) and also callbacks which are triggered by events.  The above example can be rewritten using a callback style:
 
@@ -155,17 +173,19 @@ class HelloWorld(guitk.Window):
             ],
         ]
 
-    def on_quit(self):
-        name = self["ENTRY_NAME"].value
-        # value passed to quit will be returned by HelloWorld.run()
-        self.quit(name)
-
     def on_ok(self):
+        # the underlying guitk widgets are accessible as self["KEY"]
+        # the value of each widget is accessible as self["KEY"].value
         name = self["ENTRY_NAME"].value
         self["OUTPUT"].value = f"Hello {name}! Thanks for trying guitk."
 
     def on_entry_changed(self):
         print(self["ENTRY_NAME"].value)
+
+    def on_quit(self):
+        name = self["ENTRY_NAME"].value
+        # value passed to quit will be returned by HelloWorld.run()
+        self.quit(name)
 
 
 if __name__ == "__main__":
@@ -175,6 +195,8 @@ if __name__ == "__main__":
 ```
 
 guitk GUIs are created using a lists of lists where each element in the lists corresponds to a ttk or tk element.  This design pattern is borrowed from PySimpleGUI.
+
+![layout_lol.py example](examples/layouts_lol.py.png "Layout using lists of lists example")
 
 ```python
 """ Example for guitk showing how to use lists of lists for creating GUI layout """
@@ -200,9 +222,10 @@ if __name__ == "__main__":
     LayoutDemo().run()
 ```
 
-![layout_lol.py example](examples/layouts_lol.py.png "Layout using lists of lists example")
-
 Because layouts are simply lists of lists, you can use python to create layouts programmatically, for example using list comprehensions.
+
+
+![layout2.py example](examples/layout2.py.png "Layout using list comprehensions, with tooltips!")
 
 ```python
 """ Example for guitk showing how to use list comprehensions to create a GUI """
@@ -236,9 +259,9 @@ if __name__ == "__main__":
     LayoutDemo().run()
 ```
 
-![layout2.py example](examples/layout2.py.png "Layout using list comprehensions, with tooltips!")
-
 A more complex example showing how to use the event handler to react to events and change the value of other GUI elements.
+
+![hello4.py example](examples/hello4.py.png "A more complex example showing how to use the event handler.")
 
 ```python
 """ Another Hello World example for guitk showing how to use the event handler """
@@ -324,9 +347,10 @@ if __name__ == "__main__":
     HelloWorld().run()
 ```
 
-![hello4.py example](examples/hello4.py.png "A more complex example showing how to use the event handler.")
-
 You can create virtual events that fire after a time delay and these can be repeating.
+
+
+![bind_timer_event example](examples/bind_timer_event.py.png "Creating timed virtual events.")
 
 ```python
 """ Example showing how to use bind_timer_event """
@@ -384,9 +408,9 @@ if __name__ == "__main__":
     TimerWindow().run()
 ```
 
-![bind_timer_event example](examples/bind_timer_event.py.png "Creating timed virtual events.")
-
 You can access the underlying ttk widget, for example, to change style.  guitk also implements some additional widgets link `LinkLabel` which is a `ttk.Label()` that generates an event when clicked and changes mouse cursor to pointing hand (like a URL does).
+
+![LinkLabel example](examples/link.py.png "Using LinkLabel widget.")
 
 ```python
 """ Demonstrates use of LinkLabel widget """
@@ -434,8 +458,6 @@ if __name__ == "__main__":
     ClickMe().run()
 ```
 
-![LinkLabel example](examples/link.py.png "Using LinkLabel widget.")
-
 ## Contributors
 
 Contributions welcome! If this project interests you, open an Issue or send a PR!
@@ -455,7 +477,6 @@ Contributions welcome! If this project interests you, open an Issue or send a PR
 - [ ] Documentation
 - [ ] Add docstrings
 - [ ] Add typehints to public API
-- [ ] Add properties for public class attributes
 - [ ] Tests
 
 ## License

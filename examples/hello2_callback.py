@@ -28,17 +28,19 @@ class HelloWorld(guitk.Window):
             ],
         ]
 
-    def on_quit(self):
-        name = self["ENTRY_NAME"].value
-        # value passed to quit will be returned by HelloWorld.run()
-        self.quit(name)
-
     def on_ok(self):
+        # the underlying guitk widgets are accessible as self["KEY"]
+        # the value of each widget is accessible as self["KEY"].value
         name = self["ENTRY_NAME"].value
         self["OUTPUT"].value = f"Hello {name}! Thanks for trying guitk."
 
     def on_entry_changed(self):
         print(self["ENTRY_NAME"].value)
+
+    def on_quit(self):
+        name = self["ENTRY_NAME"].value
+        # value passed to quit will be returned by HelloWorld.run()
+        self.quit(name)
 
 
 if __name__ == "__main__":
