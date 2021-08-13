@@ -42,8 +42,8 @@ class ShowMeATree(guitk.Window):
             "tree_sort_size_reverse": False,
             "tree_sort_filename_reverse": False,
         }
-        self.list_files(".", self["TREE"].tree)
         tree = self["TREE"]
+        self.list_files(".", tree.widget)
         tree.bind_heading("Size", "TREE_SIZE", command=self.on_sort_size)
         tree.bind_heading("Filename", "TREE_FILENAME", command=self.on_sort_filename)
         tree.bind_tag("pyfile", "PYTHON_FILE", sequence="<Return>", command=self.on_tag)
