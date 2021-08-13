@@ -29,7 +29,7 @@ class HelloWorld(guitk.Window):
     def setup(self):
         # your setup() method is called by the Window class after config() just before the Window is displayed
         # use this to initialize any internal state you need
-        # you do not need to provide a setup() method if no inialization is needed
+        # you do not need to provide a setup() method if no initialization is needed
         print("setup")
 
     def teardown(self):

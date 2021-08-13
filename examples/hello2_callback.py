@@ -28,6 +28,15 @@ class HelloWorld(guitk.Window):
             ],
         ]
 
+    def setup(self):
+        # this method is called after the window is created
+        # you can use it to set up any internal state you need
+
+        # bind_event_command() binds a callback command to a specific event,
+        # in this case, when user hits return in the entry field, the same command as hitting "Ok" will be called
+        # the widget objects can be accessed as self["KEY"] in setup() but not in config() as they aren't created until after config() is called
+        self["ENTRY_NAME"].bind_event_command("<Return>", self.on_ok)
+
     def on_ok(self):
         # the underlying guitk widgets are accessible as self["KEY"]
         # the value of each widget is accessible as self["KEY"].value
@@ -41,6 +50,9 @@ class HelloWorld(guitk.Window):
         name = self["ENTRY_NAME"].value
         # value passed to quit will be returned by HelloWorld.run()
         self.quit(name)
+
+    def handle_event(self, event):
+        print(event)
 
 
 if __name__ == "__main__":
