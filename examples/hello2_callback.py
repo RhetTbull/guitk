@@ -35,7 +35,7 @@ class HelloWorld(guitk.Window):
         # bind_event_command() binds a callback command to a specific event,
         # in this case, when user hits return in the entry field, the same command as hitting "Ok" will be called
         # the widget objects can be accessed as self["KEY"] in setup() but not in config() as they aren't created until after config() is called
-        self["ENTRY_NAME"].bind_event_command("<Return>", self.on_ok)
+        self["ENTRY_NAME"].bind_event("<Return>", command=self.on_ok)
 
     def on_ok(self):
         # the underlying guitk widgets are accessible as self["KEY"]

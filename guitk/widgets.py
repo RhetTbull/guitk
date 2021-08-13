@@ -653,19 +653,27 @@ class Widget:
         if self.padx is not None or self.pady is not None:
             self.widget.grid_configure(padx=self.padx, pady=self.pady)
 
-    def bind_event(self, event_name):
-        """Bind a tkinter event to widget; will result in an Event of event_type type being sent to handle_event when triggered"""
+    def bind_event(self, event_name, command=None):
+        """Bind a tkinter event to widget; will result in an Event of event_type type being sent to handle_event when triggered.
+        Optionally bind command to the event"""
         event = Event(self, self.window, self.key, event_name)
         self.widget.bind(event_name, self.window._make_callback(event))
 
-    def bind_event_command(self, event_name, command):
-        """Bind a tkinter event to to a command callback; creates a guitk Event and binds this to the command"""
-        self.bind_event(event_name)
-        self.window._bind_command(
-            EventCommand(
-                widget=self, key=self.key, event_type=event_name, command=command
+        if command:
+            self.window._bind_command(
+                EventCommand(
+                    widget=self, key=self.key, event_type=event_name, command=command
+                )
             )
-        )
+
+    # def bind_event_command(self, event_name, command):
+    #     """Bind a tkinter event to to a command callback; creates a guitk Event and binds this to the command"""
+    #     self.bind_event(event_name)
+    #     self.window._bind_command(
+    #         EventCommand(
+    #             widget=self, key=self.key, event_type=event_name, command=command
+    #         )
+    #     )
 
     @property
     def state(self):
@@ -2192,12 +2200,17 @@ class Treeview(Widget):
     def value(self, *values):
         self.tree.selection_set(*values)
 
-    def bind_heading(self, column_name, event_name):
+    def bind_heading(self, column_name, event_name, command=None):
         """Bind event to click on column heading"""
         event = Event(self, self.window, event_name, EventType.TreeviewHeading)
         self.tree.heading(column_name, command=self.window._make_callback(event))
 
-    def bind_tag(self, tagname, event_name, sequence=None):
+        if command:
+            self.window.bind_command(
+                key=event.key, event_type=event.event_type, command=command
+            )
+
+    def bind_tag(self, tagname, event_name, sequence=None, command=None):
         """Bind event to item with tag when sequence occurs
         If sequence is None, will bind to <Button-1>"""
         if sequence is None:
@@ -2206,6 +2219,11 @@ class Treeview(Widget):
         self.tree.tag_bind(
             tagname, sequence=sequence, callback=self.window._make_callback(event)
         )
+
+        if command:
+            self.window.bind_command(
+                key=event.key, event_type=event.event_type, command=command
+            )
 
     def sort_on_column(self, column_name, key=None, reverse=False):
         """sort the tree view contents based on column_name

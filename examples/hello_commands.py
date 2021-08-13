@@ -42,7 +42,7 @@ class HelloWorld(guitk.Window):
         self.bind_command(key="PRESSME", command=self.on_pressme)
 
         # commands can be bound via the widget as well
-        self["ENTRY_NAME"].bind_event_command("<FocusIn>", self.on_entry_press)
+        self["ENTRY_NAME"].bind_event("<FocusIn>", command=self.on_entry_press)
 
     # Interact with the Window using an event Loop
     def handle_event(self, event):
