@@ -28,7 +28,6 @@ RadioButton = Radiobutton
 TreeView = Treeview
 ListBox = Listbox
 Linklabel = LinkLabel
-Scrolledtext = ScrolledText
 Labelframe = LabelFrame
 ProgressBar = Progressbar
 NoteBook = Notebook
@@ -64,8 +63,6 @@ __all__ = [
     "Progressbar"
     "RadioButton",
     "Radiobutton",
-    "ScrolledText",
-    "Scrolledtext",
     "Text",
     "TreeView",
     "Treeview",

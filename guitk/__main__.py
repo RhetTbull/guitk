@@ -253,17 +253,18 @@ class DemoWindow(Window):
                         ],
                         [
                             Label("Text box", tooltip="Label"),
-                            Label("ScrolledText box", tooltip="Label"),
+                            Label("Text box with scrollbar", tooltip="Label"),
                         ],
                         [
                             Text(
                                 key=GUI.Text, height=4, text=dummy_text, tooltip="Text"
                             ),
-                            ScrolledText(
+                            Text(
                                 key=GUI.ScrolledText,
                                 height=4,
                                 text=dummy_text,
-                                tooltip="ScrolledText",
+                                tooltip="Text with scrollbar",
+                                vscrollbar=True,
                             ),
                         ],
                     ],
@@ -277,6 +278,7 @@ class DemoWindow(Window):
                     headings=["Filename", "Size"],
                     show="headings",
                     tooltip="Treeview; click on headings to sort",
+                    vscrollbar=True,
                 ),
                 Frame(
                     layout=[
@@ -293,6 +295,7 @@ class DemoWindow(Window):
                                 width=150,
                                 text=ALL_WIDGETS,
                                 tooltip="Listbox",
+                                vscrollbar=True,
                             ),
                             Text(
                                 key=GUI.TextDocStrings,

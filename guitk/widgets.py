@@ -15,6 +15,57 @@ from .tooltips import Hovertip
 EventCommand = namedtuple("EventCommand", ["widget", "key", "event_type", "command"])
 
 
+def scrolled_widget_factory(
+    master, widget_class, vscrollbar=False, hscrollbar=False, **kw
+):
+    """Create a widget that includes optional scrollbars"""
+    # scrollbar code lifted from cpython source with edits to use ttk scrollbar:
+    # https://github.com/python/cpython/blob/3.9/Lib/tkinter/scrolledtext.py
+
+    frame = None
+    if vscrollbar or hscrollbar:
+        # create frame for the widget and the scrollbars
+        frame = ttk.Frame(master)
+
+    vbar = None
+    if vscrollbar:
+        vbar = ttk.Scrollbar(frame)
+        vbar.grid(column=1, row=0, sticky="NS")
+        # vbar.pack(side=tk.RIGHT, fill=tk.Y)
+        kw.update({"yscrollcommand": vbar.set})
+
+    hbar = None
+    if hscrollbar:
+        hbar = ttk.Scrollbar(frame, orient=tk.HORIZONTAL)
+        hbar.grid(column=0, row=1, sticky="EW")
+        # hbar.pack(side=tk.BOTTOM, fill=tk.X)
+        kw.update({"xscrollcommand": hbar.set})
+
+    parent = frame or master
+    widget = widget_class()
+    widget_class.__init__(widget, parent, **kw)
+    widget.grid(column=0, row=0, sticky="NSEW")
+    # widget.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+    if vscrollbar:
+        vbar["command"] = widget.yview
+
+    if hscrollbar:
+        hbar["command"] = widget.xview
+
+    if vscrollbar or hscrollbar:
+        # Copy geometry methods of self.frame without overriding Widget methods -- hack!
+        widget_meths = vars(widget_class).keys()
+        methods = vars(tk.Pack).keys() | vars(tk.Grid).keys() | vars(tk.Place).keys()
+        methods = methods.difference(widget_meths)
+
+        for m in methods:
+            if m[0] != "_" and m != "config" and m != "configure":
+                setattr(widget, m, getattr(frame, m))
+
+    return widget
+
+
 def _map_key_binding_from_shortcut(shortcut):
     """Return a keybinding sequence given a menu command shortcut"""
     if not shortcut:
@@ -1028,6 +1079,7 @@ class Entry(Widget):
         cursor=None,
         takefocus=None,
         command=None,
+        hscrollbar=False,
     ):
         super().__init__(
             key=key,
@@ -1050,6 +1102,7 @@ class Entry(Widget):
         self.columnspan = columnspan
         self.rowspan = rowspan
         self.width = width
+        self.hscrollbar = hscrollbar
 
     def _create_widget(self, parent, window: Window, row, col):
         self.window = window
@@ -1063,7 +1116,14 @@ class Entry(Widget):
             if val is not None:
                 kwargs[kw] = val
 
-        self.widget = ttk.Entry(parent, textvariable=self._value, **kwargs)
+        # self.widget = ttk.Entry(parent, textvariable=self._value, **kwargs)
+        self.widget = scrolled_widget_factory(
+            parent,
+            ttk.Entry,
+            hscrollbar=self.hscrollbar,
+            textvariable=self._value,
+            **kwargs,
+        )
         self._grid(
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
         )
@@ -1728,6 +1788,9 @@ class Text(Widget):
         sticky=None,
         tooltip=None,
         command=None,
+        vscrollbar=False,
+        hscrollbar=False,
+        **kwargs,
     ):
         super().__init__(
             key=key,
@@ -1748,11 +1811,22 @@ class Text(Widget):
         self._value = text if text is not None else ""
         self.columnspan = columnspan
         self.rowspan = rowspan
+        self.vscrollbar = vscrollbar
+        self.hscrollbar = hscrollbar
+        self.kwargs = kwargs
 
     def _create_widget(self, parent, window: Window, row, col):
         self.window = window
         self._parent = parent
-        self.widget = tk.Text(parent, width=self.width, height=self.height)
+        self.widget = scrolled_widget_factory(
+            parent,
+            tk.Text,
+            vscrollbar=self.vscrollbar,
+            hscrollbar=self.hscrollbar,
+            width=self.width,
+            height=self.height,
+            **self.kwargs,
+        )
         self._grid(
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
         )
@@ -1792,121 +1866,8 @@ class Text(Widget):
         return self.widget
 
 
-class _ttkScrolledText(tk.Text):
-    """ScrolledText class with ttk.ScrollBar
-
-    Lifted from cpython source with edits to use ttk scrollbar:
-    https://github.com/python/cpython/blob/3.9/Lib/tkinter/scrolledtext.py
-    """
-
-    def __init__(self, master=None, **kw):
-        self.frame = ttk.Frame(master)
-        self.vbar = ttk.Scrollbar(self.frame)
-        self.vbar.pack(side=tk.RIGHT, fill=tk.Y)
-
-        kw.update({"yscrollcommand": self.vbar.set})
-        tk.Text.__init__(self, self.frame, **kw)
-        self.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-        self.vbar["command"] = self.yview
-
-        # Copy geometry methods of self.frame without overriding Text
-        # methods -- hack!
-        text_meths = vars(tk.Text).keys()
-        methods = vars(tk.Pack).keys() | vars(tk.Grid).keys() | vars(tk.Place).keys()
-        methods = methods.difference(text_meths)
-
-        for m in methods:
-            if m[0] != "_" and m != "config" and m != "configure":
-                setattr(self, m, getattr(self.frame, m))
-
-    def __str__(self):
-        return str(self.frame)
-
-
-class ScrolledText(Text):
-    """Text box with scrollbars"""
-
-    def __init__(
-        self,
-        text=None,
-        key=None,
-        width=40,
-        height=20,
-        disabled=False,
-        rowspan=None,
-        columnspan=None,
-        padx=None,
-        pady=None,
-        events=False,
-        sticky=None,
-        tooltip=None,
-        command=None,
-    ):
-        super().__init__(
-            text=text,
-            key=key,
-            disabled=disabled,
-            rowspan=rowspan,
-            columnspan=columnspan,
-            padx=padx,
-            pady=pady,
-            events=events,
-            sticky=sticky,
-            tooltip=tooltip,
-            command=command,
-        )
-        self.widget_type = "guitk.ScrolledText"
-        self.key = key or "ScrolledText"
-
-        # TODO: should be able to eliminate all these and pass to super()
-        self.width = width
-        self.height = height
-        self._value = text if text is not None else ""
-        self.columnspan = columnspan
-        self.rowspan = rowspan
-
-    def _create_widget(self, parent, window: Window, row, col):
-        self.window = window
-        self._parent = parent
-        self.widget = _ttkScrolledText(parent, width=self.width, height=self.height)
-        self._grid(
-            row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
-        )
-
-        event = Event(self, window, self.key, EventType.KeyRelease)
-        self.widget.bind("<KeyRelease>", window._make_callback(event))
-
-        if self._command:
-            self.events = True
-            window._bind_command(
-                EventCommand(
-                    widget=self,
-                    key=self.key,
-                    event_type=EventType.KeyRelease,
-                    command=self._command,
-                )
-            )
-
-        if self._disabled:
-            self.widget["state"] = "disabled"
-
-        self.value = self._value
-
-        return self.widget
-
-    @property
-    def value(self):
-        return self.widget.get("1.0", tk.END).rstrip()
-
-    @value.setter
-    def value(self, text):
-        self.widget.delete("1.0", tk.END)
-        self.widget.insert("1.0", text)
-        self.widget.yview(tk.END)
-
-
 # TODO: how to make Output read-only?
-class Output(ScrolledText):
+class Output(Text):
     """Text box with stderr/stdout redirected"""
 
     def __init__(
@@ -1940,6 +1901,7 @@ class Output(ScrolledText):
             events=events,
             sticky=sticky,
             tooltip=tooltip,
+            vscrollbar=True,
         )
         self._echo = echo
         self._redirect = []
@@ -2036,41 +1998,6 @@ class LabelFrame(_Frame):
         )
 
 
-class _ttkScrolledTreeView(ttk.Treeview):
-    """ScrolledTreeview class with ttk.Treeview
-
-    Lifted from cpython source with edits to use ttk scrollbar:
-    https://github.com/python/cpython/blob/3.9/Lib/tkinter/scrolledtext.py
-    """
-
-    def __init__(self, master=None, vscrollbar=None, **kw):
-        self.frame = ttk.Frame(master)
-        if vscrollbar:
-            self.vbar = ttk.Scrollbar(self.frame)
-            self.vbar.pack(side=tk.RIGHT, fill=tk.Y)
-
-            kw.update({"yscrollcommand": self.vbar.set})
-
-        ttk.Treeview.__init__(self, self.frame, **kw)
-        self.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-
-        if vscrollbar:
-            self.vbar["command"] = self.yview
-
-        # Copy geometry methods of self.frame without overriding Text
-        # methods -- hack!
-        text_meths = vars(tk.Text).keys()
-        methods = vars(tk.Pack).keys() | vars(tk.Grid).keys() | vars(tk.Place).keys()
-        methods = methods.difference(text_meths)
-
-        for m in methods:
-            if m[0] != "_" and m != "config" and m != "configure":
-                setattr(self, m, getattr(self.frame, m))
-
-    def __str__(self):
-        return str(self.frame)
-
-
 class Treeview(Widget):
     def __init__(
         self,
@@ -2095,7 +2022,8 @@ class Treeview(Widget):
         tooltip=None,
         anchor=None,
         command=None,
-        vscrollbar=None,
+        vscrollbar=False,
+        hscrollbar=False,
     ):
         super().__init__(
             key=key,
@@ -2141,6 +2069,7 @@ class Treeview(Widget):
         self.tooltip = tooltip
         self.anchor = anchor
         self.vscrollbar = vscrollbar
+        self.hscrollbar = hscrollbar
 
     def _create_widget(self, parent, window: Window, row, col):
         self.window = window
@@ -2163,8 +2092,13 @@ class Treeview(Widget):
             if val is not None:
                 kwargs[kw] = val
 
-        self.widget = _ttkScrolledTreeView(parent, vscrollbar=self.vscrollbar, **kwargs)
-
+        self.widget = scrolled_widget_factory(
+            parent,
+            ttk.Treeview,
+            vscrollbar=self.vscrollbar,
+            hscrollbar=self.hscrollbar,
+            **kwargs,
+        )
         self._grid(
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
         )
@@ -2266,6 +2200,7 @@ class Listbox(Treeview):
         anchor=None,
         command=None,
         vscrollbar=None,
+        hscrollbar=None,
     ):
         self.key = key or "Listbox"
         self.widget_type = "guitk.Listbox"
@@ -2298,6 +2233,7 @@ class Listbox(Treeview):
             takefocus=takefocus,
             command=command,
             vscrollbar=vscrollbar,
+            hscrollbar=hscrollbar,
         )
 
     def _create_widget(self, parent, window: Window, row, col):
@@ -2722,7 +2658,6 @@ __all__ = [
     "Output",
     "Radiobutton",
     "Scale",
-    "ScrolledText",
     "Text",
     "Treeview",
     "Widget",
