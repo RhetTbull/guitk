@@ -344,15 +344,6 @@ class Widget:
                 )
             )
 
-    # def bind_event_command(self, event_name, command):
-    #     """Bind a tkinter event to to a command callback; creates a guitk Event and binds this to the command"""
-    #     self.bind_event(event_name)
-    #     self.window._bind_command(
-    #         EventCommand(
-    #             widget=self, key=self.key, event_type=event_name, command=command
-    #         )
-    #     )
-
     @property
     def state(self):
         return self.widget["state"]
@@ -1197,6 +1188,7 @@ class LabelEntry(Entry):
         cursor=None,
         takefocus=None,
         command=None,
+        hscrollbar=False,
     ):
         super().__init__(
             key=key,
@@ -1213,6 +1205,7 @@ class LabelEntry(Entry):
             cursor=cursor,
             takefocus=takefocus,
             command=command,
+            hscrollbar=hscrollbar,
         )
         self.widget_type = "guitk.LabelEntry"
         self.text = text
