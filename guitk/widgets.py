@@ -7,6 +7,8 @@ from collections import namedtuple
 from tkinter import filedialog, font, ttk
 from typing import Any, Callable, List, Optional, Union
 
+import customtkinter as ctk
+
 from .constants import GUITK, EventType
 from .redirect import StdErrRedirect, StdOutRedirect
 from .tkroot import _TKRoot
@@ -25,23 +27,23 @@ def scrolled_widget_factory(
     frame = None
     if vscrollbar or hscrollbar:
         # create frame for the widget and the scrollbars
-        frame = ttk.Frame(master)
+        frame = ctk.CTkFrame(master)
 
     parent = frame or master
     widget = widget_class()
 
     widget.vbar = None
     if vscrollbar:
-        widget.vbar = ttk.Scrollbar(frame)
+        widget.vbar = ctk.CTkScrollbar(frame, command=widget.yview)
         widget.vbar.grid(column=1, row=0, sticky="NS")
-        # vbar.pack(side=tk.RIGHT, fill=tk.Y)
+        widget.configure(yscrollcommand=widget.vbar.set)
         kw.update({"yscrollcommand": widget.vbar.set})
 
     widget.hbar = None
     if hscrollbar:
-        widget.hbar = ttk.Scrollbar(frame, orient=tk.HORIZONTAL)
+        widget.hbar = ctk.CTkScrollbar(frame, orient=tk.HORIZONTAL)
         widget.hbar.grid(column=0, row=1, sticky="EW")
-        # hbar.pack(side=tk.BOTTOM, fill=tk.X)
+        widget.configure(xscrollcommand=widget.hbar.set)
         kw.update({"xscrollcommand": widget.hbar.set})
 
     widget_class.__init__(widget, parent, **kw)
@@ -996,7 +998,8 @@ class Button(Widget):
             takefocus=takefocus,
             command=command,
         )
-        self.widget_type = "ttk.Button"
+        # self.widget_type = "ttk.Button"
+        self.widget_type = "ctk.CTkButton"
         self.text = text
         self.key = key or text
         self.columnspan = columnspan
@@ -1025,7 +1028,7 @@ class Button(Widget):
             if val is not None:
                 kwargs[kw] = val
 
-        self.widget = ttk.Button(parent, command=window._make_callback(event), **kwargs)
+        self.widget = ctk.CTkButton(parent, command=window._make_callback(event), **kwargs)
         self._grid(
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
         )
@@ -2630,6 +2633,105 @@ class Notebook(Widget, _Layout):
         return self.widget
 
 
+class Panedwindow(Widget, _Layout):
+    """ttk.Panedwindow"""
+
+    def __init__(
+        self,
+        key=None,
+        panes=None,
+        disabled=False,
+        columnspan=None,
+        rowspan=None,
+        padx=None,
+        pady=None,
+        sticky=None,
+        tooltip=None,
+        style=None,
+        events=True,
+        command=None,
+    ):
+        super().__init__(
+            key=key,
+            disabled=disabled,
+            rowspan=rowspan,
+            columnspan=columnspan,
+            padx=padx,
+            pady=pady,
+            events=events,
+            sticky=sticky,
+            tooltip=tooltip,
+            anchor=None,
+            command=command,
+        )
+        self.widget_type = "ttk.Panedwindow"
+        self.key = key or "PanedWindow"
+
+        self.style = style
+
+        self.columnspan = columnspan
+        self.rowspan = rowspan
+        self.tooltip = tooltip
+        self.panes = panes
+
+    def _create_widget(self, parent, window: Window, row, col):
+        self.window = window
+        self._parent = parent
+
+        kwargs = {}
+        for kw in ["style"]:
+            val = getattr(self, kw)
+            if val is not None:
+                kwargs[kw] = val
+
+        self.widget = ttk.Panedwindow(parent, **kwargs)
+        self._grid(
+            row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
+        )
+
+        # event_tab_change = Event(
+        #     self.widget, window, self.key, EventType.NotebookTabChanged
+        # )
+        # self.widget.bind(
+        #     "<<NotebookTabChanged>>", window._make_callback(event_tab_change)
+        # )
+
+        if self.panes:
+            for pane in self.panes:
+                self.add(pane)
+
+        # if self._command:
+        #     self.events = True
+        #     window._bind_command(
+        #         # the actual widget will be a tk widget in form widget=.!toplevel.!frame.!notebook, so it won't match self.widget
+        #         # so set widget=None or _handle_commands won't correctly handle the command
+        #         EventCommand(
+        #             widget=None,
+        #             key=self.key,
+        #             event_type=EventType.NotebookTabChanged,
+        #             command=self._command,
+        #         )
+        #     )
+
+        if self._disabled:
+            self.widget.state(["disabled"])
+
+        return self.widget
+
+    def add(self, layout, **kwargs):
+        """Add a pane to the Panedwindow"""
+        # frame = Frame(layout=layout)
+        # frame_ = frame._create_widget(self.widget, self.window, 0, 0)
+        frame = LabelFrame(text="Foo", layout=layout) 
+        frame_ = frame._create_widget(self.widget, self.window, 0, 0)
+        self.panedwindow.add(frame_, **kwargs)
+
+    @property
+    def panedwindow(self) -> ttk.Panedwindow:
+        """Return the ttk.Panedwindow widget"""
+        return self.widget
+
+
 __all__ = [
     "BrowseDirectoryButton",
     "BrowseFileButton",
@@ -2657,4 +2759,5 @@ __all__ = [
     "Widget",
     "Window",
     "Progressbar",
+    "Panedwindow",
 ]

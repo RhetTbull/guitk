@@ -3,6 +3,10 @@
 import tkinter as tk
 from tkinter import ttk
 
+import customtkinter
+
+customtkinter.set_appearance_mode("System")  # Modes: system (default), light, dark
+customtkinter.set_default_color_theme("blue")  # Themes: blue (default), dark-blue, green
 
 class _TKRoot:
     """Singleton that returns a tkinter.TK() object; there can be only one in an app"""
@@ -20,7 +24,8 @@ class _TKRoot:
 
         # create root object, make it invisible and withdraw it
         # all other windows will be children of this invisible root object
-        root = tk.Tk()
+        # root = tk.Tk()
+        root = customtkinter.CTk() 
         root.attributes("-alpha", 0)
         root.withdraw()
 
