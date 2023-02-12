@@ -1,3 +1,4 @@
+.python-version
 .metrics
 .DS_store
 __pycache__
