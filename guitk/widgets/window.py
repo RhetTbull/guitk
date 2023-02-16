@@ -50,8 +50,7 @@ class _Layout:
                 widget._create_widget(
                     parent, window, row_count + row_offset, col_count + col_offset
                 )
-                tooltip = widget.tooltip or window.tooltip
-                if tooltip:
+                if tooltip := widget.tooltip or window.tooltip:
                     _tooltip = tooltip(widget.key) if callable(tooltip) else tooltip
                     widget._tooltip = (
                         Hovertip(widget.widget, _tooltip) if _tooltip else None
