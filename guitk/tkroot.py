@@ -1,5 +1,7 @@
 """ Classes for handling tkinter.TK() """
 
+
+import contextlib
 import tkinter as tk
 from tkinter import ttk
 
@@ -44,10 +46,8 @@ class _TKRoot:
         """De-register a new child window
         Once all children are de-registered, the root Tk object is destroyed
         """
-        try:
+        with contextlib.suppress(KeyError):
             del self.windows[window]
-        except KeyError:
-            pass
         if self.first_window and not self.windows:
             # last window
             self.root.quit()
