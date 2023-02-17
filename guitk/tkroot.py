@@ -15,6 +15,8 @@ from typing import TypeVar
 # create a custom type for type hinting a Window object which is defined later in this module
 Window = TypeVar("Window")
 
+__all__ = ["_TKRoot"]
+
 
 class _TKRoot:
     """Singleton that returns a tkinter.TK() object; there can be only one in an app"""
@@ -82,6 +84,3 @@ class _TKRoot:
         if theme_name not in theme_names:
             raise ValueError(f"theme_name {theme_name} must by in {theme_names}")
         s.theme_use(theme_name)
-
-
-__all__ = ["_TKRoot"]

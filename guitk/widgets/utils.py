@@ -24,14 +24,14 @@ def scrolled_widget_factory(
         widget.vbar = ttk.Scrollbar(frame)
         widget.vbar.grid(column=1, row=0, sticky="NS")
         # vbar.pack(side=tk.RIGHT, fill=tk.Y)
-        kw.update({"yscrollcommand": widget.vbar.set})
+        kw["yscrollcommand"] = widget.vbar.set
 
     widget.hbar = None
     if hscrollbar:
         widget.hbar = ttk.Scrollbar(frame, orient=tk.HORIZONTAL)
         widget.hbar.grid(column=0, row=1, sticky="EW")
         # hbar.pack(side=tk.BOTTOM, fill=tk.X)
-        kw.update({"xscrollcommand": widget.hbar.set})
+        kw["xscrollcommand"] = widget.hbar.set
 
     widget_class.__init__(widget, parent, **kw)
     widget.grid(column=0, row=0, sticky="NSEW")

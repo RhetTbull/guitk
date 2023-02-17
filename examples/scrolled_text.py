@@ -76,7 +76,7 @@ class ScrollDemo(guitk.Window):
             wrap=tk.NONE,
         )
         scroll_h = guitk.Text(
-            key="TEXT_V_SCROLL",
+            key="TEXT_H_SCROLL",
             hscrollbar=True,
             text=sample_text,
             width=40,

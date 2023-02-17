@@ -55,7 +55,7 @@ class HelloWorld(guitk.Window):
             self["OUTPUT"].value = f"Hello {name}! Thanks for trying guitk."
 
         if event.event_type == guitk.EventType.KeyRelease:
-            # events can be handled by event type as well as even key
+            # events can be handled by event type as well as event key
             print(event)
 
 

@@ -1,5 +1,6 @@
 """Window class"""
 
+from __future__ import annotations
 
 import contextlib
 import time
@@ -15,6 +16,11 @@ from .menu import Command, Menu
 from .ttk_label import Label
 from .widget import Widget
 
+from typing import Callable
+
+TooltipType = Callable[[str], str | None]
+LayoutType = list[list[Widget | None]]
+
 
 class _WindowBaseClass:
     # only needed to keep typing happy
@@ -29,7 +35,10 @@ class _Layout:
     def __init__(self, *args, **kwargs):
         pass
 
-    def _layout(self, parent, window: "_WindowBaseClass", autoframe):
+    def _layout(
+        self, parent: tk.BaseWidget, window: "_WindowBaseClass", autoframe: bool
+    ):
+        """Create widgets from layout"""
         # as this is a mixin, make sure class being mixed into has necessary attributes
 
         row_offset = 0
@@ -76,15 +85,15 @@ class Window(_Layout, _WindowBaseClass):
 
     def __init__(
         self,
-        parent=None,
-        title=None,
-        padx=None,
-        pady=None,
-        topmost=None,
-        autoframe=True,
-        theme=None,
-        tooltip=None,
-        modal=None,
+        parent: tk.Tk | None = None,
+        title: str | None = None,
+        padx: int | None = None,
+        pady: int | None = None,
+        topmost: bool | None = None,
+        autoframe: bool = True,
+        theme: str | None = None,
+        tooltip: TooltipType | None = None,
+        modal: bool | None = None,
     ):
         # call _config then subclass's config to initialize
         # layout, title, menu, etc.
@@ -102,7 +111,7 @@ class Window(_Layout, _WindowBaseClass):
 
         self._id = id(self)
         self._tk = _TKRoot()
-        self._parent = self._tk.root if not parent else parent
+        self._parent = parent or self._tk.root
         self._topmost = topmost
 
         self.window = tk.Toplevel(self._parent)
@@ -430,23 +439,23 @@ class _Frame(Widget, _Layout):
 
     def __init__(
         self,
-        frametype=GUITK.ELEMENT_FRAME,
-        width=None,
-        key=None,
-        height=None,
-        layout=None,
-        style=None,
-        borderwidth=None,
-        padding=None,
-        relief=None,
-        disabled=False,
-        rowspan=None,
-        columnspan=None,
-        text=None,
-        labelanchor=None,
-        sticky=None,
-        tooltip=None,
-        autoframe=True,
+        frametype: GUITK = GUITK.ELEMENT_FRAME,
+        width: int | None = None,
+        key: str | None = None,
+        height: int | None = None,
+        layout: LayoutType | None = None,
+        style: str | None = None,
+        borderwidth: int | None = None,
+        padding: int | None = None,
+        relief: str = None,
+        disabled: bool | None = False,
+        rowspan: int | None = None,
+        columnspan: int | None = None,
+        text: str | None = None,
+        labelanchor: str | None = None,
+        sticky: bool | None = None,
+        tooltip: TooltipType | None = None,
+        autoframe: bool | None = True,
     ):
         super().__init__(
             key=key,
@@ -520,7 +529,7 @@ class _Frame(Widget, _Layout):
             )
 
         if self.padding is not None:
-            self.widget["padding"] = self.padding
+            self.widget.configure(padding=self.padding)
         if self.relief is not None:
             self.widget["relief"] = self.relief
         if self.borderwidth is not None:
@@ -557,20 +566,20 @@ class _Frame(Widget, _Layout):
 class Frame(_Frame):
     def __init__(
         self,
-        layout=None,
-        key=None,
-        width=None,
-        height=None,
-        style=None,
-        borderwidth=None,
-        padding=None,
-        relief=None,
-        disabled=False,
-        rowspan=None,
-        columnspan=None,
-        sticky=None,
-        tooltip=None,
-        autoframe=True,
+        layout: LayoutType | None = None,
+        key: str | None = None,
+        width: int | None = None,
+        height: int | None = None,
+        style: str | None = None,
+        borderwidth: int | None = None,
+        padding: int | None = None,
+        relief: str = None,
+        disabled: bool | None = False,
+        rowspan: int | None = None,
+        columnspan: int | None = None,
+        sticky: bool | None = None,
+        tooltip: TooltipType | None = None,
+        autoframe: bool = True,
     ):
         super().__init__(
             frametype=GUITK.ELEMENT_FRAME,
@@ -594,22 +603,22 @@ class Frame(_Frame):
 class LabelFrame(_Frame):
     def __init__(
         self,
-        text=None,
-        layout=None,
-        key=None,
-        labelanchor=None,
-        width=None,
-        height=None,
-        style=None,
-        borderwidth=None,
-        padding=None,
-        relief=None,
-        disabled=False,
-        rowspan=None,
-        columnspan=None,
-        sticky=None,
-        tooltip=None,
-        autoframe=True,
+        text: str | None = None,
+        layout: LayoutType | None = None,
+        key: str | None = None,
+        width: int | None = None,
+        height: int | None = None,
+        style: str | None = None,
+        borderwidth: int | None = None,
+        padding: int | None = None,
+        relief: str = None,
+        disabled: bool | None = False,
+        rowspan: int | None = None,
+        columnspan: int | None = None,
+        labelanchor: str | None = None,
+        sticky: bool | None = None,
+        tooltip: TooltipType | None = None,
+        autoframe: bool = True,
     ):
         super().__init__(
             frametype=GUITK.ELEMENT_LABEL_FRAME,

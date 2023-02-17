@@ -1,5 +1,5 @@
 from .debugwindow import DebugWindow
-from .events import Event, EventCommand
+from .events import Event, EventCommand, EventType
 from .menu import Command, Menu
 from .tk_text import Output, Text
 from .ttk_button import BrowseDirectoryButton, BrowseFileButton, Button
@@ -25,6 +25,7 @@ __all__ = [
     "Entry",
     "Event",
     "EventCommand",
+    "EventType",
     "Frame",
     "Label",
     "LabelEntry",
