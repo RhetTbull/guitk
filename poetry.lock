@@ -300,6 +300,20 @@ importlib-metadata = {version = ">=4.4", markers = "python_version < \"3.10\""}
 testing = ["coverage", "pyyaml"]
 
 [[package]]
+name = "markdownpp"
+version = "1.5.1"
+description = "Markdown preprocessor"
+category = "dev"
+optional = false
+python-versions = "*"
+files = [
+    {file = "MarkdownPP-1.5.1.tar.gz", hash = "sha256:a70babf819a6cf7f1035400ffa5763799fa67f2efcb5e701a59fc5ff79dd9696"},
+]
+
+[package.dependencies]
+Watchdog = ">=0.8.3"
+
+[[package]]
 name = "markupsafe"
 version = "2.1.2"
 description = "Safely add untrusted strings to HTML/XML markup."
@@ -875,4 +889,4 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "e08ff711683205e7b42b8378bdd18a43117b148138e74528b0ffc02b11173654"
+content-hash = "cdd84dad590f235687f16bb7ca73689d5e1415e3c3509bbccaeab4afe9785213"
