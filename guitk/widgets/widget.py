@@ -1,10 +1,15 @@
 """ Widget base class """
 
 from __future__ import annotations
-from guitk.tkroot import _TKRoot
+
 import tkinter as tk
 import tkinter.ttk as ttk
-from .events import Event, EventType, EventCommand
+from typing import Any, Callable
+
+from guitk.tkroot import _TKRoot
+
+from .events import Event, EventCommand, EventType
+from .types import CommandType, TooltipType, ValueType
 
 
 class Widget:
@@ -12,20 +17,21 @@ class Widget:
 
     def __init__(
         self,
-        key=None,
-        disabled=False,
-        rowspan=None,
-        columnspan=None,
-        padx=None,
-        pady=None,
-        events=True,
-        sticky=None,
-        tooltip=None,
-        anchor=None,
-        cursor=None,
-        takefocus=None,
-        command=None,
-        value_type=None,
+        key: str | None = None,
+        disabled: bool = False,
+        rowspan: int | None = None,
+        columnspan: int | None = None,
+        padx: int | None = None,
+        pady: int | None = None,
+        events: bool = True,
+        sticky: str | None = None,
+        tooltip: TooltipType = None,
+        anchor: str | None = None,
+        cursor: str | None = None,
+        takefocus: bool | None = None,
+        command: CommandType | None = None,
+        value_type: ValueType | None = None,
+        **kwargs,
     ):
         self.key = key
         self._disabled = disabled
@@ -51,7 +57,7 @@ class Widget:
         self.widget = None
         self._value = value_type() if value_type is not None else tk.StringVar()
 
-        # get set by _create_widget in inherited classes
+        # set by _create_widget in inherited classes
         self._parent = None
         self.window = None
 
@@ -76,8 +82,8 @@ class Widget:
         if self.padx is not None or self.pady is not None:
             self.widget.grid_configure(padx=self.padx, pady=self.pady)
 
-    def bind_event(self, event_name, command=None):
-        """Bind a tkinter event to widget; will result in an Event of event_type type being sent to handle_event when triggered.
+    def bind_event(self, event_name: str, command: Callable[[], Any] | None = None):
+        """Bind a tkinter event to widget; will result in an Event being sent to handle_event when triggered.
         Optionally bind command to the event"""
         event = Event(self, self.window, self.key, event_name)
         self.widget.bind(event_name, self.window._make_callback(event))
@@ -90,13 +96,13 @@ class Widget:
             )
 
     @property
-    def state(self):
+    def state(self) -> bool:
         return self.widget["state"]
 
     @property
-    def disabled(self):
+    def disabled(self) -> bool:
         return self.widget["state"] == "disabled"
 
     @disabled.setter
-    def disabled(self, value):
+    def disabled(self, value: bool) -> None:
         self.widget["state"] = "disabled" if value else "normal"

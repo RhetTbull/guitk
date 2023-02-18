@@ -4,6 +4,7 @@ import tkinter.ttk as ttk
 from tkinter import filedialog
 
 from .events import Event, EventCommand, EventType
+from .types import CommandType, TooltipType
 from .widget import Widget
 
 
@@ -12,20 +13,21 @@ class Button(Widget):
 
     def __init__(
         self,
-        text,
-        key=None,
-        disabled=False,
-        columnspan=None,
-        rowspan=None,
-        padx=None,
-        pady=None,
-        width=None,
-        events=True,
-        sticky=None,
-        tooltip=None,
-        anchor=None,
-        takefocus=None,
-        command=None,
+        text: str,
+        key: str | None = None,
+        disabled: bool = False,
+        columnspan: int | None = None,
+        rowspan: int | None = None,
+        padx: int | None = None,
+        pady: int | None = None,
+        width: int | None = None,
+        events: bool = True,
+        sticky: str | None = None,
+        tooltip: TooltipType | None = None,
+        anchor: str | None = None,
+        takefocus: bool | None = None,
+        command: CommandType | None = None,
+        **kwargs,
     ):
         super().__init__(
             key=key,
@@ -34,13 +36,16 @@ class Button(Widget):
             columnspan=columnspan,
             padx=padx,
             pady=pady,
+            width=width,
             events=events,
             sticky=sticky,
             tooltip=tooltip,
             anchor=anchor,
             takefocus=takefocus,
             command=command,
+            **kwargs,
         )
+
         self.widget_type = "ttk.Button"
         self.text = text
         self.key = key or text
@@ -48,13 +53,14 @@ class Button(Widget):
         self.rowspan = rowspan
         self.tooltip = tooltip
         self.width = width
+        self.kwargs = kwargs
 
     @property
-    def value(self):
+    def value(self) -> str:
         return self.widget["text"]
 
     @value.setter
-    def value(self, text):
+    def value(self, text: str):
         self.widget["text"] = text
 
     def _create_widget(self, parent, window: "Window", row, col):
@@ -63,12 +69,12 @@ class Button(Widget):
         event = Event(self, window, self.key, EventType.ButtonPress)
 
         # build arg list for Button()
-        # TODO: standardize attribute names
         kwargs = {}
         for kw in ["text", "anchor", "width", "takefocus"]:
             val = getattr(self, f"{kw}")
             if val is not None:
                 kwargs[kw] = val
+        kwargs |= self.kwargs
 
         self.widget = ttk.Button(parent, command=window._make_callback(event), **kwargs)
         self._grid(
@@ -225,4 +231,3 @@ class BrowseDirectoryButton(Button):
             self.window[self.target_key].value = self._dirname
         event = Event(self, self.window, self.key, EventType.BrowseDirectory)
         self.window._handle_event(event)
-

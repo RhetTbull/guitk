@@ -14,11 +14,9 @@ from guitk.tooltips import Hovertip
 from .events import Event, EventCommand, EventType
 from .menu import Command, Menu
 from .ttk_label import Label
+from .types import TooltipType
 from .widget import Widget
 
-from typing import Callable
-
-TooltipType = Callable[[str], str | None]
 LayoutType = list[list[Widget | None]]
 
 
