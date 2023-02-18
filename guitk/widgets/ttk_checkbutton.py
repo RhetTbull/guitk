@@ -22,8 +22,8 @@ class Checkbutton(Widget):
         events=True,
         sticky=None,
         tooltip=None,
-        anchor=None,
         command=None,
+        **kwargs,
     ):
         super().__init__(
             key=key,
@@ -35,7 +35,6 @@ class Checkbutton(Widget):
             events=events,
             sticky=sticky,
             tooltip=tooltip,
-            anchor=anchor,
             command=command,
         )
         self.widget_type = "ttk.Checkbutton"
@@ -44,6 +43,7 @@ class Checkbutton(Widget):
         self.columnspan = columnspan
         self.rowspan = rowspan
         self._value = tk.BooleanVar()
+        self.kwargs = kwargs
 
     def _create_widget(self, parent, window: "Window", row, col):
         self.window = window
@@ -52,7 +52,7 @@ class Checkbutton(Widget):
         self.widget = ttk.Checkbutton(
             parent,
             text=self.text,
-            anchor=self.anchor,
+            anchor=self.kwargs.get("anchor"),
             command=window._make_callback(event),
             variable=self._value,
             onvalue=True,

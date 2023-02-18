@@ -12,7 +12,6 @@ from .types import CommandType, TooltipType
 from .utils import scrolled_widget_factory
 from .widget import Widget
 
-
 __all__ = ["Text", "Output"]
 
 
@@ -184,26 +183,55 @@ class Text(Widget):
 
 # TODO: how to make Output read-only?
 class Output(Text):
-    """Text box with stderr/stdout redirected"""
+    """
+    Text box that redirects stderr and/or stdout to the text box.
+    """
 
     def __init__(
         self,
-        text=None,
-        key=None,
-        width=40,
-        height=20,
-        disabled=False,
-        echo=False,
-        rowspan=None,
-        columnspan=None,
-        padx=None,
-        pady=None,
-        events=False,
-        sticky=None,
-        tooltip=None,
-        stdout=True,
-        stderr=True,
+        text: str | None = None,
+        key: Hashable = None,
+        width: int = 40,
+        height: int = 20,
+        disabled: bool = False,
+        columnspan: int | None = None,
+        rowspan: int | None = None,
+        padx: int | None = None,
+        pady: int | None = None,
+        events: bool = False,
+        sticky: str | None = None,
+        tooltip: TooltipType = None,
+        vscrollbar: bool = True,
+        hscrollbar: bool = False,
+        stdout: bool = True,
+        stderr: bool = True,
+        echo: bool = False,
+        **kwargs,
     ):
+        """
+        Initialize an Output widget.
+
+        Args:
+            text (str | None, optional): Default text for the text box. Defaults to None.
+            key (Hashable, optional): Unique key for this widget. Defaults to None.
+            width (int, optional): Width of the text box. Defaults to 40.
+            height (int, optional): Height of the text box. Defaults to 20.
+            disabled (bool, optional): If True, widget is disabled. Defaults to False.
+            columnspan (int | None, optional): Number of columns to span. Defaults to None.
+            rowspan (int | None, optional): Number of rows to span. Defaults to None.
+            padx (int | None, optional): X padding. Defaults to None.
+            pady (int | None, optional): Y padding. Defaults to None.
+            events (bool, optional): Enable events for this widget. Defaults to False.
+            sticky (str | None, optional): Sticky direction for widget layout. Defaults to None.
+            tooltip (TooltipType | None, optional): Tooltip text or callback to generate tooltip text. Defaults to None.
+            command (CommandType | None, optional): Command callback. Defaults to None.
+            vscrollbar (bool, optional): Show vertical scrollbar. Defaults to False.
+            hscrollbar (bool, optional): Show horizontal scrollbar. Defaults to False.
+            stdout (bool, optional): Redirect stdout to the text box. Defaults to True.
+            stderr (bool, optional): Redirect stderr to the text box. Defaults to True.
+            echo (bool, optional): Echo stdout and stderr to the console. Defaults to False.
+            **kwargs: Additional keyword arguments are passed to tk Text.
+        """
         super().__init__(
             text=text,
             key=key,
@@ -217,7 +245,8 @@ class Output(Text):
             events=events,
             sticky=sticky,
             tooltip=tooltip,
-            vscrollbar=True,
+            vscrollbar=vscrollbar,
+            hscrollbar=hscrollbar,
         )
         self._echo = echo
         self._redirect = []
@@ -232,6 +261,7 @@ class Output(Text):
 
     def _create_widget(self, parent, window: "Window", row, col):
         super()._create_widget(parent, window, row, col)
+
         # Unbind <KeyRelease> since this isn't for user input
         self.widget.unbind("<KeyRelease>")
 
@@ -252,19 +282,23 @@ class Output(Text):
 
     @property
     def echo(self):
+        """Return True if stdout and stderr are echoed to the console."""
         return self._echo
 
     @echo.setter
     def echo(self, echo):
+        """Set whether stdout and stderr are echoed to the console."""
         self._echo = echo
         for r in self._redirect:
             r.echo = echo
 
     def disable_redirect(self):
+        """Disable redirecting stdout and stderr to the text box."""
         for r in self._redirect:
             r.disable_redirect()
 
     def enable_redirect(self):
+        """Enable redirecting stdout and stderr to the text box."""
         for r in self._redirect:
             r.enable_redirect()
 

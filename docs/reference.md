@@ -29,3 +29,14 @@
 
 ::: guitk.LabelEntry
     handler.: python
+
+
+## Text
+
+::: guitk.Text
+    handler.: python
+
+## Output
+
+::: guitk.Output
+    handler.: python

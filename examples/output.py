@@ -1,70 +1,95 @@
 """ Demonstrates use of guitk.Output widget for capturing stdout/stderr """
 
-import guitk
 import sys
 
+from guitk import Button, Checkbutton, Entry, Frame, Label, Output, Window
 
-class OutputDemo(guitk.Window):
+
+class OutputDemo(Window):
     def config(self):
         self.title = "Output Demo"
 
         self.layout = [
             [
-                guitk.Frame(
-                    layout=[
+                Frame(
+                    [
                         [
-                            guitk.Label("stdout"),
-                            guitk.Entry(key="STDOUT"),
-                            guitk.Button("Print", key="PRINT_STDOUT"),
+                            Label("stdout"),
+                            Entry(key="STDOUT"),
+                            Button("Print", key="PRINT_STDOUT"),
                         ],
                         [
-                            guitk.Label("stderr"),
-                            guitk.Entry(key="STDERR"),
-                            guitk.Button("Print", key="PRINT_STDERR"),
+                            Label("stderr"),
+                            Entry(key="STDERR"),
+                            Button("Print", key="PRINT_STDERR"),
                         ],
                     ]
                 )
             ],
             [
-                guitk.Frame(
-                    layout=[
+                Frame(
+                    [
                         [
-                            guitk.Output(
-                                stderr=False, key="OUTPUT_STDOUT", width=40, height=20
+                            Output(
+                                stderr=False,
+                                key="OUTPUT_STDOUT",
+                                width=40,
+                                height=20,
+                                text="This widget will show stdout\n",
                             )
                         ],
                         [
-                            guitk.Label(
-                                "stdout", sticky="nsew", anchor="center", columnspan=1
+                            Label(
+                                "redirected stdout",
+                                sticky="nsew",
+                                anchor="center",
+                                columnspan=1,
                             )
                         ],
                         [
-                            guitk.Checkbutton("echo", key="ECHO_STDOUT"),
-                            guitk.Button("Start", key="START_STDOUT", disabled=True),
-                            guitk.Button("Stop", key="STOP_STDOUT"),
+                            Checkbutton("echo", key="ECHO_STDOUT"),
+                            Button("Start", key="START_STDOUT", disabled=True),
+                            Button("Stop", key="STOP_STDOUT"),
                         ],
                     ]
                 ),
-                guitk.Frame(
-                    layout=[
+                Frame(
+                    [
                         [
-                            guitk.Output(
-                                stdout=False, key="OUTPUT_STDERR", width=40, height=20
+                            Output(
+                                stdout=False,
+                                key="OUTPUT_STDERR",
+                                width=40,
+                                height=20,
+                                text="This widget will show stderr\n",
                             )
                         ],
-                        [guitk.Label("stderr", sticky="nsew", anchor="center")],
+                        [Label("redirected stderr", sticky="nsew", anchor="center")],
                         [
-                            guitk.Checkbutton("echo", key="ECHO_STDERR"),
-                            guitk.Button("Start", key="START_STDERR", disabled=True),
-                            guitk.Button("Stop", key="STOP_STDERR"),
+                            Checkbutton("echo", key="ECHO_STDERR"),
+                            Button("Start", key="START_STDERR", disabled=True),
+                            Button("Stop", key="STOP_STDERR"),
                         ],
                     ]
                 ),
-                guitk.Frame(
-                    layout=[
-                        [guitk.Output(width=40, height=20, key="OUTPUT_BOTH")],
-                        [guitk.Label("stdout/stderr", sticky="nsew", anchor="center")],
-                        [guitk.Frame(layout=[[None]])],
+                Frame(
+                    [
+                        [
+                            Output(
+                                width=40,
+                                height=20,
+                                key="OUTPUT_BOTH",
+                                text="This widget will show both stdout and stderr\n",
+                            )
+                        ],
+                        [
+                            Label(
+                                "redirected stdout/stderr",
+                                sticky="nsew",
+                                anchor="center",
+                            )
+                        ],
+                        [Frame(layout=[[None]])],
                     ]
                 ),
             ],
