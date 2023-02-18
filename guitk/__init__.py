@@ -16,7 +16,7 @@
 from .tkroot import *
 from .widgets import *
 
-__version__ = "0.0.1"
+__version__ = "0.1.0"
 __author__ = "Rhet Turnbull"
 
 # Aliases for classnames as I don't like tkinter's naming convention
