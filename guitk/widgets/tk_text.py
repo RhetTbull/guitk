@@ -12,15 +12,51 @@ from .types import CommandType, TooltipType
 from .utils import scrolled_widget_factory
 from .widget import Widget
 
-Window = TypeVar("Window")
+
+__all__ = ["Text", "Output"]
 
 
-# TODO: add additional attributes
-_valid_tk_text_attributes = {
+_valid_standard_attributes = {
+    "background",
+    "borderwidth",
     "cursor",
+    "exportselection",
+    "font",
+    "foreground",
+    "highlightbackground",
+    "highlightcolor",
+    "highlightthickness",
+    "insertbackground",
+    "insertborderwidth",
+    "insertofftime",
+    "insertontime",
+    "insertwidth",
+    "padx",
+    "pady",
+    "relief",
+    "selectbackground",
+    "selectborderwidth",
+    "selectforeground",
+    "setgrid",
     "takefocus",
-    "wrap",
+    "xscrollcommand",
+    "yscrollcommand",
 }
+
+_valid_tk_text_attributes = {
+    "autoseparators",
+    "maxundo",
+    "spacing1",
+    "spacing2",
+    "spacing3",
+    "state",
+    "tabs",
+    "undo",
+    "wrap",
+} | _valid_standard_attributes
+
+
+Window = TypeVar("Window")
 
 
 class Text(Widget):

@@ -13,22 +13,25 @@ from .widget import Widget
 
 __all__ = ["Entry", "LabelEntry"]
 
-_valid_ttk_entry_attributes = {
+_valid_standard_attributes = {
+    "class",
     "cursor",
-    "exportselection",
-    "insertborderwidth",
-    "insertofftime",
-    "insertontime",
-    "insertwidth",
-    "justify",
-    "selectborderwidth",
-    "show",
+    "style",
     "takefocus",
+    "xscrollcommand",
+}
+
+_valid_ttk_entry_attributes = {
+    "exportselection",
+    "invalidcommand",
+    "justify",
+    "show",
+    "state",
+    "textvariable",
     "validate",
     "validatecommand",
     "width",
-    "xscrollcommand",
-}
+} | _valid_standard_attributes
 
 
 class Entry(Widget):
@@ -49,7 +52,7 @@ class Entry(Widget):
         sticky: str | None = None,
         tooltip: TooltipType = None,
         command: CommandType | None = None,
-        hscrollbar: bool =False ,
+        hscrollbar: bool = False,
         **kwargs,
     ):
         """

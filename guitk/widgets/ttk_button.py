@@ -11,12 +11,25 @@ from .widget import Widget
 
 __all__ = ["Button", "BrowseFileButton", "BrowseDirectoryButton"]
 
-_valid_ttk_button_attributes = {
-    "anchor",
+_valid_standard_attributes = {
+    "class",
+    "compound",
     "cursor",
+    "image",
+    "state",
+    "style",
     "takefocus",
+    "text",
+    "textvariable",
+    "underline",
     "width",
 }
+
+_valid_ttk_button_attributes = {
+    "command",
+    "default",
+    "width",
+} | _valid_standard_attributes
 
 
 _valid_askopenfile_options = {
