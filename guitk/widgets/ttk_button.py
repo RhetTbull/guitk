@@ -1,11 +1,30 @@
 """ttk Button widgets"""
 
+import pathlib
 import tkinter.ttk as ttk
 from tkinter import filedialog
+from typing import Hashable
 
 from .events import Event, EventCommand, EventType
 from .types import CommandType, TooltipType
 from .widget import Widget
+
+__all__ = ["Button", "BrowseFileButton", "BrowseDirectoryButton"]
+
+_valid_ttk_button_attributes = {
+    "anchor",
+    "cursor",
+    "takefocus",
+    "width",
+}
+
+
+_valid_askopenfile_options = {
+    "defaultextension",
+    "filetypes",
+    "initialfile",
+    "title",
+}
 
 
 class Button(Widget):
@@ -14,21 +33,35 @@ class Button(Widget):
     def __init__(
         self,
         text: str,
-        key: str | None = None,
+        key: Hashable | None = None,
         disabled: bool = False,
         columnspan: int | None = None,
         rowspan: int | None = None,
         padx: int | None = None,
         pady: int | None = None,
-        width: int | None = None,
         events: bool = True,
         sticky: str | None = None,
         tooltip: TooltipType | None = None,
-        anchor: str | None = None,
-        takefocus: bool | None = None,
         command: CommandType | None = None,
         **kwargs,
     ):
+        """
+        Initialize a Button widget.
+
+        Args:
+            text (str): Text for the button.
+            key (Hashable, optional): Unique key for this widget. Defaults to None.
+            disabled (bool, optional): If True, widget is disabled. Defaults to False.
+            columnspan (int | None, optional): Number of columns to span. Defaults to None.
+            rowspan (int | None, optional): Number of rows to span. Defaults to None.
+            padx (int | None, optional): X padding. Defaults to None.
+            pady (int | None, optional): Y padding. Defaults to None.
+            events (bool, optional): Enable events for this widget. Defaults to False.
+            sticky (str | None, optional): Sticky direction for widget layout. Defaults to None.
+            tooltip (TooltipType | None, optional): Tooltip text or callback to generate tooltip text. Defaults to None.
+            command (CommandType | None, optional): Command callback. Defaults to None.
+            **kwargs: Additional keyword arguments are passed to ttk.Button.
+        """
         super().__init__(
             key=key,
             disabled=disabled,
@@ -36,12 +69,9 @@ class Button(Widget):
             columnspan=columnspan,
             padx=padx,
             pady=pady,
-            width=width,
             events=events,
             sticky=sticky,
             tooltip=tooltip,
-            anchor=anchor,
-            takefocus=takefocus,
             command=command,
             **kwargs,
         )
@@ -52,7 +82,6 @@ class Button(Widget):
         self.columnspan = columnspan
         self.rowspan = rowspan
         self.tooltip = tooltip
-        self.width = width
         self.kwargs = kwargs
 
     @property
@@ -69,14 +98,16 @@ class Button(Widget):
         event = Event(self, window, self.key, EventType.ButtonPress)
 
         # build arg list for Button()
-        kwargs = {}
-        for kw in ["text", "anchor", "width", "takefocus"]:
-            val = getattr(self, f"{kw}")
-            if val is not None:
-                kwargs[kw] = val
-        kwargs |= self.kwargs
+        kwargs_button = {
+            k: v for k, v in self.kwargs.items() if k in _valid_ttk_button_attributes
+        }
 
-        self.widget = ttk.Button(parent, command=window._make_callback(event), **kwargs)
+        self.widget = ttk.Button(
+            parent,
+            text=self.text,
+            command=window._make_callback(event),
+            **kwargs_button,
+        )
         self._grid(
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
         )
@@ -104,26 +135,45 @@ class Button(Widget):
 
 
 class BrowseFileButton(Button):
+    """
+    Button that opens a file dialog to select a file.
+    """
+
     def __init__(
         self,
         text="Browse",
-        key=None,
-        target_key=None,
-        disabled=False,
-        columnspan=None,
-        rowspan=None,
-        padx=None,
-        pady=None,
-        events=True,
-        sticky=None,
-        tooltip=None,
-        anchor=None,
-        filename_only=None,
-        **options,
-        # initialdir=None,
-        # filetypes=None,
-        # title=None,
+        key: Hashable | None = None,
+        target_key: Hashable | None = None,
+        disabled: bool = False,
+        columnspan: int | None = None,
+        rowspan: int | None = None,
+        padx: int | None = None,
+        pady: int | None = None,
+        events: bool = True,
+        sticky: str | None = None,
+        tooltip: TooltipType | None = None,
+        filename_only: bool = False,
+        **kwargs,
     ):
+        """
+        Initialize a BrowseFileButton widget.
+
+        Args:
+            text (str): Text for the button.
+            key (Hashable, optional): Unique key for this widget. Defaults to None.
+            target_key (Hashable, optional): Unique key for the target widget. Defaults to None.
+                If set, the target widget's value is set to the selected filename.
+            disabled (bool, optional): If True, widget is disabled. Defaults to False.
+            columnspan (int | None, optional): Number of columns to span. Defaults to None.
+            rowspan (int | None, optional): Number of rows to span. Defaults to None.
+            padx (int | None, optional): X padding. Defaults to None.
+            pady (int | None, optional): Y padding. Defaults to None.
+            events (bool, optional): Enable events for this widget. Defaults to False.
+            sticky (str | None, optional): Sticky direction for widget layout. Defaults to None.
+            tooltip (TooltipType | None, optional): Tooltip text or callback to generate tooltip text. Defaults to None.
+            filename_only (bool, optional): If True, only the filename is returned. Defaults to False.
+            **kwargs: Additional keyword arguments are passed to ttk.Button or filedialog.askopenfilename as appropriate.
+        """
         super().__init__(
             text,
             key=key,
@@ -135,19 +185,21 @@ class BrowseFileButton(Button):
             events=events,
             sticky=sticky,
             tooltip=tooltip,
-            anchor=anchor,
         )
         self.target_key = target_key
         self.widget_type = "guitk.BrowseFileButton"
         self._filename = None
-        self._options = options
         self._filename_only = filename_only
+        self.kwargs = kwargs
 
     def _create_widget(self, parent, window: "Window", row, col):
         self.window = window
         self._parent = parent
+        kwargs_button = {
+            k: v for k, v in self.kwargs.items() if k in _valid_ttk_button_attributes
+        }
         self.widget = ttk.Button(
-            parent, text=self.text, anchor=self.anchor, command=self.browse_dialog
+            parent, text=self.text, command=self.browse_dialog, **kwargs_button
         )
         self._grid(
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
@@ -162,7 +214,11 @@ class BrowseFileButton(Button):
         return self._filename
 
     def browse_dialog(self):
-        self._filename = filedialog.askopenfilename(**self._options)
+        """Open a file dialog to select a file"""
+        kwargs_options = {
+            k: v for k, v in self.kwargs.items() if k in _valid_askopenfile_options
+        }
+        self._filename = filedialog.askopenfilename(**kwargs_options)
         if self._filename_only and self._filename:
             # only want the name, not the path
             self._filename = str(pathlib.Path(self._filename).name)
@@ -176,19 +232,36 @@ class BrowseDirectoryButton(Button):
     def __init__(
         self,
         text="Browse",
-        key=None,
-        target_key=None,
-        disabled=False,
-        columnspan=None,
-        rowspan=None,
-        padx=None,
-        pady=None,
-        events=True,
-        sticky=None,
-        tooltip=None,
-        anchor=None,
-        **options,
+        key: Hashable | None = None,
+        target_key: Hashable | None = None,
+        disabled: bool = False,
+        columnspan: int | None = None,
+        rowspan: int | None = None,
+        padx: int | None = None,
+        pady: int | None = None,
+        events: bool = True,
+        sticky: str | None = None,
+        tooltip: TooltipType | None = None,
+        **kwargs,
     ):
+        """
+        Initialize a BrowseDirectoryButton widget.
+
+        Args:
+            text (str): Text for the button.
+            key (Hashable, optional): Unique key for this widget. Defaults to None.
+            target_key (Hashable, optional): Unique key for the target widget. Defaults to None.
+                If set, the target widget's value is set to the selected directory.
+            disabled (bool, optional): If True, widget is disabled. Defaults to False.
+            columnspan (int | None, optional): Number of columns to span. Defaults to None.
+            rowspan (int | None, optional): Number of rows to span. Defaults to None.
+            padx (int | None, optional): X padding. Defaults to None.
+            pady (int | None, optional): Y padding. Defaults to None.
+            events (bool, optional): Enable events for this widget. Defaults to False.
+            sticky (str | None, optional): Sticky direction for widget layout. Defaults to None.
+            tooltip (TooltipType | None, optional): Tooltip text or callback to generate tooltip text. Defaults to None.
+            **kwargs: Additional keyword arguments are passed to ttk.Button or filedialog.askopenfilename as appropriate.
+        """
         super().__init__(
             text,
             key=key,
@@ -200,18 +273,21 @@ class BrowseDirectoryButton(Button):
             events=events,
             sticky=sticky,
             tooltip=tooltip,
-            anchor=anchor,
         )
         self.target_key = target_key
         self.widget_type = "guitk.BrowseDirectoryButton"
         self._dirname = None
-        self._options = options
+        self.kwargs = kwargs
 
     def _create_widget(self, parent, window: "Window", row, col):
         self.window = window
         self._parent = parent
+
+        kwargs_button = {
+            k: v for k, v in self.kwargs.items() if k in _valid_ttk_button_attributes
+        }
         self.widget = ttk.Button(
-            parent, text=self.text, anchor=self.anchor, command=self.browse_dialog
+            parent, text=self.text, command=self.browse_dialog, **kwargs_button
         )
         self._grid(
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
@@ -226,7 +302,13 @@ class BrowseDirectoryButton(Button):
         return self._dirname
 
     def browse_dialog(self):
-        self._dirname = filedialog.askdirectory(**self._options)
+        """
+        Open a file dialog to select a directory.
+        """
+        kwargs_options = {
+            k: v for k, v in self.kwargs.items() if k in _valid_askopenfile_options
+        }
+        self._dirname = filedialog.askdirectory(**kwargs_options)
         if self.target_key and self._dirname:
             self.window[self.target_key].value = self._dirname
         event = Event(self, self.window, self.key, EventType.BrowseDirectory)

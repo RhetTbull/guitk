@@ -9,7 +9,6 @@
 """
 
 # TODO: add way to specify tooltip delay
-# TODO: add cursor to all controls
 # TODO: add style to all controls
 # TODO: standardize value_type
 

@@ -1,34 +1,75 @@
 """ttk Entry widget"""
 
+from __future__ import annotations
+
 import tkinter as tk
 import tkinter.ttk as ttk
+from typing import Hashable
 
 from .events import Event, EventCommand, EventType
+from .types import CommandType, TooltipType
 from .utils import scrolled_widget_factory
 from .widget import Widget
 
+__all__ = ["Entry", "LabelEntry"]
+
+_valid_ttk_entry_attributes = {
+    "cursor",
+    "exportselection",
+    "insertborderwidth",
+    "insertofftime",
+    "insertontime",
+    "insertwidth",
+    "justify",
+    "selectborderwidth",
+    "show",
+    "takefocus",
+    "validate",
+    "validatecommand",
+    "width",
+    "xscrollcommand",
+}
+
 
 class Entry(Widget):
-    """Text entry / input box"""
+    """
+    ttk.Entry text entry / input box
+    """
 
     def __init__(
         self,
-        key=None,
-        default=None,
-        disabled=False,
-        columnspan=None,
-        rowspan=None,
-        width=None,
-        padx=None,
-        pady=None,
-        events=False,
-        sticky=None,
-        tooltip=None,
-        cursor=None,
-        takefocus=None,
-        command=None,
-        hscrollbar=False,
+        key: Hashable = None,
+        default: str | None = None,
+        disabled: bool = False,
+        columnspan: int | None = None,
+        rowspan: int | None = None,
+        padx: int | None = None,
+        pady: int | None = None,
+        events: bool = False,
+        sticky: str | None = None,
+        tooltip: TooltipType = None,
+        command: CommandType | None = None,
+        hscrollbar: bool | None = None,
+        **kwargs,
     ):
+        """
+        Initialize an Entry widget.
+
+        Args:
+            key (Hashable, optional): Unique key for this widget. Defaults to None.
+            default (str | None, optional): Default text for the entry box. Defaults to None.
+            disabled (bool, optional): If True, widget is disabled. Defaults to False.
+            columnspan (int | None, optional): Number of columns to span. Defaults to None.
+            rowspan (int | None, optional): Number of rows to span. Defaults to None.
+            padx (int | None, optional): X padding. Defaults to None.
+            pady (int | None, optional): Y padding. Defaults to None.
+            events (bool, optional): Enable events for this widget. Defaults to False.
+            sticky (str | None, optional): Sticky direction for widget layout. Defaults to None.
+            tooltip (TooltipType | None, optional): Tooltip text or callback to generate tooltip text. Defaults to None.
+            command (CommandType | None, optional): Command callback. Defaults to None.
+            hscrollbar (bool | None, optional): Show horizontal scrollbar. Defaults to None.
+            **kwargs: Additional keyword arguments are passed to ttk.Entry.
+        """
         super().__init__(
             key=key,
             disabled=disabled,
@@ -39,8 +80,6 @@ class Entry(Widget):
             events=events,
             sticky=sticky,
             tooltip=tooltip,
-            cursor=cursor,
-            takefocus=takefocus,
             command=command,
         )
         self.widget_type = "ttk.Entry"
@@ -49,28 +88,23 @@ class Entry(Widget):
         self.key = key or "Entry"
         self.columnspan = columnspan
         self.rowspan = rowspan
-        self.width = width
         self.hscrollbar = hscrollbar
+        self.kwargs = kwargs
 
     def _create_widget(self, parent, window: "Window", row, col):
         self.window = window
         self._parent = parent
 
         # build arg list for Entry
-        # TODO: Need to update all widget options to underscore format
-        kwargs = {}
-        for kw in ["width", "cursor", "takefocus"]:
-            val = getattr(self, f"{kw}")
-            if val is not None:
-                kwargs[kw] = val
-
-        # self.widget = ttk.Entry(parent, textvariable=self._value, **kwargs)
+        kwargs_entry = {
+            k: v for k, v in self.kwargs.items() if k in _valid_ttk_entry_attributes
+        }
         self.widget = scrolled_widget_factory(
             parent,
             ttk.Entry,
             hscrollbar=self.hscrollbar,
             textvariable=self._value,
-            **kwargs,
+            **kwargs_entry,
         )
         self._grid(
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
@@ -103,9 +137,17 @@ class Entry(Widget):
 class _ttkLabelEntry(ttk.Entry):
     """ttk.Entry with a Label"""
 
-    def __init__(self, master=None, text=None, **kw):
+    def __init__(self, master=None, text=None, **kwargs):
+        """
+        Initialize a _ttkLabelEntry widget.
+
+        Args:
+            master (tk.Widget, optional): Parent widget. Defaults to None.
+            text (str, optional): Label text. Defaults to None.
+            **kwargs: Additional keyword arguments are passed to ttk.Entry.
+        """
         self.frame = ttk.Frame(master)
-        ttk.Entry.__init__(self, self.frame, **kw)
+        ttk.Entry.__init__(self, self.frame, **kwargs)
         self.label = ttk.Label(self.frame, text=text)
         self.label.grid(row=0, column=0)
         self.grid(row=0, column=1)
@@ -125,61 +167,74 @@ class _ttkLabelEntry(ttk.Entry):
 
 
 class LabelEntry(Entry):
-    """Text entry / input box with a label"""
+    """
+    Text entry / input box with a label
+    """
 
     def __init__(
         self,
-        text,
-        key=None,
-        default=None,
-        disabled=False,
-        columnspan=None,
-        rowspan=None,
-        width=None,
-        padx=None,
-        pady=None,
-        events=False,
-        sticky=None,
-        tooltip=None,
-        cursor=None,
-        takefocus=None,
-        command=None,
-        hscrollbar=False,
+        text: str,
+        key: Hashable = None,
+        default: str | None = None,
+        disabled: bool = False,
+        columnspan: int | None = None,
+        rowspan: int | None = None,
+        padx: int | None = None,
+        pady: int | None = None,
+        events: bool = False,
+        sticky: str | None = None,
+        tooltip: TooltipType = None,
+        command: CommandType | None = None,
+        hscrollbar: bool | None = None,
+        **kwargs,
     ):
+        """
+        Initialize an Entry widget.
+
+        Args:
+            text (str): Label text.
+            key (Hashable, optional): Unique key for this widget. Defaults to None.
+            default (str | None, optional): Default text for the entry box. Defaults to None.
+            disabled (bool, optional): If True, widget is disabled. Defaults to False.
+            columnspan (int | None, optional): Number of columns to span. Defaults to None.
+            rowspan (int | None, optional): Number of rows to span. Defaults to None.
+            padx (int | None, optional): X padding. Defaults to None.
+            pady (int | None, optional): Y padding. Defaults to None.
+            events (bool, optional): Enable events for this widget. Defaults to False.
+            sticky (str | None, optional): Sticky direction for widget layout. Defaults to None.
+            tooltip (TooltipType | None, optional): Tooltip text or callback to generate tooltip text. Defaults to None.
+            command (CommandType | None, optional): Command callback. Defaults to None.
+            hscrollbar (bool | None, optional): Show horizontal scrollbar. Defaults to None.
+            **kwargs: Additional keyword arguments are passed to ttk.Entry.
+        """
         super().__init__(
             key=key,
             default=default,
             disabled=disabled,
             columnspan=columnspan,
             rowspan=rowspan,
-            width=width,
             padx=padx,
             pady=pady,
             events=events,
             sticky=sticky,
             tooltip=tooltip,
-            cursor=cursor,
-            takefocus=takefocus,
             command=command,
             hscrollbar=hscrollbar,
         )
         self.widget_type = "guitk.LabelEntry"
         self.text = text
+        self.kwargs = kwargs
 
     def _create_widget(self, parent, window: "Window", row, col):
         self.window = window
         self._parent = parent
 
         # build arg list for Entry
-        # TODO: Need to update all widget options to underscore format
-        kwargs = {}
-        for kw in ["width", "cursor", "takefocus"]:
-            val = getattr(self, f"{kw}")
-            if val is not None:
-                kwargs[kw] = val
-
+        kwargs_entry = {
+            k: v for k, v in self.kwargs.items() if k in _valid_ttk_entry_attributes
+        }
         self.widget = _ttkLabelEntry(
-            parent, text=self.text, textvariable=self._value, **kwargs
+            parent, text=self.text, textvariable=self._value, **kwargs_entry
         )
         self._grid(
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan

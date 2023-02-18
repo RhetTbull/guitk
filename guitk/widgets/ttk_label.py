@@ -2,11 +2,20 @@
 
 from __future__ import annotations
 
+import sys
 import tkinter.ttk as ttk
 from tkinter import font
+from typing import Hashable
 
 from .events import Event, EventCommand, EventType
 from .widget import Widget
+from .types import TooltipType
+
+_valid_ttk_label_attributes = {
+    "width",
+    "anchor",
+    "cursor",
+}
 
 
 class Label(Widget):
@@ -14,19 +23,17 @@ class Label(Widget):
 
     def __init__(
         self,
-        text,
-        key=None,
-        disabled=False,
-        rowspan=None,
-        columnspan=None,
-        width=None,
-        padx=None,
-        pady=None,
-        events=False,
-        sticky=None,
-        tooltip=None,
-        anchor=None,
-        cursor=None,
+        text: str,
+        key: Hashable | None = None,
+        disabled: bool = False,
+        rowspan: int | None = None,
+        columnspan: int | None = None,
+        padx: int | None = None,
+        pady: int | None = None,
+        events: bool = False,
+        sticky: str | None = None,
+        tooltip: TooltipType = None,
+        **kwargs,
     ):
         super().__init__(
             key=key,
@@ -38,25 +45,26 @@ class Label(Widget):
             events=events,
             sticky=sticky,
             tooltip=tooltip,
-            anchor=anchor,
-            cursor=cursor,
         )
         self.widget_type = "ttk.Label"
         self.text = text
         self.key = key or text
         self.columnspan = columnspan
         self.rowspan = rowspan
-        self.width = width
+        self.kwargs = kwargs
 
     def _create_widget(self, parent, window: "Window", row, col):
         self.window = window
         self._parent = parent
+        kwargs_label = {
+            k: v
+            for k, v in self.kwargs.items()
+            if k in _valid_ttk_label_attributes
+        }
         self.widget = ttk.Label(
             parent,
             text=self.text,
-            width=self.width,
-            anchor=self.anchor,
-            cursor=self.cursor,
+            **kwargs_label,
         )
         self.widget["textvariable"] = self._value
         self._value.set(self.text)
@@ -94,6 +102,7 @@ class LinkLabel(Label):
         underline_font=False,
         command=None,
     ):
+        cursor = cursor or "pointinghand" if sys.platform == "darwin" else "hand2"
         super().__init__(
             text=text,
             key=key,
@@ -106,7 +115,7 @@ class LinkLabel(Label):
             sticky=sticky,
             tooltip=tooltip,
             anchor=anchor,
-            cursor=cursor or "hand1",
+            cursor=cursor,
         )
         self.widget_type = "guitk.LinkLabel"
         self.text = text
@@ -136,4 +145,3 @@ class LinkLabel(Label):
                     command=self._command,
                 )
             )
-

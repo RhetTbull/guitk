@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import tkinter as tk
 import tkinter.ttk as ttk
-from typing import Any, Callable
+from typing import Any, Callable, Hashable
 
 from guitk.tkroot import _TKRoot
 
@@ -17,7 +17,7 @@ class Widget:
 
     def __init__(
         self,
-        key: str | None = None,
+        key: Hashable | None = None,
         disabled: bool = False,
         rowspan: int | None = None,
         columnspan: int | None = None,
@@ -26,9 +26,6 @@ class Widget:
         events: bool = True,
         sticky: str | None = None,
         tooltip: TooltipType = None,
-        anchor: str | None = None,
-        cursor: str | None = None,
-        takefocus: bool | None = None,
         command: CommandType | None = None,
         value_type: ValueType | None = None,
         **kwargs,
@@ -42,12 +39,6 @@ class Widget:
         self.events = events
         self.sticky = sticky or ""
         self.tooltip = tooltip
-        self.anchor = anchor
-        self.cursor = cursor
-        if takefocus is not None:
-            self.takefocus = 1 if takefocus else 0
-        else:
-            self.takefocus = None
 
         self._command = command
         self._commands = {}
