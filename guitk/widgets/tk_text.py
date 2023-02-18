@@ -1,36 +1,73 @@
 """ tk Text and Output widgets """
 
+from __future__ import annotations
+
 import tkinter as tk
+from typing import Hashable, TypeVar
 
 from guitk.redirect import StdErrRedirect, StdOutRedirect
 
 from .events import Event, EventCommand, EventType
+from .types import CommandType, TooltipType
 from .utils import scrolled_widget_factory
 from .widget import Widget
 
+Window = TypeVar("Window")
+
+
+# TODO: add additional attributes
+_valid_tk_text_attributes = {
+    "cursor",
+    "takefocus",
+    "wrap",
+}
+
 
 class Text(Widget):
-    """Text box"""
+    """
+    A tk Text box
+    """
 
     def __init__(
         self,
-        text=None,
-        key=None,
-        width=40,
-        height=20,
-        disabled=False,
-        rowspan=None,
-        columnspan=None,
-        padx=None,
-        pady=None,
-        events=False,
-        sticky=None,
-        tooltip=None,
-        command=None,
-        vscrollbar=False,
-        hscrollbar=False,
+        text: str | None = None,
+        key: Hashable = None,
+        width: int = 40,
+        height: int = 20,
+        disabled: bool = False,
+        columnspan: int | None = None,
+        rowspan: int | None = None,
+        padx: int | None = None,
+        pady: int | None = None,
+        events: bool = False,
+        sticky: str | None = None,
+        tooltip: TooltipType = None,
+        command: CommandType | None = None,
+        vscrollbar: bool = False,
+        hscrollbar: bool = False,
         **kwargs,
     ):
+        """
+        Initialize a Text widget.
+
+        Args:
+            text (str | None, optional): Default text for the text box. Defaults to None.
+            key (Hashable, optional): Unique key for this widget. Defaults to None.
+            width (int, optional): Width of the text box. Defaults to 40.
+            height (int, optional): Height of the text box. Defaults to 20.
+            disabled (bool, optional): If True, widget is disabled. Defaults to False.
+            columnspan (int | None, optional): Number of columns to span. Defaults to None.
+            rowspan (int | None, optional): Number of rows to span. Defaults to None.
+            padx (int | None, optional): X padding. Defaults to None.
+            pady (int | None, optional): Y padding. Defaults to None.
+            events (bool, optional): Enable events for this widget. Defaults to False.
+            sticky (str | None, optional): Sticky direction for widget layout. Defaults to None.
+            tooltip (TooltipType | None, optional): Tooltip text or callback to generate tooltip text. Defaults to None.
+            command (CommandType | None, optional): Command callback. Defaults to None.
+            vscrollbar (bool, optional): Show vertical scrollbar. Defaults to False.
+            hscrollbar (bool, optional): Show horizontal scrollbar. Defaults to False.
+            **kwargs: Additional keyword arguments are passed to tk Text.
+        """
         super().__init__(
             key=key,
             disabled=disabled,
@@ -57,6 +94,10 @@ class Text(Widget):
     def _create_widget(self, parent, window: "Window", row, col):
         self.window = window
         self._parent = parent
+
+        kwargs_text = {
+            k: v for k, v in self.kwargs.items() if k in _valid_tk_text_attributes
+        }
         self.widget = scrolled_widget_factory(
             parent,
             tk.Text,
@@ -64,7 +105,7 @@ class Text(Widget):
             hscrollbar=self.hscrollbar,
             width=self.width,
             height=self.height,
-            **self.kwargs,
+            **kwargs_text,
         )
         self._grid(
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan

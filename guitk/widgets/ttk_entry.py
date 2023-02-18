@@ -49,7 +49,7 @@ class Entry(Widget):
         sticky: str | None = None,
         tooltip: TooltipType = None,
         command: CommandType | None = None,
-        hscrollbar: bool | None = None,
+        hscrollbar: bool =False ,
         **kwargs,
     ):
         """
@@ -67,7 +67,7 @@ class Entry(Widget):
             sticky (str | None, optional): Sticky direction for widget layout. Defaults to None.
             tooltip (TooltipType | None, optional): Tooltip text or callback to generate tooltip text. Defaults to None.
             command (CommandType | None, optional): Command callback. Defaults to None.
-            hscrollbar (bool | None, optional): Show horizontal scrollbar. Defaults to None.
+            hscrollbar (bool, optional): Show horizontal scrollbar. Defaults to False.
             **kwargs: Additional keyword arguments are passed to ttk.Entry.
         """
         super().__init__(
@@ -185,7 +185,7 @@ class LabelEntry(Entry):
         sticky: str | None = None,
         tooltip: TooltipType = None,
         command: CommandType | None = None,
-        hscrollbar: bool | None = None,
+        hscrollbar: bool = False,
         **kwargs,
     ):
         """
@@ -204,7 +204,7 @@ class LabelEntry(Entry):
             sticky (str | None, optional): Sticky direction for widget layout. Defaults to None.
             tooltip (TooltipType | None, optional): Tooltip text or callback to generate tooltip text. Defaults to None.
             command (CommandType | None, optional): Command callback. Defaults to None.
-            hscrollbar (bool | None, optional): Show horizontal scrollbar. Defaults to None.
+            hscrollbar (bool, optional): Show horizontal scrollbar. Defaults to False.
             **kwargs: Additional keyword arguments are passed to ttk.Entry.
         """
         super().__init__(
