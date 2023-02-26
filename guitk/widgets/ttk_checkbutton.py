@@ -10,6 +10,8 @@ from .events import Event, EventCommand, EventType
 from .types import CommandType, TooltipType
 from .widget import Widget
 
+__all__ = ["Checkbutton"]
+
 _valid_standard_attributes = {
     "class",
     "compound",
@@ -96,7 +98,11 @@ class Checkbutton(Widget):
         event = Event(self, window, self.key, EventType.Checkbutton)
 
         # build arg list for Checkbutton
-        kwargs_checkbutton = {k: v for k, v in self.kwargs.items() if k in _valid_ttk_checkbutton_attributes}
+        kwargs_checkbutton = {
+            k: v
+            for k, v in self.kwargs.items()
+            if k in _valid_ttk_checkbutton_attributes
+        }
 
         self.widget = ttk.Checkbutton(
             parent,
@@ -106,7 +112,7 @@ class Checkbutton(Widget):
             variable=self._value,
             onvalue=True,
             offvalue=False,
-            **kwargs_checkbutton
+            **kwargs_checkbutton,
         )
         self._grid(
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan

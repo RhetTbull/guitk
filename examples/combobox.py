@@ -16,9 +16,13 @@ class ComboboxWindow(guitk.Window):
                     values=["Foo", "Bar", "XYZZY"],
                     width=6,
                     readonly=True,
+                    default="Foo",
                 )
             ],
         ]
+
+    def setup(self):
+        self.window.geometry("400x200")
 
     def handle_event(self, event):
         if event.key in ["COMBOBOX1", "COMBOBOX2"]:
