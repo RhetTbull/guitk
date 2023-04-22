@@ -1,5 +1,7 @@
 """ ttk Scale widget"""
 
+from __future__ import annotations
+
 import tkinter as tk
 import tkinter.ttk as ttk
 
@@ -34,9 +36,9 @@ class Scale(Widget):
 
     def __init__(
         self,
-        from_=None,
-        to=None,
-        value=None,
+        from_value: float,
+        to_value: float,
+        value: float | None =None,
         orient=tk.VERTICAL,
         interval=None,
         precision=None,
@@ -76,8 +78,8 @@ class Scale(Widget):
         self.target_key = target_key
 
         self._cursor = cursor
-        self._from_ = from_
-        self._to = to
+        self._from_ = from_value
+        self._to = to_value
         self._orient = orient
         self._interval = interval
         self._precision = precision

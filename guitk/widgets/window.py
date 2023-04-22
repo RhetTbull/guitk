@@ -360,6 +360,9 @@ class Window(_Layout, _WindowBaseClass):
             self._add_menus(m, self.menu[m])
 
     def _destroy(self):
+        # call teardown to perform any cleanup
+        self.teardown()
+
         # kill any child windows
         for child in self.children():
             event = Event(child, child.window, EventType.Quit, EventType.Quit)
@@ -385,7 +388,6 @@ class Window(_Layout, _WindowBaseClass):
             with contextlib.suppress(Exception):
                 after_id = self._timer_events[timer_id]
                 self._tk.root.after_cancel(after_id)
-        self.teardown()
         self._parent.focus_set()
         self.window.destroy()
         self._tk.deregister(self)
