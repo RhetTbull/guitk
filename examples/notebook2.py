@@ -41,6 +41,10 @@ class NotebookWindow(guitk.Window):
                 layout=[[guitk.Label(f"Tab {self.tab_count}")]],
             )
 
+        if event.event_type == guitk.EventType.NotebookTabChanged:
+            # The name of the currently selected tab is available in Notebook.current_tab
+            print(f"Tab changed to tab: {self['NOTEBOOK'].current_tab}")
+
 
 if __name__ == "__main__":
     NotebookWindow().run()
