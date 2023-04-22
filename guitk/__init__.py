@@ -57,6 +57,8 @@ __all__ = [
     "NoteBook",
     "Notebook",
     "Output",
+    "PROGRESS_DETERMINATE",
+    "PROGRESS_INDETERMINATE",
     "ProgressBar",
     "Progressbar"
     "RadioButton",

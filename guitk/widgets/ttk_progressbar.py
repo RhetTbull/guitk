@@ -1,32 +1,77 @@
 """ ttk Progressbar widget """
 
+from __future__ import annotations
+
 import tkinter as tk
 import tkinter.ttk as ttk
+from typing import Hashable, TypeVar
 
+from .types import TooltipType
 from .widget import Widget
+
+__all__ = ["Progressbar", "PROGRESS_DETERMINATE", "PROGRESS_INDETERMINATE"]
+
+_valid_standard_attributes = {"takefocus", "cursor", "style", "class"}
+
+_valid_ttk_progressbar_attributes = {
+    "orient",
+    "length",
+    "mode",
+    "maximum",
+    "variable",
+    "value",
+    "phase",
+} | _valid_standard_attributes
+
+
+Window = TypeVar("Window")
+
+PROGRESS_DETERMINATE = "determinate"
+PROGRESS_INDETERMINATE = "indeterminate"
 
 
 class Progressbar(Widget):
-    """ttk.Progressbar"""
+    """
+    ttk.Progressbar
+    """
 
     def __init__(
         self,
-        value=None,
-        key=None,
-        orient=tk.HORIZONTAL,
-        length=200,
-        mode="determinate",
-        maximum=100,
-        disabled=False,
-        columnspan=None,
-        rowspan=None,
-        padx=None,
-        pady=None,
-        sticky=None,
-        tooltip=None,
-        style=None,
-        events=True,
+        key: Hashable | None = None,
+        value: float | None = None,
+        orient: str = tk.HORIZONTAL,
+        length: int = 200,
+        mode: str = "determinate",
+        maximum: float = 100.0,
+        disabled: bool = False,
+        columnspan: int | None = None,
+        rowspan: int | None = None,
+        padx: int | None = None,
+        pady: int | None = None,
+        sticky: str | None = None,
+        tooltip: TooltipType = None,
+        events: bool = True,
+        **kwargs,
     ):
+        """Initialize a ttk.Progressbar widget
+
+        Args:
+            key (Hashable, optional): Key for the widget. Defaults to None.
+            value (float, optional): Initial value. Defaults to None.
+            orient (str, optional): Orientation of the progress bar. Defaults to tk.HORIZONTAL.
+            length (int, optional): Length of the progress bar. Defaults to 200.
+            mode (str, optional): Mode of the progress bar. Defaults to "determinate". Can be "determinate" or "indeterminate".
+            maximum (float, optional): Maximum value. Defaults to 100.0.
+            disabled (bool, optional): If True, widget is disabled. Defaults to False.
+            columnspan (int, optional): Number of columns to span. Defaults to None.
+            rowspan (int, optional): Number of rows to span. Defaults to None.
+            padx (int, optional): Padding in x direction. Defaults to None.
+            pady (int, optional): Padding in y direction. Defaults to None.
+            sticky (str, optional): Sticky direction. Defaults to None.
+            tooltip (TooltipType, optional): Tooltip for the widget. Defaults to None.
+            events (bool, optional): Enable events for this widget. Defaults to True.
+            **kwargs: Additional keyword arguments to pass to ttk.Progressbar.
+        """
         super().__init__(
             key=key,
             disabled=disabled,
@@ -47,12 +92,11 @@ class Progressbar(Widget):
         self.length = length
         self.mode = mode
         self.maximum = maximum
-        self.style = style
         self._initial_value = value
-
         self.columnspan = columnspan
         self.rowspan = rowspan
         self.tooltip = tooltip
+        self.kwargs = kwargs
 
     @property
     def value(self):
@@ -66,17 +110,21 @@ class Progressbar(Widget):
         self.window = window
         self._parent = parent
 
-        kwargs = {}
-        for kw in ["length", "orient", "mode", "maximum"]:
-            val = getattr(self, kw)
-            if val is not None:
-                kwargs[kw] = val
-
-        kwargs["variable"] = self._value
+        # Arg list for ttk.ProgressBar
+        kwargs_progressbar = {
+            k: v
+            for k, v in self.kwargs.items()
+            if k in _valid_ttk_progressbar_attributes
+        }
+        kwargs_progressbar["variable"] = self._value
+        kwargs_progressbar["orient"] = self.orient
+        kwargs_progressbar["length"] = self.length
+        kwargs_progressbar["mode"] = self.mode
+        kwargs_progressbar["maximum"] = self.maximum
         if self._initial_value is not None:
             self._value.set(self._initial_value)
 
-        self.widget = ttk.Progressbar(parent, **kwargs)
+        self.widget = ttk.Progressbar(parent, **kwargs_progressbar)
         self._grid(
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
         )
@@ -93,4 +141,3 @@ class Progressbar(Widget):
 
     def stop(self):
         self.widget.stop()
-

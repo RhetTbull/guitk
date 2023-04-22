@@ -8,7 +8,7 @@ from .ttk_combobox import Combobox
 from .ttk_entry import Entry, LabelEntry
 from .ttk_label import Label, LinkLabel
 from .ttk_notebook import Notebook
-from .ttk_progressbar import Progressbar
+from .ttk_progressbar import PROGRESS_DETERMINATE, PROGRESS_INDETERMINATE, Progressbar
 from .ttk_radiobutton import Radiobutton
 from .ttk_scale import Scale
 from .ttk_treeview import Listbox, Treeview
@@ -35,13 +35,15 @@ __all__ = [
     "Menu",
     "Notebook",
     "Output",
+    "PROGRESS_DETERMINATE",
+    "PROGRESS_INDETERMINATE",
+    "Progressbar",
     "Radiobutton",
     "Scale",
     "Text",
     "Treeview",
     "Widget",
     "Window",
-    "Progressbar",
 ]
 
 
