@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import tkinter as tk
 import tkinter.ttk as ttk
-from typing import Hashable
+from typing import Hashable, TypeVar
 
 from .events import Event, EventCommand, EventType
 from .types import CommandType, TooltipType
@@ -32,6 +32,9 @@ _valid_ttk_entry_attributes = {
     "validatecommand",
     "width",
 } | _valid_standard_attributes
+
+
+Window = TypeVar("Window")
 
 
 class Entry(Widget):
@@ -98,7 +101,7 @@ class Entry(Widget):
         self.window = window
         self._parent = parent
 
-        # build arg list for Entry
+        # build arg list for ttk.Entry
         kwargs_entry = {
             k: v for k, v in self.kwargs.items() if k in _valid_ttk_entry_attributes
         }
