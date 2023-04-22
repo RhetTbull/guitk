@@ -1,3 +1,5 @@
+"""Demo of the Radiobutton widget."""
+
 import guitk
 
 
@@ -12,7 +14,7 @@ class RadiobuttonDemo(guitk.Window):
 
     def handle_event(self, event):
         if event.event_type == guitk.EventType.Radiobutton:
-            print(event)
+            print(f"Option {event.widget.value} selected")
 
 
 if __name__ == "__main__":

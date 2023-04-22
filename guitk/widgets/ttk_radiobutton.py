@@ -4,35 +4,77 @@ from __future__ import annotations
 
 import tkinter as tk
 import tkinter.ttk as ttk
-from typing import Any, Union
+from typing import Any, Union, Hashable, TypeVar
 
 from .events import Event, EventCommand, EventType
+from .types import CommandType, TooltipType
 from .widget import Widget
+
+__all__ = ["Radiobutton"]
+
+_valid_standard_attributes = {
+    "class",
+    "compound",
+    "cursor",
+    "image",
+    "state",
+    "style",
+    "takefocus",
+    "textvariable",
+    "underline",
+    "width",
+}
+
+_valid_ttk_radiobutton_attributes = _valid_standard_attributes
+
+
+Window = TypeVar("Window")
 
 
 class Radiobutton(Widget):
-    """Radiobutton class
+    """
+    ttk.Radiobutton class
 
-    Note: group must be specified and will be used as key unless a separate key is specified."""
+    Note: group must be specified and will be used as key unless a separate key is specified.
+    """
 
     def __init__(
         self,
         text: str,
-        group: Any,
-        key: str = "",
+        group: Hashable,
+        key: Hashable | None = None,
         value: Union[int, str, None] = None,
-        disabled=False,
-        rowspan=None,
-        columnspan=None,
-        padx=None,
-        pady=None,
-        events=True,
-        sticky=None,
-        tooltip=None,
-        anchor=None,
-        selected=False,
-        command=None,
+        disabled: bool = False,
+        columnspan: int | None = None,
+        rowspan: int | None = None,
+        padx: int | None = None,
+        pady: int | None = None,
+        events: bool = True,
+        sticky: str | None = None,
+        tooltip: TooltipType = None,
+        selected: bool = False,
+        command: CommandType | None = None,
+        **kwargs: Any,
     ):
+        """Initialize a ttk.Radiobutton widget
+
+        Args:
+            text (str): Text to display
+            group (Hashable): Group name (must be unique and will be used as key unless a separate key is specified)
+            key (Hashable, optional): Key to use for this widget. Defaults to None.
+            value (Union[int, str, None], optional): Value to return when selected. Defaults to None.
+            disabled (bool, optional): Whether to disable the widget. Defaults to False.
+            columnspan (int, optional): Number of columns to span. Defaults to None.
+            rowspan (int, optional): Number of rows to span. Defaults to None.
+            padx (int, optional): Padding in x direction. Defaults to None.
+            pady (int, optional): Padding in y direction. Defaults to None.
+            events (bool, optional): Whether to enable events. Defaults to True.
+            sticky (str, optional): Sticky direction. Defaults to None.
+            tooltip (TooltipType, optional): Tooltip text. Defaults to None.
+            selected (bool, optional): Whether to select this widget. Defaults to False.
+            command (CommandType, optional): Command to execute when selected. Defaults to None.
+            **kwargs: Additional keyword arguments are passed to ttk.Radiobutton.
+        """
         super().__init__(
             key=key,
             disabled=disabled,
@@ -43,7 +85,6 @@ class Radiobutton(Widget):
             events=events,
             sticky=sticky,
             tooltip=tooltip,
-            anchor=anchor,
             command=command,
         )
         self.widget_type = "ttk.Radiobutton"
@@ -55,6 +96,7 @@ class Radiobutton(Widget):
         self.columnspan = columnspan
         self.rowspan = rowspan
         self.selected = selected
+        self.kwargs = kwargs
 
     def _create_widget(self, parent, window: "Window", row, col):
         self.window = window
@@ -79,13 +121,20 @@ class Radiobutton(Widget):
         self._value = self.window._radiobuttons[self.group]
 
         event = Event(self, window, self.key, EventType.Radiobutton)
+
+        # Arg list for ttk.Radiobutton
+        kwargs_radiobutton = {
+            k: v
+            for k, v in self.kwargs.items()
+            if k in _valid_ttk_radiobutton_attributes
+        }
         self.widget = ttk.Radiobutton(
             parent,
             text=self.text,
-            anchor=self.anchor,
             command=window._make_callback(event),
             variable=self._value,
             value=self._radiobutton_value,
+            **kwargs_radiobutton,
         )
         self._grid(
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
