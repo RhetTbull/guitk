@@ -22,16 +22,6 @@ I settled on using tkinter because it's included with python, well-supported on 
 
 guitk is my attempt to provide an event-loop interface to tkinter.  It is not intended to abstract away the tkinter interface and you'll need some knowledge of tkinter to use guitk.  I highly recommend Mark Roseman's excellent [Modern Tkinter for Busy Python Developers](https://tkdocs.com/book.html) book as a starting point.  guitk also provides a callback style interface if you prefer that over a single event-loop.
 
-### Why not just use PySimpleGUI?
-
-[PySimpleGUI](https://github.com/PySimpleGUI/PySimpleGUI) has a really well designed interface that is [incredibly well documented](https://pysimplegui.readthedocs.io/en/latest/), it supports at least 4 different GUI frameworks, is cross-platform, and is actively maintained.  You really should take a look at PySimpleGUI if you need to create a GUI in python.  Unfortunately, it currently has several issues that led me to look for an alternative. 
-
-* I develop on a Mac and PySimple GUI has a number of [issues](https://github.com/PySimpleGUI/PySimpleGUI/issues?q=is%3Aopen+is%3Aissue+label%3A%22Mac+Specific+Issue%22) running under MacOS and is not as well supported on the Mac.
-* PySimpleGUI is licensed under a modified LGPL3 license with several added stipulations such as prohibitions on re-posting the code and removal of any comments from the code that don't meet my personal definition of Free Software. 
-* PySimpleGUI source code did not appear to me to be easy to hack on.  I considered attempting to tackle some of the existing MacOS issues but the license stipulations and the source code dissuaded me.
-
-If these issues don't concern you, I recommend you consider PySimpleGUI.
-
 ## Installation
 
 * `git clone git@github.com:RhetTbull/guitk.git`

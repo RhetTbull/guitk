@@ -44,7 +44,7 @@ if __name__ == "__main__":
 
 ## Motivation
 
-I did not set out to create yet another python GUI framework -- there are already many of these, some of them quite good.  I wanted to create a simple GUI for [another python project](https://github.com/RhetTbull/osxphotos) and started down the path using [PySimpleGUI](https://github.com/PySimpleGUI/PySimpleGUI).  PySimpleGUI has an amazingly simple interface that allows creation of nice looking GUIs with just a few lines of code.  Unfortunately, after spending some time prototyping with PySimpleGUI, I discovered a few issues with PySimpleGUI (see below).  I evaluated several other GUI frameworks including [Toga](https://github.com/beeware/toga), [wxPython](https://www.wxpython.org/), [pyglet](https://github.com/pyglet/pyglet), [remi](https://github.com/dddomodossola/remi), and [tkinter](https://docs.python.org/3/library/tkinter.html).  None of these was as simple as PySimpleGUI and several had other issues, e.g. errors running under MacOS, steep learning curve, etc.
+I did not set out to create yet another python GUI framework -- there are already many of these, some of them quite good.  I wanted to create a simple GUI for [another python project](https://github.com/RhetTbull/osxphotos) and started down the path using [PySimpleGUI](https://github.com/PySimpleGUI/PySimpleGUI).  PySimpleGUI has an amazingly simple interface that allows creation of nice looking GUIs with just a few lines of code.  Unfortunately, after spending some time prototyping with PySimpleGUI, I discovered a few issues with PySimpleGUI (see below).  I evaluated several other GUI frameworks including [Toga](https://github.com/beeware/toga), [wxPython](https://www.wxpython.org/), [pyglet](https://github.com/pyglet/pyglet), [remi](https://github.com/dddomodossola/remi), and [tkinter](https://docs.python.org/3/library/tkinter.html).  None of these was as simple as PySimpleGUI and several had other issues, e.g. errors running under MacOS, steep learning curve, etc. 
 
 I settled on using tkinter because it's included with python, well-supported on multiple platforms, and relatively light-weight.  However, I found tkinter took a bit too much boiler plate compared to PySimpleGUI and I missed the simplicity of PySimpleGUI's single event loop for quick prototyping.  
 
@@ -58,7 +58,7 @@ guitk is my attempt to provide an event-loop interface to tkinter.  It is not in
 
 Once this gets past the early alpha stage, I'll package for PyPI.
 
-## Anatomy of a guitk program
+## Anatomy of a guitk program 
 
 ![hello2.py example](examples/hello2.py.png "Hello World example")
 
@@ -94,7 +94,7 @@ class HelloWorld(guitk.Window):
     def setup(self):
         # your setup() method is called by the Window class after config() just before the Window is displayed
         # use this to initialize any internal state you need
-        # you do not need to provide a setup() method if no inialization is needed
+        # you do not need to provide a setup() method if no initialization is needed
         print("setup")
 
     def teardown(self):
@@ -120,7 +120,7 @@ class HelloWorld(guitk.Window):
             self["OUTPUT"].value = f"Hello {name}! Thanks for trying guitk."
 
         if event.event_type == guitk.EventType.KeyRelease:
-            # events can be handled by event type as well as even key
+            # events can be handled by event type as well as event key
             print(event)
 
 
@@ -163,6 +163,15 @@ class HelloWorld(guitk.Window):
             ],
         ]
 
+    def setup(self):
+        # this method is called after the window is created
+        # you can use it to set up any internal state you need
+
+        # bind_event_command() binds a callback command to a specific event,
+        # in this case, when user hits return in the entry field, the same command as hitting "Ok" will be called
+        # the widget objects can be accessed as self["KEY"] in setup() but not in config() as they aren't created until after config() is called
+        self["ENTRY_NAME"].bind_event("<Return>", command=self.on_ok)
+
     def on_ok(self):
         # the underlying guitk widgets are accessible as self["KEY"]
         # the value of each widget is accessible as self["KEY"].value
@@ -176,6 +185,9 @@ class HelloWorld(guitk.Window):
         name = self["ENTRY_NAME"].value
         # value passed to quit will be returned by HelloWorld.run()
         self.quit(name)
+
+    def handle_event(self, event):
+        print(event)
 
 
 if __name__ == "__main__":
@@ -213,6 +225,7 @@ if __name__ == "__main__":
 ```
 
 Because layouts are simply lists of lists, you can use python to create layouts programmatically, for example using list comprehensions.
+
 
 ![layout2.py example](examples/layout2.py.png "Layout using list comprehensions, with tooltips!")
 
@@ -338,6 +351,7 @@ if __name__ == "__main__":
 
 You can create virtual events that fire after a time delay and these can be repeating.
 
+
 ![bind_timer_event example](examples/bind_timer_event.py.png "Creating timed virtual events.")
 
 ```python
@@ -452,7 +466,7 @@ Not much documentation at this point.  Take a look at the [examples](https://git
 
 ## Testing
 
-There are currently no automated tests as I haven't figured out how to do these with tkinter.  You can run `python3 -m guitk` which opens a window with examples of all the widgets.  I currently use this for testing to ensure each widget still works but it's a manual process.
+There are currently no automated tests as I haven't figured out how to do these with tkinter.  You can run `python3 -m guitk` which opens a window with examples of all the widgets.  I currently use this for testing to ensure each widget still works but it's a manual process. 
 
 ## Contributors
 
@@ -460,20 +474,20 @@ Contributions welcome! If this project interests you, open an Issue or send a PR
 
 ## TODO
 
-* [x] Basic prototype
-* [x] Frame
-* [x] Label
-* [x] Entry
-* [x] Button
-* [x] Checkbutton
-* [x] Text
-* [x] ScrolledText
-* [ ] Other widgets
-* [x] Tooltips
-* [ ] Documentation
-* [ ] Add docstrings
-* [ ] Add typehints to public API
-* [ ] Tests
+- [x] Basic prototype
+- [x] Frame
+- [x] Label
+- [x] Entry
+- [x] Button
+- [x] Checkbutton
+- [x] Text
+- [x] ScrolledText
+- [ ] Other widgets
+- [x] Tooltips
+- [ ] Documentation
+- [ ] Add docstrings
+- [ ] Add typehints to public API
+- [ ] Tests
 
 ## License
 
