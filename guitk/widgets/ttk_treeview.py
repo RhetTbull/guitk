@@ -1,10 +1,11 @@
 """ ttk Treeview and Listbox widgets """
 
+
 from __future__ import annotations
 
 import tkinter as tk
 import tkinter.ttk as ttk
-from typing import Hashable, List, Optional, TypeVar
+from typing import Hashable, TypeVar
 
 from .events import Event, EventCommand, EventType
 from .types import CommandType, TooltipType
@@ -15,10 +16,8 @@ __all__ = ["Listbox", "Treeview"]
 
 _valid_standard_attributes = {
     "class",
-    # "columns",
     "cursor",
     "displaycolumns",
-    "height",
     "padding",
     "selectmode",
     "show",
@@ -38,6 +37,7 @@ class Treeview(Widget):
     """
     ttk.Treeview widget
     """
+
     def __init__(
         self,
         headings: list[str],
@@ -210,39 +210,53 @@ class Treeview(Widget):
 class Listbox(Treeview):
     def __init__(
         self,
-        text: Optional[List] = None,
-        key=None,
-        cursor=None,
-        height=None,
-        width=None,
-        padding=None,
-        selectmode=None,
-        style=None,
-        takefocus=None,
-        disabled=False,
-        rowspan=None,
-        columnspan=None,
-        padx=None,
-        pady=None,
-        events=True,
-        sticky=None,
-        tooltip=None,
-        anchor=None,
-        command=None,
-        vscrollbar=None,
-        hscrollbar=None,
+        text: list[str] | None = None,
+        key: Hashable | None = None,
+        disabled: bool = False,
+        columnspan: int | None = None,
+        rowspan: int | None = None,
+        padx: int | None = None,
+        pady: int | None = None,
+        events: bool = True,
+        sticky: str | None = None,
+        tooltip: TooltipType = None,
+        command: CommandType | None = None,
+        hscrollbar: bool = False,
+        vscrollbar: bool = False,
+        width: int = 200,
+        **kwargs,
     ):
+        """Create a Listbox widget
+
+        Args:
+            text (list[str], optional): List of strings to display in the listbox. Defaults to None.
+            key (Hashable, optional): The key used to access the widget's value. Defaults to None.
+            disabled (bool, optional): Disable the widget. Defaults to False.
+            columnspan (int, optional): Number of columns to span in the grid. Defaults to None.
+            rowspan (int, optional): Number of rows to span in the grid. Defaults to None.
+            padx (int, optional): Padding in the x direction. Defaults to None.
+            pady (int, optional): Padding in the y direction. Defaults to None.
+            events (bool, optional): Enable events. Defaults to True.
+            sticky (str, optional): Sticky setting for the grid. Defaults to None.
+            tooltip (TooltipType, optional): A tooltip to show when the mouse is over the widget. Defaults to None.
+            command (CommandType, optional): A command to execute when the widget is clicked. Defaults to None.
+            hscrollbar (bool, optional): Show a horizontal scrollbar. Defaults to False.
+            vscrollbar (bool, optional): Show a vertical scrollbar. Defaults to False.
+            width (int, optional): Width of the widget in pixels. Defaults to 200.
+            **kwargs: Additional keyword arguments to pass to the widget constructor.
+        """
         self.key = key or "Listbox"
         self.widget_type = "guitk.Listbox"
-        self._show = "tree"
-        self._columns = ["list"]
-        self._width = width
 
         if text and type(text) != list:
             raise ValueError("text must be a list of strings")
         self._text = text
+        self.width = width
 
         super().__init__(
+            headings=["list"],
+            columns=["list"],
+            show="tree",
             key=key,
             disabled=disabled,
             rowspan=rowspan,
@@ -252,25 +266,39 @@ class Listbox(Treeview):
             events=events,
             sticky=sticky,
             tooltip=tooltip,
-            anchor=anchor,
-            cursor=cursor,
-            show=self._show,
-            columns=self._columns,
-            height=height,
-            padding=padding,
-            selectmode=selectmode,
-            style=style,
-            takefocus=takefocus,
             command=command,
-            vscrollbar=vscrollbar,
             hscrollbar=hscrollbar,
+            vscrollbar=vscrollbar,
+            **kwargs,
         )
 
     def _create_widget(self, parent, window: "Window", row, col):
-        super()._create_widget(parent, window, row, col)
+        """Create the widget"""
+
+        # build arg list for Treeview()
+        kwargs_treeview = {
+            k: v
+            for k, v in self.kwargs.items()
+            if k in _valid_ttk_treeview_attributes and v is not None
+        }
+
+        # listbox always shows tree
+        kwargs_treeview["show"] = "tree"
+
+        self.widget = scrolled_widget_factory(
+            parent,
+            ttk.Treeview,
+            vscrollbar=self.vscrollbar,
+            hscrollbar=self.hscrollbar,
+            columns=["list"],
+            **kwargs_treeview,
+        )
+        self._grid(
+            row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
+        )
+
         self.tree.column("#0", width=0, minwidth=0)
-        if self._width:
-            self.tree.column("#1", width=self._width)
+        self.tree.column("#1", width=self.width)
 
         self.listbox = self.tree
         if self._text:
@@ -296,7 +324,7 @@ class Listbox(Treeview):
         self.widget.insert("", index, iid=line, values=(line))
 
     def append(self, line):
-        """Apppend a line to end of Listbox"""
+        """Append a line to end of Listbox"""
         self.widget.insert("", "end", iid=line, values=(line))
 
     def delete(self, line):
