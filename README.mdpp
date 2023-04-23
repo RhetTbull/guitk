@@ -24,9 +24,7 @@ guitk is my attempt to provide an event-loop interface to tkinter.  It is not in
 
 ## Installation
 
-* `git clone git@github.com:RhetTbull/guitk.git`
-* `cd guitk`
-* `python3 setup.py install`
+* `python3 -m pip install guitk`
 
 Once this gets past the early alpha stage, I'll package for PyPI.
 
