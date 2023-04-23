@@ -8,7 +8,7 @@ from typing import Hashable, TypeVar
 from .events import Event, EventCommand, EventType
 from .types import CommandType, TabType, TooltipType
 from .widget import Widget
-from .window import Frame, _Layout
+from .window import Frame, LayoutMixin
 
 __all__ = ["Notebook", "NoteBook"]
 
@@ -28,7 +28,7 @@ _valid_ttk_notebook_attributes = _valid_standard_attributes
 Window = TypeVar("Window")
 
 
-class Notebook(Widget, _Layout):
+class Notebook(Widget, LayoutMixin):
     """
     ttk.Notebook widget
     """

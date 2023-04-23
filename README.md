@@ -6,7 +6,11 @@
 
 guitk is an experiment to design a lightweight framework that simplifies creating simple GUIs with [tkinter](https://docs.python.org/3/library/tkinter.html).  This is very much early alpha stage but in constant development so check back frequently if this interests you or open an issue to start a conversation about what pain points this project could help you solve!
 
+guitk allows you to build complete GUI applications with a few lines of code. guitk allows you to use either an event loop, inspired by [PySimpleGUI](https://github.com/PySimpleGUI/PySimpleGUI#example-2---interactive-window), or callbacks for event handling. For simple apps, I find an event loop is easy and intuitive to use. guitk also allows you to layout your app using a simple grid, also inspired by [PySimpleGUI](https://github.com/PySimpleGUI/PySimpleGUI#layouts-are-funny-lol-) -- no need to learn about tkinter packing or grid managers. You provide your layout as a list of lists where each row in the list represents a row in a grid and each element in the row represents a column in the grid. This makes laying out your app very easy and intuitive. guitk also provides a hierarchical layout system inspired by [SwiftUI](https://developer.apple.com/documentation/swiftui) and [applepy](https://github.com/eduardohleite/applepy) which allows you to create complex layouts with minimal code.
+
 ## Code Example
+
+### List of Lists Layout
 
 ![hello.py example](https://raw.githubusercontent.com/RhetTbull/guitk/main/examples/hello.py.png "Hello World example")
 
@@ -42,21 +46,66 @@ if __name__ == "__main__":
     HelloWindow().run()
 ```
 
+### Hierarchical Layout
+
+![context_layout.py example](https://raw.githubusercontent.com/RhetTbull/guitk/main/examples/context_layout.py.png "Hierarchical layout example")
+
+```python
+"""Demo to show how to use context managers to create widget layout"""
+
+import guitk
+
+
+class ShoppingList(guitk.Window):
+    def config(self):
+        self.title = "My Shopping List"
+
+        with guitk.Layout() as layout:
+            with guitk.HStack() as hs:
+                # these will be stacked horizontally (side by side)
+                guitk.Label("Item to buy:")
+                guitk.Entry(key="item", events=True)
+                guitk.Button("Add", key="add")
+            with guitk.VStack() as vs:
+                # these will be stacked vertically (one on top of the other)
+                guitk.Label("Shopping list", anchor="center")
+                guitk.ListBox(key="list")
+                guitk.Button("Quit", key="quit")
+
+        self.layout = layout
+
+    def handle_event(self, event: guitk.Event):
+        print(event)
+        if (
+            event.key == "item" and event.event.keysym == "Return"
+        ) or event.key == "add":
+            # add item to the list if user presses Enter in the Entry field
+            # or clicks the Add button
+            name = self["item"].value
+            self["list"].append(name)
+
+            # clear the Entry field
+            self["item"].value = ""
+
+        if event.key == "quit":
+            self.quit()
+
+
+if __name__ == "__main__":
+    ShoppingList().run()
+```
+
 ## Motivation
 
-I did not set out to create yet another python GUI framework -* there are already many of these, some of them quite good.  I wanted to create a simple GUI for [another python project](https://github.com/RhetTbull/osxphotos) and started down the path using [PySimpleGUI](https://github.com/PySimpleGUI/PySimpleGUI).  PySimpleGUI has an amazingly simple interface that allows creation of nice looking GUIs with just a few lines of code.  Unfortunately, after spending some time prototyping with PySimpleGUI, I discovered a few issues with PySimpleGUI (see below).  I evaluated several other GUI frameworks including [Toga](https://github.com/beeware/toga), [wxPython](https://www.wxpython.org/), [pyglet](https://github.com/pyglet/pyglet), [remi](https://github.com/dddomodossola/remi), and [tkinter](https://docs.python.org/3/library/tkinter.html).  None of these was as simple as PySimpleGUI and several had other issues, e.g. errors running under MacOS, steep learning curve, etc. 
+The goal of guitk is to make it very easy to create simple and attractive GUI apps with python. It borrows ideas from several other libraries include [PySimpleGUI](https://www.pysimplegui.org/en/latest/), [SwiftUI](https://developer.apple.com/documentation/swiftui), and [applepy](https://github.com/eduardohleite/applepy). guitk builds on [tkinter](https://docs.python.org/3/library/tkinter.html) which ships with the Python standard library and works across many platforms. tkinter is a mature and powerful GUI framework but requires a fair bit of boiler plate and understanding of the underlying framework to use effectively. guitk attempts to simplify this by providing a higher level interface to tkinter while still allowing you to access the underlying tkinter API if you need to.
 
-I settled on using tkinter because it's included with python, well-supported on multiple platforms, and relatively light-weight.  However, I found tkinter took a bit too much boiler plate compared to PySimpleGUI and I missed the simplicity of PySimpleGUI's single event loop for quick prototyping.  
-
-guitk is my attempt to provide an event-loop interface to tkinter.  It is not intended to abstract away the tkinter interface and you'll need some knowledge of tkinter to use guitk.  I highly recommend Mark Roseman's excellent [Modern Tkinter for Busy Python Developers](https://tkdocs.com/book.html) book as a starting point.  guitk also provides a callback style interface if you prefer that over a single event-loop.
+guitk is not intended to fully abstract away the tkinter interface and you'll need some knowledge of tkinter to use guitk.  I highly recommend Mark Roseman's excellent [Modern Tkinter for Busy Python Developers](https://tkdocs.com/book.html) book as a starting point.
 
 ## Installation
 
 * `python3 -m pip install guitk`
 
-Once this gets past the early alpha stage, I'll package for PyPI.
-
-## Anatomy of a guitk program 
+## Anatomy of a guitk program
 
 ![hello2.py example](https://raw.githubusercontent.com/RhetTbull/guitk/main/examples/hello2.py.png "Hello World example")
 
@@ -224,7 +273,6 @@ if __name__ == "__main__":
 
 Because layouts are simply lists of lists, you can use python to create layouts programmatically, for example using list comprehensions.
 
-
 ![layout2.py example](https://github.com/RhetTbull/guitk/raw/main/examples/layout2.py.png "Layout using list comprehensions, with tooltips!")
 
 ```python
@@ -349,7 +397,6 @@ if __name__ == "__main__":
 
 You can create virtual events that fire after a time delay and these can be repeating.
 
-
 ![bind_timer_event example](https://github.com/RhetTbull/guitk/raw/main/examples/bind_timer_event.py.png "Creating timed virtual events.")
 
 ```python
@@ -464,7 +511,7 @@ Not much documentation at this point.  Take a look at the [examples](https://git
 
 ## Testing
 
-There are currently no automated tests as I haven't figured out how to do these with tkinter.  You can run `python3 -m guitk` which opens a window with examples of all the widgets.  I currently use this for testing to ensure each widget still works but it's a manual process. 
+There are currently no automated tests as I haven't figured out how to do these with tkinter.  You can run `python3 -m guitk` which opens a window with examples of all the widgets.  I currently use this for testing to ensure each widget still works but it's a manual process.
 
 ## Contributors
 
@@ -485,6 +532,7 @@ Contributions welcome! If this project interests you, open an Issue or send a PR
 * [x] Listbox
 * [x] Combobox
 * [ ] Other widgets
+* [ ] Menus
 * [x] Tooltips
 * [ ] Documentation
 * [x] Add docstrings

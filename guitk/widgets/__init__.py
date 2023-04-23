@@ -1,5 +1,6 @@
 from .debugwindow import DebugWindow
 from .events import Event, EventCommand, EventType
+from .layout import Layout
 from .menu import Command, Menu
 from .tk_text import Output, Text
 from .ttk_button import BrowseDirectoryButton, BrowseFileButton, Button
@@ -17,7 +18,7 @@ from .ttk_progressbar import (
 from .ttk_radiobutton import Radiobutton, RadioButton
 from .ttk_scale import Scale
 from .ttk_treeview import Listbox, ListBox, Treeview, TreeView
-from .window import Frame, LabelFrame, Widget, Window
+from .window import Frame, HStack, LabelFrame, VStack, Widget, Window
 
 __all__ = [
     "BrowseDirectoryButton",
@@ -34,9 +35,11 @@ __all__ = [
     "EventCommand",
     "EventType",
     "Frame",
+    "HStack",
     "Label",
     "LabelEntry",
     "LabelFrame",
+    "Layout",
     "LinkLabel",
     "ListBox",
     "Listbox",
@@ -54,6 +57,7 @@ __all__ = [
     "Text",
     "TreeView",
     "Treeview",
+    "VStack",
     "Widget",
     "Window",
 ]

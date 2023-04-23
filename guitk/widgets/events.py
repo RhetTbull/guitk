@@ -1,25 +1,34 @@
 """Events """
 
+from __future__ import annotations
 
+import tkinter
 from collections import namedtuple
+from typing import Hashable, TypeVar
 
 EventCommand = namedtuple("EventCommand", ["widget", "key", "event_type", "command"])
 
 from enum import Enum, auto
 
+Window = TypeVar("Window")
+Widget = TypeVar("Widget")
+
 
 class Event:
     """Event that occurred and values for widgets in the window"""
 
-    def __init__(self, widget: object, window: "Window", key, event_type):
-        self.id = id(window)
-        self.widget = widget
-        self.key = key
-        self.event_type = event_type
-        self.event = None  # placeholder for Tk event, will be set in _make_callback
+    def __init__(self, widget: object, window: Window, key, event_type):
+        self.id: int = id(window)
+        self.widget: Widget = widget
+        self.key: Hashable = key
+        self.event_type: EventType = event_type
+        self.event: tkinter.Event | None = (
+            None  # placeholder for Tk event, will be set in _make_callback
+        )
 
     def __str__(self):
         return f"id={self.id}, widget={self.widget}, key={self.key}, event_type={self.event_type}, event={self.event}"
+
 
 class EventType(Enum):
     """Constants for event types"""
