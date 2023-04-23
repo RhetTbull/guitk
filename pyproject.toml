@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "guitk"
-version = "0.1.0"
+version = "0.2.0"
 description = "Python GUI Toolkit for Tk (guitk): simplify the layout and construction of tkinter graphical user interfaces in python."
 authors = ["Rhet Turnbull <rturnbull+git@gmail.com>"]
 license = "MIT License"
