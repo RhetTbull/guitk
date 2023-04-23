@@ -10,11 +10,12 @@ class ProgressWindow(guitk.Window):
         # you must have a class variable named `layout` or you'll get an empty window
 
         # create some progress bars with different modes and orientations
+        # default mode is determinate
         progress1 = guitk.ProgressBar(key="progress1", tooltip="determinate", value=0)
         progress2 = guitk.ProgressBar(
             key="progress2",
             tooltip="indeterminate",
-            mode="indeterminate",
+            mode=guitk.PROGRESS_INDETERMINATE,
             maximum=100,
         )
         progress3 = guitk.ProgressBar(
@@ -42,10 +43,10 @@ class ProgressWindow(guitk.Window):
             [
                 guitk.Button(text="Step", key="STEP"),
                 guitk.Scale(
+                    0,
+                    100,
                     key="SCALE",
                     orient=HORIZONTAL,
-                    from_=0,
-                    to=100,
                     value=5,
                     target_key="SCALE_LABEL",
                     precision=0,
@@ -93,7 +94,7 @@ class ProgressWindow(guitk.Window):
             self.cancel_timer_event(self._demo_timer_id)
             self["progress2"].progressbar.stop()
             self["progress2"].value = 0
-            self["START"].disabled = True
+            self["START"].disabled = False
             self["STOP"].disabled = True
 
         if event.key == "STEP":

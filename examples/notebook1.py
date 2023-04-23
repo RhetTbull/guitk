@@ -14,9 +14,8 @@ class NotebookWindow(guitk.Window):
 
     def handle_event(self, event):
         if event.event_type == guitk.EventType.NotebookTabChanged:
-            nb = self["NOTEBOOK"].widget
-            selected_tab = nb.tab(nb.select(), "text")
-            print(f"Tab changed to tab: {selected_tab}")
+            # The name of the currently selected tab is available in Notebook.current_tab
+            print(f"Tab changed to tab: {self['NOTEBOOK'].current_tab}")
 
 
 if __name__ == "__main__":

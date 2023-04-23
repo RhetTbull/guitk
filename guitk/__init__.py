@@ -9,28 +9,14 @@
 """
 
 # TODO: add way to specify tooltip delay
-# TODO: add cursor to all controls
 # TODO: add style to all controls
 # TODO: standardize value_type
 
-from .constants import EventType
 from .tkroot import *
 from .widgets import *
 
-__version__ = "0.0.1"
+__version__ = "0.2.0"
 __author__ = "Rhet Turnbull"
-
-# Aliases for classnames as I don't like tkinter's naming convention
-# You can use either CapWords or Firstword names in guitk
-ComboBox = Combobox
-CheckButton = Checkbutton
-RadioButton = Radiobutton
-TreeView = Treeview
-ListBox = Listbox
-Linklabel = LinkLabel
-Labelframe = LabelFrame
-ProgressBar = Progressbar
-NoteBook = Notebook
 
 __all__ = [
     "BrowseDirectoryButton",
@@ -59,8 +45,10 @@ __all__ = [
     "NoteBook",
     "Notebook",
     "Output",
+    "PROGRESS_DETERMINATE",
+    "PROGRESS_INDETERMINATE",
     "ProgressBar",
-    "Progressbar"
+    "Progressbar",
     "RadioButton",
     "Radiobutton",
     "Text",
@@ -68,5 +56,3 @@ __all__ = [
     "Treeview",
     "Window",
 ]
-
-

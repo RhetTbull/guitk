@@ -44,21 +44,11 @@ if __name__ == "__main__":
 
 ## Motivation
 
-I did not set out to create yet another python GUI framework -- there are already many of these, some of them quite good.  I wanted to create a simple GUI for [another python project](https://github.com/RhetTbull/osxphotos) and started down the path using [PySimpleGUI](https://github.com/PySimpleGUI/PySimpleGUI).  PySimpleGUI has an amazingly simple interface that allows creation of nice looking GUIs with just a few lines of code.  Unfortunately, after spending some time prototyping with PySimpleGUI, I discovered a few issues with PySimpleGUI (see below).  I evaluated several other GUI frameworks including [Toga](https://github.com/beeware/toga), [wxPython](https://www.wxpython.org/), [pyglet](https://github.com/pyglet/pyglet), [remi](https://github.com/dddomodossola/remi), and [tkinter](https://docs.python.org/3/library/tkinter.html).  None of these was as simple as PySimpleGUI and several had other issues, e.g. errors running under MacOS, steep learning curve, etc. 
+I did not set out to create yet another python GUI framework -- there are already many of these, some of them quite good.  I wanted to create a simple GUI for [another python project](https://github.com/RhetTbull/osxphotos) and started down the path using [PySimpleGUI](https://github.com/PySimpleGUI/PySimpleGUI).  PySimpleGUI has an amazingly simple interface that allows creation of nice looking GUIs with just a few lines of code.  Unfortunately, after spending some time prototyping with PySimpleGUI, I discovered a few issues with PySimpleGUI (see below).  I evaluated several other GUI frameworks including [Toga](https://github.com/beeware/toga), [wxPython](https://www.wxpython.org/), [pyglet](https://github.com/pyglet/pyglet), [remi](https://github.com/dddomodossola/remi), and [tkinter](https://docs.python.org/3/library/tkinter.html).  None of these was as simple as PySimpleGUI and several had other issues, e.g. errors running under MacOS, steep learning curve, etc.
 
 I settled on using tkinter because it's included with python, well-supported on multiple platforms, and relatively light-weight.  However, I found tkinter took a bit too much boiler plate compared to PySimpleGUI and I missed the simplicity of PySimpleGUI's single event loop for quick prototyping.  
 
 guitk is my attempt to provide an event-loop interface to tkinter.  It is not intended to abstract away the tkinter interface and you'll need some knowledge of tkinter to use guitk.  I highly recommend Mark Roseman's excellent [Modern Tkinter for Busy Python Developers](https://tkdocs.com/book.html) book as a starting point.  guitk also provides a callback style interface if you prefer that over a single event-loop.
-
-### Why not just use PySimpleGUI?
-
-[PySimpleGUI](https://github.com/PySimpleGUI/PySimpleGUI) has a really well designed interface that is [incredibly well documented](https://pysimplegui.readthedocs.io/en/latest/), it supports at least 4 different GUI frameworks, is cross-platform, and is actively maintained.  You really should take a look at PySimpleGUI if you need to create a GUI in python.  Unfortunately, it currently has several issues that led me to look for an alternative. 
-
-* I develop on a Mac and PySimple GUI has a number of [issues](https://github.com/PySimpleGUI/PySimpleGUI/issues?q=is%3Aopen+is%3Aissue+label%3A%22Mac+Specific+Issue%22) running under MacOS and is not as well supported on the Mac.
-* PySimpleGUI is licensed under a modified LGPL3 license with several added stipulations such as prohibitions on re-posting the code and removal of any comments from the code that don't meet my personal definition of Free Software. 
-* PySimpleGUI source code did not appear to me to be easy to hack on.  I considered attempting to tackle some of the existing MacOS issues but the license stipulations and the source code dissuaded me.
-
-If these issues don't concern you, I recommend you consider PySimpleGUI.
 
 ## Installation
 
@@ -68,7 +58,7 @@ If these issues don't concern you, I recommend you consider PySimpleGUI.
 
 Once this gets past the early alpha stage, I'll package for PyPI.
 
-## Anatomy of a guitk program 
+## Anatomy of a guitk program
 
 ![hello2.py example](examples/hello2.py.png "Hello World example")
 
@@ -224,7 +214,6 @@ if __name__ == "__main__":
 
 Because layouts are simply lists of lists, you can use python to create layouts programmatically, for example using list comprehensions.
 
-
 ![layout2.py example](examples/layout2.py.png "Layout using list comprehensions, with tooltips!")
 
 ```python
@@ -349,7 +338,6 @@ if __name__ == "__main__":
 
 You can create virtual events that fire after a time delay and these can be repeating.
 
-
 ![bind_timer_event example](examples/bind_timer_event.py.png "Creating timed virtual events.")
 
 ```python
@@ -464,7 +452,7 @@ Not much documentation at this point.  Take a look at the [examples](https://git
 
 ## Testing
 
-There are currently no automated tests as I haven't figured out how to do these with tkinter.  You can run `python3 -m guitk` which opens a window with examples of all the widgets.  I currently use this for testing to ensure each widget still works but it's a manual process. 
+There are currently no automated tests as I haven't figured out how to do these with tkinter.  You can run `python3 -m guitk` which opens a window with examples of all the widgets.  I currently use this for testing to ensure each widget still works but it's a manual process.
 
 ## Contributors
 
@@ -472,20 +460,20 @@ Contributions welcome! If this project interests you, open an Issue or send a PR
 
 ## TODO
 
-- [x] Basic prototype
-- [x] Frame
-- [x] Label
-- [x] Entry
-- [x] Button
-- [x] Checkbutton
-- [x] Text
-- [x] ScrolledText
-- [ ] Other widgets
-- [x] Tooltips
-- [ ] Documentation
-- [ ] Add docstrings
-- [ ] Add typehints to public API
-- [ ] Tests
+* [x] Basic prototype
+* [x] Frame
+* [x] Label
+* [x] Entry
+* [x] Button
+* [x] Checkbutton
+* [x] Text
+* [x] ScrolledText
+* [ ] Other widgets
+* [x] Tooltips
+* [ ] Documentation
+* [ ] Add docstrings
+* [ ] Add typehints to public API
+* [ ] Tests
 
 ## License
 

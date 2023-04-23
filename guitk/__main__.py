@@ -4,10 +4,10 @@ import pathlib
 import sys
 from enum import Enum, auto
 
-from .constants import EventType
 from .widgets import *
 from .widgets import __all__ as ALL_WIDGETS
 from .widgets import _get_docstring
+from .widgets.events import EventType
 
 dummy_text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras tempus neque in vehicula hendrerit. Nam non posuere ante. Nunc libero libero, tempus eget enim vitae, egestas hendrerit tortor. Vivamus et egestas felis. Aliquam erat volutpat. Nulla facilisi. Aliquam hendrerit, nibh nec tempor lobortis, purus nisl vehicula ex, dapibus fermentum mauris nibh id nulla. Vivamus non pretium quam. Phasellus elementum commodo nisl. Nullam eu faucibus augue. Vivamus pulvinar metus vehicula urna porttitor euismod. "
 
