@@ -1,4 +1,4 @@
-<!-- DO NOT EDIT README.md, instead edit README.mdpp and process with MarkdownPP using build_readme.sh -->
+<!-* DO NOT EDIT README.md, instead edit README.mdpp and process with MarkdownPP using build_readme.sh -->
 
 # Python GUI Toolkit for TK (guitk)
 
@@ -8,7 +8,7 @@ guitk is an experiment to design a lightweight framework that simplifies creatin
 
 ## Code Example
 
-![hello.py example](examples/hello.py.png "Hello World example")
+![hello.py example](https://raw.githubusercontent.com/RhetTbull/guitk/main/examples/hello.py.png "Hello World example")
 
 ```python
 """Simple Hello World example using guitk """
@@ -44,7 +44,7 @@ if __name__ == "__main__":
 
 ## Motivation
 
-I did not set out to create yet another python GUI framework -- there are already many of these, some of them quite good.  I wanted to create a simple GUI for [another python project](https://github.com/RhetTbull/osxphotos) and started down the path using [PySimpleGUI](https://github.com/PySimpleGUI/PySimpleGUI).  PySimpleGUI has an amazingly simple interface that allows creation of nice looking GUIs with just a few lines of code.  Unfortunately, after spending some time prototyping with PySimpleGUI, I discovered a few issues with PySimpleGUI (see below).  I evaluated several other GUI frameworks including [Toga](https://github.com/beeware/toga), [wxPython](https://www.wxpython.org/), [pyglet](https://github.com/pyglet/pyglet), [remi](https://github.com/dddomodossola/remi), and [tkinter](https://docs.python.org/3/library/tkinter.html).  None of these was as simple as PySimpleGUI and several had other issues, e.g. errors running under MacOS, steep learning curve, etc. 
+I did not set out to create yet another python GUI framework -* there are already many of these, some of them quite good.  I wanted to create a simple GUI for [another python project](https://github.com/RhetTbull/osxphotos) and started down the path using [PySimpleGUI](https://github.com/PySimpleGUI/PySimpleGUI).  PySimpleGUI has an amazingly simple interface that allows creation of nice looking GUIs with just a few lines of code.  Unfortunately, after spending some time prototyping with PySimpleGUI, I discovered a few issues with PySimpleGUI (see below).  I evaluated several other GUI frameworks including [Toga](https://github.com/beeware/toga), [wxPython](https://www.wxpython.org/), [pyglet](https://github.com/pyglet/pyglet), [remi](https://github.com/dddomodossola/remi), and [tkinter](https://docs.python.org/3/library/tkinter.html).  None of these was as simple as PySimpleGUI and several had other issues, e.g. errors running under MacOS, steep learning curve, etc. 
 
 I settled on using tkinter because it's included with python, well-supported on multiple platforms, and relatively light-weight.  However, I found tkinter took a bit too much boiler plate compared to PySimpleGUI and I missed the simplicity of PySimpleGUI's single event loop for quick prototyping.  
 
@@ -58,7 +58,7 @@ Once this gets past the early alpha stage, I'll package for PyPI.
 
 ## Anatomy of a guitk program 
 
-![hello2.py example](examples/hello2.py.png "Hello World example")
+![hello2.py example](https://raw.githubusercontent.com/RhetTbull/guitk/main/examples/hello2.py.png "Hello World example")
 
 ```python
 """Hello World example using guitk """
@@ -196,7 +196,7 @@ if __name__ == "__main__":
 
 guitk GUIs are created using a lists of lists where each element in the lists corresponds to a ttk or tk element.  This design pattern is borrowed from PySimpleGUI.
 
-![layout_lol.py example](examples/layouts_lol.py.png "Layout using lists of lists example")
+![layout_lol.py example](https://raw.githubusercontent.com/RhetTbull/guitk/main/examples/layouts_lol.py.png "Layout using lists of lists example")
 
 ```python
 """ Example for guitk showing how to use lists of lists for creating GUI layout """
@@ -225,7 +225,7 @@ if __name__ == "__main__":
 Because layouts are simply lists of lists, you can use python to create layouts programmatically, for example using list comprehensions.
 
 
-![layout2.py example](examples/layout2.py.png "Layout using list comprehensions, with tooltips!")
+![layout2.py example](https://github.com/RhetTbull/guitk/raw/main/examples/layout2.py.png "Layout using list comprehensions, with tooltips!")
 
 ```python
 """ Example for guitk showing how to use list comprehensions to create a GUI """
@@ -261,7 +261,7 @@ if __name__ == "__main__":
 
 A more complex example showing how to use the event handler to react to events and change the value of other GUI elements.
 
-![hello4.py example](examples/hello4.py.png "A more complex example showing how to use the event handler.")
+![hello4.py example](https://github.com/RhetTbull/guitk/raw/main/examples/hello4.py.png "A more complex example showing how to use the event handler.")
 
 ```python
 """ Another Hello World example for guitk showing how to use the event handler """
@@ -350,7 +350,7 @@ if __name__ == "__main__":
 You can create virtual events that fire after a time delay and these can be repeating.
 
 
-![bind_timer_event example](examples/bind_timer_event.py.png "Creating timed virtual events.")
+![bind_timer_event example](https://github.com/RhetTbull/guitk/raw/main/examples/bind_timer_event.py.png "Creating timed virtual events.")
 
 ```python
 """ Example showing how to use bind_timer_event """
@@ -410,7 +410,7 @@ if __name__ == "__main__":
 
 You can access the underlying ttk widget, for example, to change style.  guitk also implements some additional widgets link `LinkLabel` which is a `ttk.Label()` that generates an event when clicked and changes mouse cursor to pointing hand (like a URL does).
 
-![LinkLabel example](examples/link.py.png "Using LinkLabel widget.")
+![LinkLabel example](https://github.com/RhetTbull/guitk/raw/main/examples/link.py.png "Using LinkLabel widget.")
 
 ```python
 """ Demonstrates use of LinkLabel widget """
@@ -472,21 +472,25 @@ Contributions welcome! If this project interests you, open an Issue or send a PR
 
 ## TODO
 
-- [x] Basic prototype
-- [x] Frame
-- [x] Label
-- [x] Entry
-- [x] Button
-- [x] Checkbutton
-- [x] Text
-- [x] ScrolledText
-- [ ] Other widgets
-- [x] Tooltips
-- [ ] Documentation
-- [ ] Add docstrings
-- [ ] Add typehints to public API
-- [ ] Tests
+* [x] Basic prototype
+* [x] Frame
+* [x] Label
+* [x] Entry
+* [x] Button
+* [x] Checkbutton
+* [x] Radiobutton
+* [x] Text
+* [x] ScrolledText
+* [x] Treeview
+* [x] Listbox
+* [x] Combobox
+* [ ] Other widgets
+* [x] Tooltips
+* [ ] Documentation
+* [x] Add docstrings
+* [x] Add type hints to public API
+* [ ] Tests
 
 ## License
 
-MIT License with exception of `tooltips.py` which is licensed under the Python Software Foundation License Version 2.  Both are very permissive licenses.
+MIT License with exception of `tooltips.py` which is licensed under the Python Software Foundation License Version 2 because it includes code from the Python standard library. Both are very permissive licenses.
