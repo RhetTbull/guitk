@@ -44,7 +44,7 @@ class Entry(Widget):
 
     def __init__(
         self,
-        key: Hashable = None,
+        key: Hashable | None = None,
         default: str | None = None,
         disabled: bool = False,
         columnspan: int | None = None,
@@ -180,7 +180,7 @@ class LabelEntry(Entry):
     def __init__(
         self,
         text: str,
-        key: Hashable = None,
+        key: Hashable | None = None,
         default: str | None = None,
         disabled: bool = False,
         columnspan: int | None = None,

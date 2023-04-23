@@ -66,7 +66,7 @@ class Text(Widget):
     def __init__(
         self,
         text: str | None = None,
-        key: Hashable = None,
+        key: Hashable | None = None,
         width: int = 40,
         height: int = 20,
         disabled: bool = False,
@@ -190,7 +190,7 @@ class Output(Text):
     def __init__(
         self,
         text: str | None = None,
-        key: Hashable = None,
+        key: Hashable | None = None,
         width: int = 40,
         height: int = 20,
         disabled: bool = False,
