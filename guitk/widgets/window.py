@@ -25,7 +25,7 @@ class _WindowBaseClass:
     pass
 
 
-class _Layout:
+class LayoutMixin:
     """Mixin class to provide layout"""
 
     layout = []
@@ -74,7 +74,7 @@ class _Layout:
                     col_offset += widget.columnspan - 1
 
 
-class Window(_Layout, _WindowBaseClass):
+class Window(LayoutMixin, _WindowBaseClass):
     """Basic Window class from which all windows are derived
 
     Notes:
@@ -434,7 +434,7 @@ class Window(_Layout, _WindowBaseClass):
             raise KeyError(f"Invalid key: no widget with key {key}")
 
 
-class _Frame(Widget, _Layout):
+class _Frame(Widget, LayoutMixin):
     """Frame base class for Frame and LabelFrame"""
 
     def __init__(
