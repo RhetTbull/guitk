@@ -1,4 +1,4 @@
-<!-* DO NOT EDIT README.md, instead edit README.mdpp and process with MarkdownPP using build_readme.sh -->
+<!--* DO NOT EDIT README.md, instead edit README.mdpp and process with MarkdownPP using build_readme.sh -->
 
 # Python GUI Toolkit for TK (guitk)
 
