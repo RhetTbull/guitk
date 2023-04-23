@@ -6,12 +6,14 @@ import contextlib
 import time
 import tkinter as tk
 from tkinter import ttk
+from typing import Any
 
 from guitk.constants import GUITK
 from guitk.tkroot import _TKRoot
 from guitk.tooltips import Hovertip
 
 from .events import Event, EventCommand, EventType
+from .layout import get_parent, pop_parent, push_parent
 from .menu import Command, Menu
 from .ttk_label import Label
 from .types import TooltipType
@@ -234,6 +236,8 @@ class Window(LayoutMixin, _WindowBaseClass):
         self.modal = False
         """ Set to True to create modal window """
 
+        push_parent(self)
+
     def config(self):
         pass
 
@@ -329,6 +333,10 @@ class Window(LayoutMixin, _WindowBaseClass):
     def children(self):
         """Return child windows"""
         return self._tk.get_children(self)
+
+    def add_widget(self, widget: Any):
+        """Dummy method to allow widgets to be addeded with Layout()"""
+        pass
 
     def _add_menus(self, menu: Menu, menu_items, path=None):
         path = f"MENU:{menu._label}" if path is None else path
@@ -484,7 +492,7 @@ class _Frame(Widget, LayoutMixin):
         self.borderwidth = borderwidth
         self.padding = padding
         self.relief = relief
-        self.layout = layout
+        self.layout = layout or [[]]
         self.text = text
         self.labelanchor = labelanchor or "nw"
 
@@ -561,6 +569,18 @@ class _Frame(Widget, LayoutMixin):
     @value.setter
     def value(self, value):
         pass
+
+    def add_widget(self, widget: Widget):
+        """Add a widget to the frame's layout"""
+        self.layout[0].append(widget)
+
+    def __enter__(self):
+        push_parent(self)
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        pop_parent()
+        return False
 
 
 class Frame(_Frame):
@@ -639,3 +659,57 @@ class LabelFrame(_Frame):
             tooltip=tooltip,
             autoframe=autoframe,
         )
+
+
+class VStack(_Frame):
+    """A frame that stacks widgets vertically when added to a Layout"""
+
+    def __init__(
+        self,
+        key: str | None = None,
+        width: int | None = None,
+        height: int | None = None,
+        style: str | None = None,
+        borderwidth: int | None = None,
+        padding: int | None = None,
+        relief: str = None,
+        disabled: bool | None = False,
+        rowspan: int | None = None,
+        columnspan: int | None = None,
+        sticky: bool | None = None,
+        tooltip: TooltipType | None = None,
+        autoframe: bool = True,
+    ):
+        super().__init__(
+            frametype=GUITK.ELEMENT_FRAME,
+            key=key,
+            width=width,
+            height=height,
+            layout=None,
+            style=style,
+            borderwidth=borderwidth,
+            padding=padding,
+            relief=relief,
+            disabled=disabled,
+            rowspan=rowspan,
+            columnspan=columnspan,
+            sticky=sticky,
+            tooltip=tooltip,
+            autoframe=autoframe,
+        )
+
+    def __enter__(self):
+        push_parent(self)
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        # reorder the layout to be vertical
+        self.layout = [[x] for x in self.layout[0]]
+        pop_parent()
+        return False
+
+
+class HStack(Frame):
+    """A frame that stacks widgets horizontally when added to a Layout"""
+
+    pass

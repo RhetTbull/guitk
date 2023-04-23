@@ -3,13 +3,14 @@
 from __future__ import annotations
 
 import tkinter as tk
-import tkinter.ttk as ttk
 from typing import Any, Callable, Hashable
 
 from guitk.tkroot import _TKRoot
 
-from .events import Event, EventCommand, EventType
+from .events import Event, EventCommand
 from .types import CommandType, TooltipType, ValueType
+
+from .layout import get_parent
 
 
 class Widget:
@@ -97,3 +98,18 @@ class Widget:
     @disabled.setter
     def disabled(self, value: bool) -> None:
         self.widget["state"] = "disabled" if value else "normal"
+
+    def __init_subclass__(subclass, *args, **kwargs):
+        """Ensure that all widgets are added to the parent layout"""
+
+        # This rewrites the __init__ method of the subclass to add the widget to the parent layout
+        super().__init_subclass__(*args, **kwargs)
+
+        def new_init(self, *args, init=subclass.__init__, **kwargs):
+            init(self, *args, **kwargs)
+            if subclass is type(self):
+                # only do this for the bottom grandchild class
+                # in th case of subclassed widgets
+                get_parent().add_widget(self)
+
+        subclass.__init__ = new_init
