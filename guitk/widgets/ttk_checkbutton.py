@@ -10,7 +10,7 @@ from .events import Event, EventCommand, EventType
 from .types import CommandType, TooltipType
 from .widget import Widget
 
-__all__ = ["Checkbutton"]
+__all__ = ["Checkbutton", "CheckButton"]
 
 _valid_standard_attributes = {
     "class",
@@ -137,3 +137,9 @@ class Checkbutton(Widget):
     def checkbutton(self):
         """Return the ttk.Checkbutton widget"""
         return self.widget
+
+
+class CheckButton(Checkbutton):
+    """Checkbox / checkbutton"""
+
+    pass

@@ -10,7 +10,7 @@ from .types import CommandType, TabType, TooltipType
 from .widget import Widget
 from .window import Frame, _Layout
 
-__all__ = ["Notebook"]
+__all__ = ["Notebook", "NoteBook"]
 
 _valid_standard_attributes = {
     "width",
@@ -151,3 +151,11 @@ class Notebook(Widget, _Layout):
     def notebook(self):
         """Return the ttk.Notebook widget"""
         return self.widget
+
+
+class NoteBook(Notebook):
+    """
+    ttk.Notebook widget
+    """
+
+    pass

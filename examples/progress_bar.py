@@ -43,10 +43,10 @@ class ProgressWindow(guitk.Window):
             [
                 guitk.Button(text="Step", key="STEP"),
                 guitk.Scale(
+                    0,
+                    100,
                     key="SCALE",
                     orient=HORIZONTAL,
-                    from_=0,
-                    to=100,
                     value=5,
                     target_key="SCALE_LABEL",
                     precision=0,

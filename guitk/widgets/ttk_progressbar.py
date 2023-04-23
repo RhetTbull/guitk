@@ -9,7 +9,12 @@ from typing import Hashable, TypeVar
 from .types import TooltipType
 from .widget import Widget
 
-__all__ = ["Progressbar", "PROGRESS_DETERMINATE", "PROGRESS_INDETERMINATE"]
+__all__ = [
+    "Progressbar",
+    "ProgressBar",
+    "PROGRESS_DETERMINATE",
+    "PROGRESS_INDETERMINATE",
+]
 
 _valid_standard_attributes = {"takefocus", "cursor", "style", "class"}
 
@@ -141,3 +146,11 @@ class Progressbar(Widget):
 
     def stop(self):
         self.widget.stop()
+
+
+class ProgressBar(Progressbar):
+    """
+    ttk.Progressbar
+    """
+
+    pass

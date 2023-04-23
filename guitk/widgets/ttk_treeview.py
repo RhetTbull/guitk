@@ -12,7 +12,7 @@ from .types import CommandType, TooltipType
 from .utils import scrolled_widget_factory
 from .widget import Widget
 
-__all__ = ["Listbox", "Treeview"]
+__all__ = ["ListBox", "Listbox", "TreeView", "Treeview"]
 
 _valid_standard_attributes = {
     "class",
@@ -208,6 +208,10 @@ class Treeview(Widget):
 
 
 class Listbox(Treeview):
+    """
+    Listbox widget
+    """
+
     def __init__(
         self,
         text: list[str] | None = None,
@@ -330,3 +334,19 @@ class Listbox(Treeview):
     def delete(self, line):
         """Delete a line from Listbox"""
         self.widget.delete(line)
+
+
+class TreeView(Treeview):
+    """
+    ttk.Treeview widget
+    """
+
+    pass
+
+
+class ListBox(Listbox):
+    """
+    Listbox widget
+    """
+
+    pass

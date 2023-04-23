@@ -7,7 +7,7 @@ from .events import Event, EventCommand, EventType
 from .types import CommandType, TooltipType
 from .widget import Widget
 
-__all__ = ["Combobox"]
+__all__ = ["Combobox", "ComboBox"]
 
 _valid_standard_attributes = {
     "class",
@@ -131,3 +131,9 @@ class Combobox(Widget):
     def combobox(self):
         """Return the Tk combobox widget"""
         return self.widget
+
+
+class ComboBox(Combobox):
+    """ttk Combobox"""
+
+    pass

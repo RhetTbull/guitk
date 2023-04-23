@@ -10,7 +10,7 @@ from .events import Event, EventCommand, EventType
 from .types import CommandType, TooltipType
 from .widget import Widget
 
-__all__ = ["Radiobutton"]
+__all__ = ["Radiobutton", "RadioButton"]
 
 _valid_standard_attributes = {
     "class",
@@ -34,8 +34,6 @@ Window = TypeVar("Window")
 class Radiobutton(Widget):
     """
     ttk.Radiobutton class
-
-    Note: group must be specified and will be used as key unless a separate key is specified.
     """
 
     def __init__(
@@ -165,3 +163,11 @@ class Radiobutton(Widget):
     def radiobutton(self):
         """Return the ttk Radiobutton widget"""
         return self.widget
+
+
+class RadioButton(Radiobutton):
+    """
+    ttk.Radiobutton class
+    """
+
+    pass
