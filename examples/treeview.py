@@ -10,9 +10,8 @@ class ShowMeATree(guitk.Window):
         self.layout = [
             [
                 guitk.Treeview(
-                    key="TREE",
                     headings=["Filename", "Size"],
-                    show="headings",
+                    key="TREE",
                     vscrollbar=True,
                 )
             ]
