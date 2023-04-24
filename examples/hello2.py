@@ -26,6 +26,9 @@ class HelloWorld(guitk.Window):
             [guitk.Button("Ok"), guitk.Button("Quit")],
         ]
 
+        # optionally set size as a tuple of (width, height)
+        self.size = (640, 480)
+
     def setup(self):
         # your setup() method is called by the Window class after config() just before the Window is displayed
         # use this to initialize any internal state you need

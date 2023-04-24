@@ -94,6 +94,7 @@ class Window(LayoutMixin, _WindowBaseClass):
         theme: str | None = None,
         tooltip: TooltipType | None = None,
         modal: bool | None = None,
+        size: tuple[int, int] | None = None,
     ):
         # call _config then subclass's config to initialize
         # layout, title, menu, etc.
@@ -108,6 +109,7 @@ class Window(LayoutMixin, _WindowBaseClass):
         self.theme = theme if theme is not None else self.theme
         self.tooltip = tooltip if tooltip is not None else self.tooltip
         self.modal = modal if modal is not None else self.modal
+        self.size = size if size is not None else self.size
 
         self._id = id(self)
         self._tk = _TKRoot()
@@ -192,6 +194,9 @@ class Window(LayoutMixin, _WindowBaseClass):
             self.window.wait_visibility()
             self.window.grab_set()
 
+        if self.size is not None:
+            self.window.geometry(f"{self.size[0]}x{self.size[1]}")
+
         # TODO: add geometry code to ensure window appears in good spot relative to parent
 
         self.events = True
@@ -209,14 +214,6 @@ class Window(LayoutMixin, _WindowBaseClass):
         self.title = "My Window"
         """Title to display in the window's title bar """
 
-        # self.layout = [
-        #     [
-        #         Label(
-        #             "Looks like you forgot to add self.layout to your config() method."
-        #         )
-        #     ],
-        #     [Button("Quit")],
-        # ]
         self.layout = []
         """Every class that inherits from Window must define it's own layout """
 
