@@ -11,7 +11,7 @@ from .events import Event, EventCommand, EventType
 from .types import CommandType, TooltipType
 from .widget import Widget
 
-__all__ = ["Label", "LinkLabel"]
+__all__ = ["Label", "LinkLabel", "Linklabel"]
 
 _valid_standard_attributes = {
     "class",
@@ -214,3 +214,7 @@ class LinkLabel(Label):
                 )
             )
         return self.widget
+
+class Linklabel(LinkLabel):
+    """Non-camel case version"""
+    pass

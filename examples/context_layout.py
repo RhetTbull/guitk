@@ -8,12 +8,12 @@ class ShoppingList(guitk.Window):
         self.title = "My Shopping List"
 
         with guitk.Layout() as layout:
-            with guitk.HStack() as hs:
+            with guitk.Row() as row:
                 # these will be stacked horizontally (side by side)
                 guitk.Label("Item to buy:")
                 guitk.Entry(key="item", events=True)
                 guitk.Button("Add", key="add")
-            with guitk.VStack() as vs:
+            with guitk.Stack() as stack:
                 # these will be stacked vertically (one on top of the other)
                 guitk.Label("Shopping list", anchor="center")
                 guitk.ListBox(key="list")

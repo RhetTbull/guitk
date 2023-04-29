@@ -1,4 +1,6 @@
-"""Layout widget to enable SwiftUI style layout"""
+""" Layout class for use with guitk widgets"""
+
+from __future__ import annotations
 
 import threading
 from typing import Any

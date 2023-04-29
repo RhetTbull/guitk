@@ -4,12 +4,20 @@ import pathlib
 import sys
 from enum import Enum, auto
 
-from .widgets import *
-from .widgets import __all__ as ALL_WIDGETS
-from .widgets import _get_docstring
-from .widgets.events import EventType
+from guitk import *
+from guitk import __all__ as ALL_WIDGETS
+
 
 dummy_text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras tempus neque in vehicula hendrerit. Nam non posuere ante. Nunc libero libero, tempus eget enim vitae, egestas hendrerit tortor. Vivamus et egestas felis. Aliquam erat volutpat. Nulla facilisi. Aliquam hendrerit, nibh nec tempor lobortis, purus nisl vehicula ex, dapibus fermentum mauris nibh id nulla. Vivamus non pretium quam. Phasellus elementum commodo nisl. Nullam eu faucibus augue. Vivamus pulvinar metus vehicula urna porttitor euismod. "
+
+
+def _get_docstring(name):
+    """Return the docstring of an object with name"""
+    try:
+        obj = globals()[name]
+    except KeyError as e:
+        raise ValueError(f"Invalid object name: {e}")
+    return obj.__doc__ or ""
 
 
 def _list_files(path, tree):
