@@ -8,10 +8,9 @@ from typing import Hashable, TypeVar
 
 EventCommand = namedtuple("EventCommand", ["widget", "key", "event_type", "command"])
 
-from enum import Enum, auto
+from enum import Enum
 
-Window = TypeVar("Window")
-Widget = TypeVar("Widget")
+from .types import Widget, Window
 
 
 class Event:
