@@ -20,9 +20,7 @@ class LayoutMixin:
     def __init__(self, *args, **kwargs):
         pass
 
-    def _layout(
-        self, parent: tk.BaseWidget, window: _WindowBaseClass, autoframe: bool
-    ):
+    def _layout(self, parent: tk.BaseWidget, window: _WindowBaseClass, autoframe: bool):
         """Create widgets from layout"""
         # as this is a mixin, make sure class being mixed into has necessary attributes
 
@@ -61,8 +59,8 @@ class LayoutMixin:
                     col_offset += widget.columnspan - 1
 
 
-class _Frame(Widget, LayoutMixin):
-    """Frame base class for Frame and LabelFrame"""
+class Container(Widget, LayoutMixin):
+    """Container base class for Frame and other containers"""
 
     def __init__(
         self,
@@ -202,7 +200,9 @@ class _Frame(Widget, LayoutMixin):
         return False
 
 
-class Frame(_Frame):
+class Frame(Container):
+    """A Frame widget that can contain other widgets."""
+
     def __init__(
         self,
         layout: LayoutType | None = None,
@@ -239,7 +239,9 @@ class Frame(_Frame):
         )
 
 
-class LabelFrame(_Frame):
+class LabelFrame(Container):
+    """A Frame widget with a label that can contain other widgets."""
+
     def __init__(
         self,
         text: str | None = None,
@@ -278,58 +280,3 @@ class LabelFrame(_Frame):
             tooltip=tooltip,
             autoframe=autoframe,
         )
-
-
-class Stack(_Frame):
-    """A frame that stacks widgets vertically when added to a Layout"""
-
-    def __init__(
-        self,
-        key: str | None = None,
-        width: int | None = None,
-        height: int | None = None,
-        style: str | None = None,
-        borderwidth: int | None = None,
-        padding: int | None = None,
-        relief: str = None,
-        disabled: bool | None = False,
-        rowspan: int | None = None,
-        columnspan: int | None = None,
-        sticky: bool | None = None,
-        tooltip: TooltipType | None = None,
-        autoframe: bool = True,
-    ):
-        super().__init__(
-            frametype=GUITK.ELEMENT_FRAME,
-            key=key,
-            width=width,
-            height=height,
-            layout=None,
-            style=style,
-            borderwidth=borderwidth,
-            padding=padding,
-            relief=relief,
-            disabled=disabled,
-            rowspan=rowspan,
-            columnspan=columnspan,
-            sticky=sticky,
-            tooltip=tooltip,
-            autoframe=autoframe,
-        )
-
-    def __enter__(self):
-        push_parent(self)
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        # reorder the layout to be vertical
-        self.layout = [[x] for x in self.layout[0]]
-        pop_parent()
-        return False
-
-
-class Row(Frame):
-    """A container that stacks widgets horizontally when added to a Layout"""
-
-    pass
-

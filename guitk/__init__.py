@@ -1,20 +1,17 @@
 """ Set of classes to simplify building a GUI app with tkinter.
-    Inspired by PySimpleGUI. 
-
     No dependencies outside python standard library.
-
     Published under the MIT License.
-
-    Copyright Rhet Turnbull, 2021, all rights reserved.
+    Copyright Rhet Turnbull, 2023, all rights reserved.
 """
 
 # TODO: add way to specify tooltip delay
 # TODO: add style to all controls
 # TODO: standardize value_type
 
+from .containers import Row, Stack
 from .debugwindow import DebugWindow
 from .events import Event, EventCommand, EventType
-from .frame import Frame, LabelFrame, Row, Stack
+from .frame import Frame, LabelFrame
 from .layout import Layout
 from .menu import Command, Menu
 from .tk_text import Output, Text
