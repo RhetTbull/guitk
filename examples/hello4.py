@@ -18,7 +18,7 @@ from guitk import (
 
 
 class HelloWorld(Window):
-    def config(self):
+    def config(self):  # sourcery skip: extract-method
         self.title = "Hello, World"
 
         # Define the window's contents
