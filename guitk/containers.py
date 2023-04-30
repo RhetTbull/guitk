@@ -35,7 +35,7 @@ class Stack(Container):
             columnspan=None,
             sticky=sticky,
             tooltip=None,
-            autoframe=True,
+            autoframe=False,
             padx=0,
             pady=0,
         )
