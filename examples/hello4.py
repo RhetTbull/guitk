@@ -30,10 +30,10 @@ class HelloWorld(Window):
             Label("", width=40, key="OUTPUT")
             with LabelFrame("Label Frame", labelanchor=tk.N):
                 with Row():
-                    with Stack(sticky=tk.N):
+                    with Stack():
                         Output(width=20, height=10)
                         Label("Output", key="LABEL_OUTPUT", sticky=tk.N)
-                    with Stack(sticky=tk.N):
+                    with Stack():
                         Checkbutton("Upper case", key="CHECK_UPPER")
                         Checkbutton("Green text", key="CHECK_GREEN")
             with Row():

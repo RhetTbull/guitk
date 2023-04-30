@@ -50,7 +50,7 @@ class Widget:
         self._value = value_type() if value_type is not None else tk.StringVar()
 
         # set by _create_widget in inherited classes
-        self._parent = None
+        self.parent = None
         self.window = None
 
     @property
@@ -113,6 +113,7 @@ class Widget:
             if subclass is type(self):
                 # only do this for the bottom grandchild class
                 # in th case of subclassed widgets
-                get_parent().add_widget(self)
+                self.parent = get_parent()
+                self.parent.add_widget(self)
 
         subclass.__init__ = new_init
