@@ -1,6 +1,16 @@
 """Hello World example using guitk """
 
-from guitk import Button, Entry, Event, EventType, Label, Row, VerticalLayout, Window, Frame
+from guitk import (
+    Button,
+    Entry,
+    Event,
+    EventType,
+    Label,
+    Row,
+    VerticalLayout,
+    Window,
+    Frame,
+)
 
 
 # subclass guitk.Window as the starting point for your app's main window

@@ -74,8 +74,8 @@ class Row(Container):
             sticky=None,
             tooltip=None,
             autoframe=False,
-            padx=None,
-            pady=None,
+            padx=0,
+            pady=0,
         )
 
     def __enter__(self):

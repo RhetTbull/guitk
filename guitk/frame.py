@@ -40,7 +40,11 @@ class LayoutMixin:
         for row_count, row in enumerate(self.layout):
             col_offset = 0
 
-            if autoframe and not (len(row) == 1 and row[0].widget_type in ["ttk.Frame", "tk.Frame", "LabelFrame"]):
+            if autoframe and (
+                len(row) != 1
+                or row[0].widget_type
+                not in ["ttk.Frame", "tk.Frame", "LabelFrame"]
+            ):
                 row_ = [Container(layout=[row], autoframe=False)]
             else:
                 row_ = row
