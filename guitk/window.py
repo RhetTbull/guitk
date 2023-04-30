@@ -85,7 +85,7 @@ class Window(_LayoutMixin, _WindowBaseClass):
         """ will hold group name/variable for radio buttons in the window """
 
         self._mainframe = ttk.Frame(self.window, padding="3 3 12 12")
-        self._mainframe.grid(column=0, row=0, sticky=(tk.N, tk.W, tk.E, tk.S))
+        self._mainframe.grid(column=0, row=0, sticky="nsew")
         self.window.columnconfigure(0, weight=1)
         self.window.rowconfigure(0, weight=1)
 

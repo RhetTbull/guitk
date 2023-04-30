@@ -14,6 +14,7 @@ from .events import Event, EventCommand, EventType
 from .frame import Frame, LabelFrame
 from .layout import Layout, VerticalLayout
 from .menu import Command, Menu
+from .spacer import Spacer, VerticalSpacer
 from .tk_text import Output, Text
 from .tkroot import *
 from .ttk_button import BrowseDirectoryButton, BrowseFileButton, Button
@@ -73,10 +74,12 @@ __all__ = [
     "Row",
     "Scale",
     "Stack",
+    "Spacer",
     "Text",
     "TreeView",
     "Treeview",
     "VerticalLayout",
+    "VerticalSpacer",
     "Widget",
     "Window",
 ]
