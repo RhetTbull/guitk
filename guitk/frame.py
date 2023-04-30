@@ -66,6 +66,13 @@ class _LayoutMixin:
                 else:
                     widget._tooltip = None
 
+                # configure style if needed
+                if widget._style_kwargs:
+                    style = ttk.Style()
+                    style_name = f"{id(widget)}.{widget.widget.winfo_class()}"
+                    style.configure(style_name, **widget._style_kwargs)
+                    widget.widget.configure(style=style_name)
+
                 window._widgets.append(widget)
                 widget.parent = self
                 window._widget_by_key[widget.key] = widget
@@ -94,7 +101,7 @@ class _Container(Widget, _LayoutMixin):
         columnspan: int | None = None,
         text: str | None = None,
         labelanchor: str | None = None,
-        sticky: str  | None = None,
+        sticky: str | None = None,
         tooltip: TooltipType | None = None,
         autoframe: bool | None = True,
         padx: int | None = None,
@@ -243,7 +250,7 @@ class Frame(_Container):
         disabled: bool | None = False,
         rowspan: int | None = None,
         columnspan: int | None = None,
-        sticky: str  | None = None,
+        sticky: str | None = None,
         tooltip: TooltipType | None = None,
         autoframe: bool = True,
         **kwargs,
@@ -286,7 +293,7 @@ class LabelFrame(_Container):
         rowspan: int | None = None,
         columnspan: int | None = None,
         labelanchor: str | None = None,
-        sticky: str  | None = None,
+        sticky: str | None = None,
         tooltip: TooltipType | None = None,
         autoframe: bool = True,
         **kwargs,

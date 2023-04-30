@@ -53,6 +53,9 @@ class Widget:
         self.parent = None
         self.window = None
 
+        # used by style()
+        self._style_kwargs = {}
+
     @property
     def value(self):
         return self._value.get()
@@ -102,6 +105,62 @@ class Widget:
     def disabled(self, value: bool) -> None:
         self.widget["state"] = "disabled" if value else "normal"
 
+    def style(self, **kwargs) -> Widget:
+        """Configure the widget style
+
+        Args:
+            **kwargs -- style options
+
+        Note:
+        The specific style options available depend on the widget type.
+        For example, to configure the foreground color to blue of a Label widget:
+            Label("Hello").style(foreground="blue")
+
+        Refer to the tk documentation for the specific widget type for more information.
+        https://tkdocs.com/index.html
+
+        style() returns the widget instance, so it can be chained with other methods,
+        for example:
+            Label("Hello").style(foreground="blue").font(size=20)
+        """
+        self._style_kwargs |= kwargs
+        return self
+
+    def font(
+        self,
+        font: str | None = None,
+        family: str | None = None,
+        size: int | None = None,
+        weight: str | None = None,
+        slant: str | None = None,
+        underline: bool | None = None,
+        overstrike: bool | None = None,
+    ) -> Widget:
+        """Configure the widget font
+
+        Args:
+            font -- font specifier (name, system font, or (family, size, style)-tuple)
+            family -- font 'family', e.g. Courier, Times, Helvetica
+            size -- font size in points
+            weight -- font thickness: NORMAL, BOLD
+            slant -- font slant: ROMAN, ITALIC
+            underline -- font underlining: false (0), true (1)
+            overstrike -- font strikeout: false (0), true (1)
+
+        Note:
+            The font parameter is a string of the form "family size style", where style is a string
+            containing any combination of "bold", "italic", "underline", and "overstrike" separated by spaces.
+            The size may be specified as an integer, or as a floating point number followed by the unit "p" or "P".
+            The unit "p" or "P" stands for points, 1/72 of an inch, and is the standard unit used by X fonts.
+            If font is specified, then the other font-related options (size, weight, slant, underline, overstrike)
+            are ignored.
+        """
+        locals_ = locals()
+        locals_.pop("self")
+        if font_kwargs := {k: v for k, v in locals_.items() if v is not None}:
+            self._style_kwargs["font"] = tk.font.Font(**font_kwargs)
+        return self
+
     def __init_subclass__(subclass, *args, **kwargs):
         """Ensure that all widgets are added to the parent layout"""
 
@@ -112,7 +171,7 @@ class Widget:
             init(self, *args, **kwargs)
             if subclass is type(self):
                 # only do this for the bottom grandchild class
-                # in th case of subclassed widgets
+                # in the case of subclassed widgets
                 self.parent = get_parent()
                 self.parent.add_widget(self)
 
