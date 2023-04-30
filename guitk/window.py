@@ -10,9 +10,10 @@ from typing import Any
 
 from guitk.tkroot import _TKRoot
 
+from .constants import DEFAULT_PADX, DEFAULT_PADY
 from .events import Event, EventCommand, EventType
 from .frame import LayoutMixin
-from .layout import get_parent, pop_parent, push_parent
+from .layout import push_parent
 from .menu import Command, Menu
 from .ttk_label import Label
 from .widget import TooltipType, Widget
@@ -21,6 +22,7 @@ from .widget import TooltipType, Widget
 class _WindowBaseClass:
     # only needed to keep typing happy
     pass
+
 
 class Window(LayoutMixin, _WindowBaseClass):
     """Basic Window class from which all windows are derived
@@ -36,7 +38,7 @@ class Window(LayoutMixin, _WindowBaseClass):
         padx: int | None = None,
         pady: int | None = None,
         topmost: bool | None = None,
-        autoframe: bool = True,
+        autoframe: bool = False,
         theme: str | None = None,
         tooltip: TooltipType | None = None,
         modal: bool | None = None,
@@ -111,8 +113,8 @@ class Window(LayoutMixin, _WindowBaseClass):
 
         # apply padding, widget padding takes precedent over window
         for widget in self._widgets:
-            padx = widget.padx or self.padx
-            pady = widget.pady or self.pady
+            padx = widget.padx if widget.padx is not None else self.padx
+            pady = widget.pady if widget.pady is not None else self.pady
             widget.widget.grid_configure(padx=padx, pady=pady)
 
         if self.menu:
@@ -166,8 +168,8 @@ class Window(LayoutMixin, _WindowBaseClass):
         self.menu = {}
         """ Optionally provide a menu """
 
-        self.padx = 5
-        self.pady = 5
+        self.padx = DEFAULT_PADX
+        self.pady = DEFAULT_PADY
         """Default padding around widgets """
 
         self.theme = None
@@ -187,7 +189,7 @@ class Window(LayoutMixin, _WindowBaseClass):
     def config(self):
         pass
 
-    def handle_event(self, event):
+    def handle_event(self, event: Event):
         """Handle event objects, inheriting classes should implement handle_event"""
         if event.event_type == EventType.Quit:
             self.quit(self._return_value)
@@ -204,7 +206,7 @@ class Window(LayoutMixin, _WindowBaseClass):
         """
         pass
 
-    def quit(self, return_value=None):
+    def quit(self, return_value: Any = None):
         """Close the window"""
         self._return_value = return_value
         self._destroy()
@@ -386,4 +388,3 @@ class Window(LayoutMixin, _WindowBaseClass):
             return self._widget_by_key[key]
         except KeyError:
             raise KeyError(f"Invalid key: no widget with key {key}")
-

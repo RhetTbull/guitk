@@ -3,10 +3,10 @@
 import pathlib
 import tkinter.ttk as ttk
 from tkinter import filedialog
-from typing import Hashable
+from typing import Any, Hashable
 
 from .events import Event, EventCommand, EventType
-from .types import CommandType, TooltipType
+from .types import CommandType, TooltipType, Window
 from .widget import Widget
 
 __all__ = ["Button", "BrowseFileButton", "BrowseDirectoryButton"]
@@ -95,6 +95,8 @@ class Button(Widget):
         self.columnspan = columnspan
         self.rowspan = rowspan
         self.tooltip = tooltip
+        self.padx = padx
+        self.pady = pady
         self.kwargs = kwargs
 
     @property
@@ -105,7 +107,7 @@ class Button(Widget):
     def value(self, text: str):
         self.widget["text"] = text
 
-    def _create_widget(self, parent, window: "Window", row, col):
+    def _create_widget(self, parent: Any, window: Window, row: int, col: int):
         self.window = window
         self._parent = parent
         event = Event(self, window, self.key, EventType.ButtonPress)

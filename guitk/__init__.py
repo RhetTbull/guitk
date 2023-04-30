@@ -12,7 +12,7 @@ from .containers import Row, Stack
 from .debugwindow import DebugWindow
 from .events import Event, EventCommand, EventType
 from .frame import Frame, LabelFrame
-from .layout import Layout
+from .layout import Layout, VerticalLayout
 from .menu import Command, Menu
 from .tk_text import Output, Text
 from .tkroot import *
@@ -76,6 +76,7 @@ __all__ = [
     "Text",
     "TreeView",
     "Treeview",
+    "VerticalLayout",
     "Widget",
     "Window",
 ]

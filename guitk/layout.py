@@ -43,7 +43,7 @@ def get_parent() -> Any:
 
 
 class Layout:
-    """Layout widget"""
+    """A Layout manager that aligns widgets horizontally"""
 
     def __init__(self):
         self._layout = []
@@ -74,3 +74,11 @@ class Layout:
         value = self.layout[self.index]
         self.index += 1
         return value
+
+
+class VerticalLayout(Layout):
+    """A Layout manager that aligns widgets vertically"""
+
+    @property
+    def layout(self):
+        return [[w] for w in self._layout]

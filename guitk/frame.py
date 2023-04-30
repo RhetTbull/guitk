@@ -1,5 +1,7 @@
 """Layout widget to enable SwiftUI style layout"""
 
+from __future__ import annotations
+
 import tkinter as tk
 from tkinter import ttk
 
@@ -8,8 +10,18 @@ from guitk.constants import GUITK
 from .layout import pop_parent, push_parent
 from .tooltips import Hovertip
 from .ttk_label import Label
-from .types import LayoutType, TooltipType, Window, _WindowBaseClass
+from .types import LayoutType, TooltipType, Window
 from .widget import Widget
+
+_valid_frame_attributes = {
+    "cursor",
+    "height",
+    "padding",
+    "relief",
+    "style",
+    "takefocus",
+    "width",
+}
 
 
 class LayoutMixin:
@@ -18,17 +30,18 @@ class LayoutMixin:
     layout = []
 
     def __init__(self, *args, **kwargs):
-        pass
+        super().__init__(*args, **kwargs)
 
-    def _layout(self, parent: tk.BaseWidget, window: _WindowBaseClass, autoframe: bool):
+    def _layout(self, parent: tk.BaseWidget, window: Window, autoframe: bool):
         """Create widgets from layout"""
         # as this is a mixin, make sure class being mixed into has necessary attributes
 
         row_offset = 0
         for row_count, row in enumerate(self.layout):
             col_offset = 0
-            if autoframe and len(row) > 1:
-                row_ = [Frame(layout=[row], autoframe=False)]
+
+            if autoframe and not (len(row) == 1 and row[0].widget_type in ["ttk.Frame", "tk.Frame", "LabelFrame"]):
+                row_ = [Container(layout=[row], autoframe=False)]
             else:
                 row_ = row
             for col_count, widget in enumerate(row_):
@@ -65,10 +78,10 @@ class Container(Widget, LayoutMixin):
     def __init__(
         self,
         frametype: GUITK = GUITK.ELEMENT_FRAME,
-        width: int | None = None,
         key: str | None = None,
-        height: int | None = None,
         layout: LayoutType | None = None,
+        height: int | None = None,
+        width: int | None = None,
         style: str | None = None,
         borderwidth: int | None = None,
         padding: int | None = None,
@@ -81,26 +94,35 @@ class Container(Widget, LayoutMixin):
         sticky: bool | None = None,
         tooltip: TooltipType | None = None,
         autoframe: bool | None = True,
+        padx: int | None = None,
+        pady: int | None = None,
+        **kwargs,
     ):
-        super().__init__(
+        # padx and pady passed to Widget not Frame
+        Widget.__init__(
+            self,
             key=key,
             disabled=disabled,
             rowspan=rowspan,
             columnspan=columnspan,
             sticky=sticky,
             tooltip=tooltip,
+            padx=padx,
+            pady=pady,
         )
+        LayoutMixin.__init__(self)
+
         self._autoframe = autoframe
 
-        if frametype not in [GUITK.ELEMENT_FRAME, GUITK.ELEMENT_LABEL_FRAME]:
+        if frametype not in [
+            GUITK.ELEMENT_FRAME,
+            GUITK.ELEMENT_LABEL_FRAME,
+            GUITK.ELEMENT_TK_FRAME,
+        ]:
             raise ValueError(f"bad frametype: {frametype}")
         self.frametype = frametype
-        self.widget_type = (
-            "ttk.Frame" if frametype == GUITK.ELEMENT_FRAME else "ttk.LabelFrame"
-        )
-        if key is None:
-            key = "Frame" if frametype == GUITK.ELEMENT_FRAME else "LabelFrame"
-        self.key = key
+        self.widget_type = frametype.value
+        self.key = key or self.widget_type
         self.columnspan = columnspan
         self.rowspan = rowspan
         self.width = width
@@ -112,36 +134,37 @@ class Container(Widget, LayoutMixin):
         self.layout = layout or [[]]
         self.text = text
         self.labelanchor = labelanchor or "nw"
+        self.kwargs = kwargs
 
     def _create_widget(self, parent, window: Window, row, col):
         self.window = window
         self._parent = parent
 
+        kwargs = {
+            k: v
+            for k, v in self.kwargs.items()
+            if k in _valid_frame_attributes and v is not None
+        }
+        if self.style is not None:
+            kwargs["style"] = self.style
+
         if self.frametype == GUITK.ELEMENT_FRAME:
-            if self.style is not None:
-                self.widget = ttk.Frame(
-                    parent,
-                    width=self.width,
-                    height=self.height,
-                    borderwidth=self.borderwidth,
-                    style=self.style,
-                )
-            else:
-                self.widget = ttk.Frame(
-                    parent,
-                    width=self.width,
-                    borderwidth=self.borderwidth,
-                    height=self.height,
-                )
-        elif self.style is not None:
-            self.widget = ttk.LabelFrame(
+            self.widget = ttk.Frame(
                 parent,
-                text=self.text,
                 width=self.width,
                 height=self.height,
-                style=self.style,
-                labelanchor=self.labelanchor,
                 borderwidth=self.borderwidth,
+                **kwargs,
+            )
+        elif self.frametype == GUITK.ELEMENT_TK_FRAME:
+            self.widget = tk.Frame(
+                parent,
+                width=self.width,
+                height=self.height,
+                borderwidth=self.borderwidth,
+                padx=self.padx,
+                pady=self.pady,
+                **kwargs,
             )
         else:
             self.widget = ttk.LabelFrame(
@@ -151,9 +174,10 @@ class Container(Widget, LayoutMixin):
                 height=self.height,
                 labelanchor=self.labelanchor,
                 borderwidth=self.borderwidth,
+                **kwargs,
             )
 
-        if self.padding is not None:
+        if self.padding is not None and self.frametype != GUITK.ELEMENT_TK_FRAME:
             self.widget.configure(padding=self.padding)
         if self.relief is not None:
             self.widget["relief"] = self.relief
@@ -219,6 +243,7 @@ class Frame(Container):
         sticky: bool | None = None,
         tooltip: TooltipType | None = None,
         autoframe: bool = True,
+        **kwargs,
     ):
         super().__init__(
             frametype=GUITK.ELEMENT_FRAME,
@@ -236,6 +261,7 @@ class Frame(Container):
             sticky=sticky,
             tooltip=tooltip,
             autoframe=autoframe,
+            kwargs=kwargs,
         )
 
 
@@ -260,6 +286,7 @@ class LabelFrame(Container):
         sticky: bool | None = None,
         tooltip: TooltipType | None = None,
         autoframe: bool = True,
+        **kwargs,
     ):
         super().__init__(
             frametype=GUITK.ELEMENT_LABEL_FRAME,
@@ -279,4 +306,5 @@ class LabelFrame(Container):
             sticky=sticky,
             tooltip=tooltip,
             autoframe=autoframe,
+            kwargs=kwargs,
         )

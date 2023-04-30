@@ -2,8 +2,10 @@
 
 from guitk.constants import GUITK
 
-from .frame import Container
-from .layout import pop_parent, push_parent
+from .constants import DEFAULT_PADX, DEFAULT_PADY
+from .frame import Container, LayoutMixin
+from .layout import get_parent, pop_parent, push_parent
+from .widget import Widget
 
 
 class Stack(Container):
@@ -34,6 +36,8 @@ class Stack(Container):
             sticky=sticky,
             tooltip=None,
             autoframe=True,
+            padx=0,
+            pady=0,
         )
 
     def __enter__(self):
@@ -52,29 +56,26 @@ class Row(Container):
 
     def __init__(
         self,
-        key: str | None = None,
-        width: int | None = None,
-        height: int | None = None,
-        padding: int | None = None,
         disabled: bool | None = False,
-        sticky: bool | None = None,
     ):
         super().__init__(
             frametype=GUITK.ELEMENT_FRAME,
-            key=key,
-            width=width,
-            height=height,
+            key=None,
+            width=None,
+            height=None,
             layout=None,
             style=None,
             borderwidth=None,
-            padding=padding,
+            padding=0,
             relief=None,
             disabled=disabled,
             rowspan=None,
             columnspan=None,
-            sticky=sticky,
+            sticky=None,
             tooltip=None,
-            autoframe=True,
+            autoframe=False,
+            padx=None,
+            pady=None,
         )
 
     def __enter__(self):

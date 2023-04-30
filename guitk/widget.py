@@ -8,9 +8,8 @@ from typing import Any, Callable, Hashable
 from guitk.tkroot import _TKRoot
 
 from .events import Event, EventCommand
-from .types import CommandType, TooltipType, ValueType
-
 from .layout import get_parent
+from .types import CommandType, TooltipType, ValueType
 
 
 class Widget:
@@ -29,8 +28,9 @@ class Widget:
         tooltip: TooltipType = None,
         command: CommandType | None = None,
         value_type: ValueType | None = None,
-        **kwargs,
     ):
+        super().__init__()
+
         self.key = key
         self._disabled = disabled
         self.columnspan = columnspan
@@ -63,12 +63,15 @@ class Widget:
 
     def _grid(self, row, column, rowspan, columnspan):
         sticky = self.sticky or tk.W
+
         self.widget.grid(
             row=row,
             column=column,
             columnspan=columnspan,
             rowspan=rowspan,
             sticky=sticky,
+            padx=self.padx,
+            pady=self.pady,
         )
 
         if self.padx is not None or self.pady is not None:
