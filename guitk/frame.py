@@ -24,8 +24,8 @@ _valid_frame_attributes = {
 }
 
 
-class LayoutMixin:
-    """Mixin class to provide layout"""
+class _LayoutMixin:
+    """Mixin class to provide layout; for internal use only"""
 
     layout = []
 
@@ -42,10 +42,9 @@ class LayoutMixin:
 
             if autoframe and (
                 len(row) != 1
-                or row[0].widget_type
-                not in ["ttk.Frame", "tk.Frame", "LabelFrame"]
+                or row[0].widget_type not in ["ttk.Frame", "tk.Frame", "LabelFrame"]
             ):
-                row_ = [Container(layout=[row], autoframe=False)]
+                row_ = [_Container(layout=[row], autoframe=False)]
             else:
                 row_ = row
             for col_count, widget in enumerate(row_):
@@ -76,8 +75,8 @@ class LayoutMixin:
                     col_offset += widget.columnspan - 1
 
 
-class Container(Widget, LayoutMixin):
-    """Container base class for Frame and other containers"""
+class _Container(Widget, _LayoutMixin):
+    """Container base class for Frame and other containers; intended for internal use only"""
 
     def __init__(
         self,
@@ -114,7 +113,7 @@ class Container(Widget, LayoutMixin):
             padx=padx,
             pady=pady,
         )
-        LayoutMixin.__init__(self)
+        _LayoutMixin.__init__(self)
 
         self._autoframe = autoframe
 
@@ -228,7 +227,7 @@ class Container(Widget, LayoutMixin):
         return False
 
 
-class Frame(Container):
+class Frame(_Container):
     """A Frame widget that can contain other widgets."""
 
     def __init__(
@@ -269,7 +268,7 @@ class Frame(Container):
         )
 
 
-class LabelFrame(Container):
+class LabelFrame(_Container):
     """A Frame widget with a label that can contain other widgets."""
 
     def __init__(

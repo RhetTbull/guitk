@@ -12,7 +12,7 @@ from guitk.tkroot import _TKRoot
 
 from .constants import DEFAULT_PADX, DEFAULT_PADY
 from .events import Event, EventCommand, EventType
-from .frame import LayoutMixin
+from .frame import _LayoutMixin
 from .layout import push_parent
 from .menu import Command, Menu
 from .ttk_label import Label
@@ -24,7 +24,7 @@ class _WindowBaseClass:
     pass
 
 
-class Window(LayoutMixin, _WindowBaseClass):
+class Window(_LayoutMixin, _WindowBaseClass):
     """Basic Window class from which all windows are derived
 
     Notes:

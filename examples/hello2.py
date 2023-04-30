@@ -15,7 +15,6 @@ from guitk import (
 
 # subclass guitk.Window as the starting point for your app's main window
 class HelloWorld(Window):
-
     # every Window class needs a config() method that
     # defines the title and the layout (and optionally menu and other other settings)
     def config(self):
@@ -66,14 +65,11 @@ class HelloWorld(Window):
             # value passed to quit will be returned by HelloWorld.run()
             self.quit(name)
 
-        if event.key == "Ok":
+        if event.key == "Ok" or event.event_type == EventType.EntryReturn:
+            # User pressed the OK button or the Return key inside the Entry box
             # set the output Label to the value of the Entry box
             # individual widgets can be accessed by their key; the window object acts as a dictionary of widgets
             self["OUTPUT"].value = f"Hello {name}! Thanks for trying guitk."
-
-        if event.event_type == EventType.KeyRelease:
-            # events can be handled by event type as well as event key
-            print(event)
 
 
 if __name__ == "__main__":

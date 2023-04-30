@@ -6,7 +6,7 @@ import tkinter.ttk as ttk
 from typing import Hashable, TypeVar
 
 from .events import Event, EventCommand, EventType
-from .frame import Frame, LayoutMixin
+from .frame import Frame, _LayoutMixin
 from .types import CommandType, TabType, TooltipType
 from .widget import Widget
 
@@ -28,7 +28,7 @@ _valid_ttk_notebook_attributes = _valid_standard_attributes
 Window = TypeVar("Window")
 
 
-class Notebook(Widget, LayoutMixin):
+class Notebook(Widget, _LayoutMixin):
     """
     ttk.Notebook widget
     """

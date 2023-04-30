@@ -7,7 +7,7 @@ import tkinter.ttk as ttk
 from typing import Hashable, TypeVar
 
 from .events import Event, EventCommand, EventType
-from .types import CommandType, TooltipType
+from .types import CommandType, TooltipType, Window
 from .utils import scrolled_widget_factory
 from .widget import Widget
 
@@ -32,9 +32,6 @@ _valid_ttk_entry_attributes = {
     "validatecommand",
     "width",
 } | _valid_standard_attributes
-
-
-Window = TypeVar("Window")
 
 
 class Entry(Widget):
@@ -97,7 +94,7 @@ class Entry(Widget):
         self.hscrollbar = hscrollbar
         self.kwargs = kwargs
 
-    def _create_widget(self, parent, window: "Window", row, col):
+    def _create_widget(self, parent, window: Window, row, col):
         self.window = window
         self._parent = parent
 
@@ -116,8 +113,13 @@ class Entry(Widget):
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
         )
 
+        # bind key release event
         event = Event(self, window, self.key, EventType.KeyRelease)
         self.widget.bind("<KeyRelease>", window._make_callback(event))
+
+        # bind return key event
+        entry_return_key = Event(self, window, self.key, EventType.EntryReturn)
+        self.widget.bind("<Return>", window._make_callback(entry_return_key))
 
         if self._command:
             self.events = True

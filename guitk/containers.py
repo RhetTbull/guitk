@@ -3,12 +3,12 @@
 from guitk.constants import GUITK
 
 from .constants import DEFAULT_PADX, DEFAULT_PADY
-from .frame import Container, LayoutMixin
+from .frame import _Container, _LayoutMixin
 from .layout import get_parent, pop_parent, push_parent
 from .widget import Widget
 
 
-class Stack(Container):
+class Stack(_Container):
     """A container that stacks widgets vertically when added to a Layout"""
 
     def __init__(
@@ -51,7 +51,7 @@ class Stack(Container):
         return False
 
 
-class Row(Container):
+class Row(_Container):
     """A container that stacks widgets horizontally when added to a Layout"""
 
     def __init__(

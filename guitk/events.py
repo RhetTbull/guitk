@@ -43,6 +43,7 @@ class EventType(Enum):
     RadioButton = "<<Radiobutton>>"
     VirtualEvent = "<<VirtualEvent>>"
     KeyRelease = "<KeyRelease>"
+    EntryReturn = "<<EntryReturn>>"
     LinkLabel = "<<LinkLabel>>"
     ListboxSelect = "<<ListboxSelect>>"
     ListBoxSelect = "<<ListboxSelect>>"
