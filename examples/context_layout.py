@@ -1,27 +1,27 @@
 """Demo to show how to use context managers to create widget layout"""
 
-import guitk
+from guitk import Button, Entry, Event, Label, Layout, ListBox, Row, Stack, Window
 
 
-class ShoppingList(guitk.Window):
+class ShoppingList(Window):
     def config(self):
         self.title = "My Shopping List"
 
-        with guitk.Layout() as layout:
-            with guitk.Row() as row:
+        with Layout() as layout:
+            with Row():
                 # these will be stacked horizontally (side by side)
-                guitk.Label("Item to buy:")
-                guitk.Entry(key="item", events=True)
-                guitk.Button("Add", key="add")
-            with guitk.Stack() as stack:
+                Label("Item to buy:")
+                Entry(key="item", events=True)
+                Button("Add", key="add")
+            with Stack():
                 # these will be stacked vertically (one on top of the other)
-                guitk.Label("Shopping list", anchor="center")
-                guitk.ListBox(key="list")
-                guitk.Button("Quit", key="quit")
+                Label("Shopping list", anchor="center")
+                ListBox(key="list")
+                Button("Quit", key="quit")
 
         self.layout = layout
 
-    def handle_event(self, event: guitk.Event):
+    def handle_event(self, event: Event):
         print(event)
         if (
             event.key == "item" and event.event.keysym == "Return"

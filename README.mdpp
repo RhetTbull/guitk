@@ -1,16 +1,20 @@
 <!--* DO NOT EDIT README.md, instead edit README.mdpp and process with MarkdownPP using build_readme.sh -->
 
-# Python GUI Toolkit for TK (guitk)
+# Python GUI Toolkit for TK (GUITk)
 
 ## Synopsis
 
-guitk is an experiment to design a lightweight framework that simplifies creating simple GUIs with [tkinter](https://docs.python.org/3/library/tkinter.html).  This is very much early alpha stage but in constant development so check back frequently if this interests you or open an issue to start a conversation about what pain points this project could help you solve!
+GUITk is a declarative framework for building GUIs with [tkinter](https://docs.python.org/3/library/tkinter.html) inspired by [SwiftUI](https://developer.apple.com/documentation/swiftui).
 
-guitk allows you to build complete GUI applications with a few lines of code. guitk allows you to use either an event loop, inspired by [PySimpleGUI](https://github.com/PySimpleGUI/PySimpleGUI#example-2---interactive-window), or callbacks for event handling. For simple apps, I find an event loop is easy and intuitive to use. guitk also allows you to layout your app using a simple grid, also inspired by [PySimpleGUI](https://github.com/PySimpleGUI/PySimpleGUI#layouts-are-funny-lol-) -- no need to learn about tkinter packing or grid managers. You provide your layout as a list of lists where each row in the list represents a row in a grid and each element in the row represents a column in the grid. This makes laying out your app very easy and intuitive. guitk also provides a hierarchical layout system inspired by [SwiftUI](https://developer.apple.com/documentation/swiftui) and [applepy](https://github.com/eduardohleite/applepy) which allows you to create complex layouts with minimal code.
+This is very much early alpha stage but in constant development so check back frequently if this interests you or open an issue to start a conversation about what pain points this project could help you solve!
+
+GUITk allows you to build complete GUI applications with a few lines of code. With GUITk, you can use an event loop, inspired by [PySimpleGUI](https://github.com/PySimpleGUI/PySimpleGUI#example-2---interactive-window), or callbacks for event handling. For simple apps, I find an event loop is easy and intuitive to use.
+
+GUITk apps are built by subclasses the `guitk.Window` class. Your GUI elements are layed out using a `guitk.Layout` or `guitk.VerticalLayout` object which takes care of placing all widgets in the window using a declarative syntax. This is much simpler than using the underlying tkinter [grid manager](https://tkdocs.com/shipman/grid.html) or [pack](https://dafarry.github.io/tkinterbook/pack.htm) geometry managers.
 
 ## Code Example
 
-### List of Lists Layout
+### Simple Layout
 
 ![hello.py example](https://raw.githubusercontent.com/RhetTbull/guitk/main/examples/hello.py.png "Hello World example")
 
@@ -127,3 +131,8 @@ Contributions welcome! If this project interests you, open an Issue or send a PR
 ## License
 
 MIT License with exception of `tooltips.py` which is licensed under the Python Software Foundation License Version 2 because it includes code from the Python standard library. Both are very permissive licenses.
+
+## See Also
+
+* [applepy](https://github.com/eduardohleite/applepy) - A declarative GUI framework for developing native macOS applications in Python 3.
+* [PySimpleGUI](https://www.PySimpleGUI.org) - A Python GUI Framework.
