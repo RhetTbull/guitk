@@ -9,7 +9,6 @@ from guitk import (
     Row,
     VerticalLayout,
     Window,
-    Frame,
 )
 
 
