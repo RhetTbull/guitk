@@ -8,7 +8,7 @@ import tkinter.ttk as ttk
 
 def scrolled_widget_factory(
     master, widget_class, vscrollbar=False, hscrollbar=False, **kw
-):
+) -> tk.BaseWidget:
     """Create a widget that includes optional scrollbars"""
     # scrollbar code lifted from cpython source with edits to use ttk scrollbar:
     # https://github.com/python/cpython/blob/3.9/Lib/tkinter/scrolledtext.py
