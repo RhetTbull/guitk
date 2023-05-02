@@ -201,6 +201,7 @@ class LabelEntry(Entry):
         tooltip: TooltipType = None,
         command: CommandType | None = None,
         hscrollbar: bool = False,
+        focus: bool = False,
         **kwargs,
     ):
         """
@@ -220,6 +221,7 @@ class LabelEntry(Entry):
             tooltip (TooltipType | None, optional): Tooltip text or callback to generate tooltip text. Defaults to None.
             command (CommandType | None, optional): Command callback. Defaults to None.
             hscrollbar (bool, optional): Show horizontal scrollbar. Defaults to False.
+            focus (bool, optional): If True, widget will have focus. Defaults to False. Only one widget can have focus.
             **kwargs: Additional keyword arguments are passed to ttk.Entry.
         """
         super().__init__(
@@ -235,6 +237,7 @@ class LabelEntry(Entry):
             tooltip=tooltip,
             command=command,
             hscrollbar=hscrollbar,
+            focus=focus,
         )
         self.widget_type = "guitk.LabelEntry"
         self.text = text
@@ -271,6 +274,10 @@ class LabelEntry(Entry):
 
         if self._disabled:
             self.widget.state(["disabled"])
+
+        if self.focus:
+            self.widget.focus()
+
         return self.widget
 
     @property

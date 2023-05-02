@@ -1,12 +1,14 @@
 """ Demo of LabelEntry """
 
-import guitk
+from guitk import LabelEntry, Layout, Window
 
 
-class LabelEntryWindow(guitk.Window):
+class LabelEntryWindow(Window):
     def config(self):
         self.title = "LabelEntry Example"
-        self.layout = [[guitk.LabelEntry("Enter text here")]]
+        with Layout() as layout:
+            LabelEntry("Enter text here", focus=True)
+        self.layout = layout
 
 
 if __name__ == "__main__":
