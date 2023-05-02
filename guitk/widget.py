@@ -8,7 +8,7 @@ from typing import Any, Callable, Hashable
 from guitk.tkroot import _TKRoot
 
 from .events import Event, EventCommand
-from .layout import get_parent
+from .layout import DummyParent, get_parent
 from .types import CommandType, TooltipType, ValueType
 
 
@@ -173,6 +173,10 @@ class Widget:
                 # only do this for the bottom grandchild class
                 # in the case of subclassed widgets
                 self.parent = get_parent()
+                if isinstance(self.parent, DummyParent):
+                    raise RuntimeError(
+                        "Widget must created within a Layout or Container"
+                    )
                 self.parent.add_widget(self)
 
         subclass.__init__ = new_init
