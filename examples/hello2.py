@@ -28,16 +28,14 @@ class HelloWorld(Window):
         # guitk.Label corresponds to a tkinter.ttk.Label, etc.
         # optionally provide a unique key to each element to easily reference the element later
         # use a Layout or VerticalLayout class to define the layout of the window
-        with VerticalLayout() as layout:
+        with VerticalLayout():
             Label("What's your name?")
-            Entry(key="ENTRY_NAME", events=True)
+            Entry(key="ENTRY_NAME", events=True, focus=True)
             Label("", width=40, key="OUTPUT", columnspan=2)
             with Row():
                 # align these two buttons in a row
                 Button("Ok")
                 Button("Quit")
-
-        self.layout = layout
 
         # optionally set size as a tuple of (width, height)
         self.size = (640, 480)

@@ -33,13 +33,11 @@ class HelloWindow(Window):
         self.title = "Hello, World"
 
         # define a layout for the window
-        # you must have a class variable named `layout` or you'll get an empty window
-        with Layout() as layout:
+        # the layout manager will automatically add widgets to the window
+        with Layout():
             Label("What's your name?")
             Entry(key="name")
             Button("Ok")
-
-        self.layout = layout
 
     # define your event loop
     # every guitk.Window will call self.handle_event to handle GUI events
@@ -149,16 +147,14 @@ class HelloWorld(Window):
         # guitk.Label corresponds to a tkinter.ttk.Label, etc.
         # optionally provide a unique key to each element to easily reference the element later
         # use a Layout or VerticalLayout class to define the layout of the window
-        with VerticalLayout() as layout:
+        with VerticalLayout():
             Label("What's your name?")
-            Entry(key="ENTRY_NAME", events=True)
+            Entry(key="ENTRY_NAME", events=True, focus=True)
             Label("", width=40, key="OUTPUT", columnspan=2)
             with Row():
                 # align these two buttons in a row
                 Button("Ok")
                 Button("Quit")
-
-        self.layout = layout
 
         # optionally set size as a tuple of (width, height)
         self.size = (640, 480)
@@ -204,12 +200,11 @@ guitk supports both an event-loop style of app-development (very similar to how 
 ```python
 """Hello World example using guitk, shows how to use callback style instead of event loop """
 
-import guitk
+from guitk import Button, Entry, Event, Label, Row, VerticalLayout, Window
 
 
-# subclass guitk.Window as the starting point for your app's main window
-class HelloWorld(guitk.Window):
-
+# subclass Window as the starting point for your app's main window
+class HelloWorld(Window):
     # every Window class needs a config() method that
     # defines the title and the layout (and optionally menu and other other settings)
     def config(self):
@@ -217,20 +212,18 @@ class HelloWorld(guitk.Window):
         self.title = "Hello, World"
 
         # Define the window's contents
-        # guitk.Label corresponds to a tkinter.ttk.Label, etc.
+        # Label corresponds to a tkinter.ttk.Label, etc.
         # optionally provide a unique key to each element to easily reference the element later
-        # layouts are lists of lists where each list corresponds to a row in the GUI
         # callbacks are functions that will be called when the user interact with the widget
         # callbacks are specified with the `command` parameter
-        self.layout = [
-            [guitk.Label("What's your name?")],
-            [guitk.Entry(key="ENTRY_NAME", events=True, command=self.on_entry_changed)],
-            [guitk.Label("", width=40, key="OUTPUT", columnspan=2)],
-            [
-                guitk.Button("Ok", command=self.on_ok),
-                guitk.Button("Quit", command=self.on_quit),
-            ],
-        ]
+        with VerticalLayout() as layout:
+            Label("What's your name?")
+            Entry(key="ENTRY_NAME", events=True, command=self.on_entry_changed, focus=True)
+            Label("", width=40, key="OUTPUT", columnspan=2)
+            with Row():
+                Button("Ok", command=self.on_ok)
+                Button("Quit", command=self.on_quit)
+        self.layout = layout
 
     def setup(self):
         # this method is called after the window is created
@@ -245,7 +238,7 @@ class HelloWorld(guitk.Window):
         # the underlying guitk widgets are accessible as self["KEY"]
         # the value of each widget is accessible as self["KEY"].value
         name = self["ENTRY_NAME"].value
-        self["OUTPUT"].value = f"Hello {name}! Thanks for trying guitk."
+        self["OUTPUT"].value = f"Hello {name}! Thanks for trying "
 
     def on_entry_changed(self):
         print(self["ENTRY_NAME"].value)
@@ -255,7 +248,7 @@ class HelloWorld(guitk.Window):
         # value passed to quit will be returned by HelloWorld.run()
         self.quit(name)
 
-    def handle_event(self, event):
+    def handle_event(self, event: Event):
         print(event)
 
 
