@@ -12,13 +12,11 @@ class HelloWindow(Window):
         self.title = "Hello, World"
 
         # define a layout for the window
-        # you must have a class variable named `layout` or you'll get an empty window
-        with Layout() as layout:
+        # the layout manager will automatically add widgets to the window
+        with Layout():
             Label("What's your name?")
             Entry(key="name")
             Button("Ok")
-
-        self.layout = layout
 
     # define your event loop
     # every guitk.Window will call self.handle_event to handle GUI events

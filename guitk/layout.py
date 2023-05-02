@@ -1,8 +1,11 @@
 """ Layout class for use with guitk widgets"""
 
+
 from __future__ import annotations
 
+import contextlib
 import threading
+from inspect import currentframe, getmro
 from typing import Any
 
 _current_parent = {}
@@ -48,6 +51,17 @@ class Layout:
     def __init__(self):
         self._layout = []
         self.index = 0
+
+        # get the caller's instance so we can set the layout
+        caller_frame = currentframe().f_back
+        with contextlib.suppress(IndexError, KeyError):
+            first_arg = caller_frame.f_code.co_varnames[0]
+            caller_instance = caller_frame.f_locals[first_arg]
+            # determine if the caller is a Window
+            # need to use repr() because we can't import Window here without causing a circular import
+            if "guitk.window.Window" in repr(getmro(caller_instance.__class__)):
+                # Layout is being used in a Window, so set the Window's layout automatically
+                caller_instance.layout = self
 
     def add_widget(self, widget):
         self._layout.append(widget)
