@@ -1,6 +1,17 @@
 """Demo to show how to use context managers to create widget layout"""
 
-from guitk import Button, Entry, Event, Label, Layout, ListBox, Row, Stack, Window
+from guitk import (
+    Button,
+    Entry,
+    Event,
+    EventType,
+    Label,
+    Layout,
+    ListBox,
+    Row,
+    Stack,
+    Window,
+)
 
 
 class ShoppingList(Window):
@@ -23,9 +34,7 @@ class ShoppingList(Window):
 
     def handle_event(self, event: Event):
         print(event)
-        if (
-            event.key == "item" and event.event.keysym == "Return"
-        ) or event.key == "add":
+        if event.event_type == EventType.EntryReturn or event.key == "add":
             # add item to the list if user presses Enter in the Entry field
             # or clicks the Add button
             name = self["item"].value

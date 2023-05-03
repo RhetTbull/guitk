@@ -234,6 +234,16 @@ class _Container(Widget, _LayoutMixin):
         return False
 
 
+class _VerticalContainer(_Container):
+    """A Container class that lays out widgets vertically"""
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        # reorder the layout to be vertical
+        self.layout = [[x] for x in self.layout[0]]
+        pop_parent()
+        return False
+
+
 class Frame(_Container):
     """A Frame widget that can contain other widgets."""
 
