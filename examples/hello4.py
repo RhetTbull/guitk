@@ -14,6 +14,7 @@ from guitk import (
     Stack,
     VerticalLayout,
     Window,
+    Text,
 )
 
 
@@ -24,23 +25,22 @@ class HelloWorld(Window):
         # Define the window's contents
         # use variables to define rows to make your layout more readable
         # use guitk.Frame to group sub-layouts into columns
-        with VerticalLayout() as layout:
+        with VerticalLayout():
             Label("What's your name?")
             Entry(key="ENTRY_NAME")
             Label("", width=40, key="OUTPUT")
             with LabelFrame("Label Frame", labelanchor=tk.N):
                 with Row():
                     with Stack():
+                        ...
                         Output(width=20, height=10)
                         Label("Output", key="LABEL_OUTPUT", sticky=tk.N)
-                    with Stack():
+                    with Stack(valign="center"):
                         Checkbutton("Upper case", key="CHECK_UPPER")
                         Checkbutton("Green text", key="CHECK_GREEN")
             with Row():
                 Button("Ok")
                 Button("Quit")
-
-            self.layout = layout
 
         # you can define custom padding around widgets with padx, pady
         # see https://tkdocs.com/tutorial/grid.html#padding

@@ -5,9 +5,12 @@ from __future__ import annotations
 import tkinter.ttk as ttk
 from typing import Hashable, TypeVar
 
+from guitk.constants import GUITK
+
 from .events import Event, EventCommand, EventType
-from .frame import Frame, _LayoutMixin
-from .types import CommandType, TabType, TooltipType
+from .frame import Frame, _Container, _LayoutMixin, _VerticalContainer
+from .layout import get_parent, push_parent
+from .types import CommandType, TooltipType
 from .widget import Widget
 
 __all__ = ["Notebook", "NoteBook"]
@@ -28,15 +31,13 @@ _valid_ttk_notebook_attributes = _valid_standard_attributes
 Window = TypeVar("Window")
 
 
-class Notebook(Widget, _LayoutMixin):
-    """
-    ttk.Notebook widget
-    """
+class Notebook(_Container):
+    """ttk.Notebook widget"""
 
     def __init__(
         self,
         key: Hashable | None = None,
-        tabs: TabType | None = None,
+        tabs: list[Tab] | None = None,
         disabled: bool = False,
         columnspan: int | None = None,
         rowspan: int | None = None,
@@ -53,7 +54,7 @@ class Notebook(Widget, _LayoutMixin):
 
         Args:
             key (Hashable, optional): Unique key for this widget. Defaults to None.
-            tabs: (TabType, optional): Tabs to add to the notebook. Defaults to None.
+            tabs: (list[Tab], optional): Tabs to add to the notebook. Defaults to None.
             disabled (bool, optional): If True, widget is disabled. Defaults to False.
             columnspan (int | None, optional): Number of columns to span. Defaults to None.
             rowspan (int | None, optional): Number of rows to span. Defaults to None.
@@ -66,24 +67,32 @@ class Notebook(Widget, _LayoutMixin):
             **kwargs: Additional keyword arguments are passed to ttk.Entry.
         """
         super().__init__(
-            key=key,
+            frametype=GUITK.ELEMENT_FRAME,
+            key=None,
+            width=None,
+            height=None,
+            layout=None,
+            style=None,
+            borderwidth=None,
+            padding=0,
+            relief=None,
             disabled=disabled,
-            rowspan=rowspan,
-            columnspan=columnspan,
-            padx=padx,
-            pady=pady,
-            events=events,
+            rowspan=None,
+            columnspan=None,
             sticky=sticky,
-            tooltip=tooltip,
-            command=command,
+            tooltip=None,
+            autoframe=False,
+            padx=0,
+            pady=0,
         )
         self.widget_type = "ttk.Notebook"
         self.key = key or "Notebook"
         self.columnspan = columnspan
         self.rowspan = rowspan
-        self.tabs = tabs
+        self.tabs = tabs or []
         self._command = command
         self.kwargs = kwargs
+        self._tab_count = 0
 
     def _create_widget(self, parent, window: "Window", row, col):
         self.window = window
@@ -106,9 +115,10 @@ class Notebook(Widget, _LayoutMixin):
             "<<NotebookTabChanged>>", window._make_callback(event_tab_change)
         )
 
-        if self.tabs:
-            for tab in self.tabs:
-                self.add(tab, self.tabs[tab])
+        if self.layout:
+            for row in self.layout:
+                for tab in row:
+                    self.add(tab)
 
         if self._command:
             self.events = True
@@ -123,6 +133,9 @@ class Notebook(Widget, _LayoutMixin):
                 )
             )
 
+        if self.width or self.height:
+            self.widget.grid_propagate(0)
+
         if self._disabled:
             self.widget.state(["disabled"])
 
@@ -133,19 +146,17 @@ class Notebook(Widget, _LayoutMixin):
         """Return the name of the currently selected tab"""
         return self.notebook.tab(self.notebook.select(), "text")
 
-    def add(self, text, layout, **kwargs):
-        """Add a layout to the Notebook as new tab"""
-        frame = Frame(layout=layout)
-        frame_ = frame._create_widget(self.widget, self.window, 0, 0)
-        kwargs["text"] = text
-        self.notebook.add(frame_, **kwargs)
+    def add(self, tab: Tab):
+        """Add a Tab to the Notebook as new tab"""
+        tab_ = tab._create_widget(self.widget, self.window, 0, 0)
+        tab.kwargs["text"] = tab.name
+        self.notebook.add(tab_, **tab.kwargs)
 
-    def insert(self, pos, text, layout, **kwargs):
+    def insert(self, pos, tab: Tab):
         """Insert a layout to the Notebook as new tab at position pos"""
-        frame = Frame(layout=layout)
-        frame_ = frame._create_widget(self.widget, self.window, 0, 0)
-        kwargs["text"] = text
-        self.notebook.insert(pos, frame_, **kwargs)
+        tab_ = tab._create_widget(self.widget, self.window, 0, 0)
+        tab.kwargs["text"] = tab.name
+        self.notebook.insert(pos, tab_, **tab.kwargs)
 
     @property
     def notebook(self):
@@ -154,8 +165,63 @@ class Notebook(Widget, _LayoutMixin):
 
 
 class NoteBook(Notebook):
-    """
-    ttk.Notebook widget
-    """
+    """ttk.Notebook widget"""
 
     pass
+
+
+class Tab(_Container):
+    """Tab for Notebook widget that arranges its widgets horizontally"""
+
+    def __init__(self, name=None, sticky: str | None = "nsew", **kwargs):
+        """Initialize a Tab"""
+
+        super().__init__(
+            frametype=GUITK.ELEMENT_FRAME,
+            key=None,
+            width=None,
+            height=None,
+            layout=None,
+            style=None,
+            borderwidth=None,
+            padding=0,
+            relief=None,
+            disabled=False,
+            rowspan=None,
+            columnspan=None,
+            sticky=sticky,
+            tooltip=None,
+            autoframe=True,
+            padx=0,
+            pady=0,
+        )
+        self.name = name
+        self.kwargs = kwargs
+
+class VerticalTab(Tab, _VerticalContainer):
+    """Tab for Notebook widget that arranges its widgets vertically"""
+
+    def __init__(self, name=None, sticky: str | None = "nsew", **kwargs):
+        """Initialize a VerticalTab"""
+
+        super().__init__(
+            frametype=GUITK.ELEMENT_FRAME,
+            key=None,
+            width=None,
+            height=None,
+            layout=None,
+            style=None,
+            borderwidth=None,
+            padding=0,
+            relief=None,
+            disabled=False,
+            rowspan=None,
+            columnspan=None,
+            sticky=sticky,
+            tooltip=None,
+            autoframe=True,
+            padx=0,
+            pady=0,
+        )
+        self.name = name
+        self.kwargs = kwargs 

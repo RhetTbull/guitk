@@ -28,6 +28,8 @@ class Widget:
         tooltip: TooltipType = None,
         command: CommandType | None = None,
         value_type: ValueType | None = None,
+        weightx: int | None = None,
+        weighty: int | None = None,
     ):
         super().__init__()
 
@@ -40,6 +42,8 @@ class Widget:
         self.events = events
         self.sticky = sticky or ""
         self.tooltip = tooltip
+        self.weightx = weightx
+        self.weighty = weighty
 
         self._command = command
         self._commands = {}

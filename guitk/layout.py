@@ -6,7 +6,9 @@ from __future__ import annotations
 import contextlib
 import threading
 from inspect import currentframe, getmro
-from typing import Any
+from typing import Any, Literal
+
+from .types import HAlign, VAlign
 
 _current_parent = {}
 
@@ -48,9 +50,11 @@ def get_parent() -> Any:
 class Layout:
     """A Layout manager that aligns widgets horizontally"""
 
-    def __init__(self):
+    def __init__(self, valign: VAlign | None = None, halign: HAlign | None = None):
         self._layout = []
         self.index = 0
+        self.valign = valign
+        self.halign = halign
 
         # get the caller's instance so we can set the layout
         caller_frame = currentframe().f_back

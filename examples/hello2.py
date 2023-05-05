@@ -28,8 +28,9 @@ class HelloWorld(Window):
         # optionally provide a unique key to each element to easily reference the element later
         # use a Layout or VerticalLayout class to define the layout of the window
         with VerticalLayout():
-            Label("What's your name?")
-            Entry(key="ENTRY_NAME", events=True, focus=True)
+            from guitk import VerticalSpacer
+            Label("What's your name?", sticky="ew", anchor="center", weightx=1)
+            Entry(key="ENTRY_NAME", events=True, focus=True, sticky="ew", weightx=1)
             Label("", width=40, key="OUTPUT", columnspan=2)
             with Row():
                 # align these two buttons in a row
@@ -37,7 +38,7 @@ class HelloWorld(Window):
                 Button("Quit")
 
         # optionally set size as a tuple of (width, height)
-        self.size = (640, 480)
+        self.size = (320, 240)
 
     def setup(self):
         # your setup() method is called by the Window class after config() just before the Window is displayed

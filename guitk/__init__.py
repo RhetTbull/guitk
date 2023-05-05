@@ -22,7 +22,7 @@ from .ttk_checkbutton import Checkbutton, CheckButton
 from .ttk_combobox import Combobox, ComboBox
 from .ttk_entry import Entry, LabelEntry
 from .ttk_label import Label, LinkLabel, Linklabel
-from .ttk_notebook import Notebook, NoteBook
+from .ttk_notebook import Notebook, NoteBook, Tab, VerticalTab
 from .ttk_progressbar import (
     PROGRESS_DETERMINATE,
     PROGRESS_INDETERMINATE,
@@ -75,11 +75,13 @@ __all__ = [
     "Scale",
     "Stack",
     "Spacer",
+    "Tab",
     "Text",
     "TreeView",
     "Treeview",
     "VerticalLayout",
     "VerticalSpacer",
+    "VerticalTab",
     "Widget",
     "Window",
 ]

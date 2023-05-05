@@ -59,6 +59,8 @@ class Label(Widget):
         events: bool = False,
         sticky: str | None = None,
         tooltip: TooltipType = None,
+        weightx: int | None = None,
+        weighty: int | None = None,
         **kwargs,
     ):
         """
@@ -87,6 +89,8 @@ class Label(Widget):
             events=events,
             sticky=sticky,
             tooltip=tooltip,
+            weightx=weightx,
+            weighty=weighty,
         )
         self.widget_type = "ttk.Label"
         self.text = text

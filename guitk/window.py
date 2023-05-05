@@ -47,6 +47,8 @@ class Window(_LayoutMixin, _WindowBaseClass):
         # call _config then subclass's config to initialize
         # layout, title, menu, etc.
 
+        self.autoframe = autoframe
+
         self._config()
         self.config()
 

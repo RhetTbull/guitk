@@ -80,6 +80,8 @@ class Text(Widget):
         command: CommandType | None = None,
         vscrollbar: bool = False,
         hscrollbar: bool = False,
+        weightx: int | None = None,
+        weighty: int | None = None,
         **kwargs,
     ):
         """
@@ -114,6 +116,8 @@ class Text(Widget):
             sticky=sticky,
             tooltip=tooltip,
             command=command,
+            weightx=weightx,
+            weighty=weighty,
         )
         self.widget_type = "tk.Text"
         self.key = key or "Text"
@@ -164,6 +168,7 @@ class Text(Widget):
 
         if self._disabled:
             self.widget["state"] = "disabled"
+
         return self.widget
 
     @property
@@ -206,6 +211,8 @@ class Output(Text):
         stdout: bool = True,
         stderr: bool = True,
         echo: bool = False,
+        weightx: int | None = None,
+        weighty: int | None = None,
         **kwargs,
     ):
         """
@@ -247,20 +254,23 @@ class Output(Text):
             tooltip=tooltip,
             vscrollbar=vscrollbar,
             hscrollbar=hscrollbar,
+            weightx=weightx,
+            weighty=weighty,
+            **kwargs,
         )
+
+        self.kwargs = kwargs
         self._echo = echo
+        self._stdout = stdout
+        self._stderr = stderr
+
+        # stores state for stdout and stderr redirection
         self._redirect = []
         self._redirect_id = {}
-        if stdout:
-            self._redirect.append(StdOutRedirect())
-        if stderr:
-            self._redirect.append(StdErrRedirect())
-        for r in self._redirect:
-            r.echo = self._echo
-            self._redirect_id[r] = r.register(self._write)
+
 
     def _create_widget(self, parent, window: "Window", row, col):
-        super()._create_widget(parent, window, row, col)
+        self.widget = super()._create_widget(parent, window, row, col)
 
         # Unbind <KeyRelease> since this isn't for user input
         self.widget.unbind("<KeyRelease>")
@@ -271,9 +281,20 @@ class Output(Text):
                 EventType.OutputWrite.value, window._make_callback(event)
             )
 
+        self._configure_redirect()
         self.enable_redirect()
 
         return self.widget
+
+    def _configure_redirect(self):
+        """Configure stdout and stderr redirection."""
+        if self._stdout:
+            self._redirect.append(StdOutRedirect())
+        if self._stderr:
+            self._redirect.append(StdErrRedirect())
+        for r in self._redirect:
+            r.echo = self._echo
+            self._redirect_id[r] = r.register(self._write)
 
     def _write(self, line):
         self.text.insert(tk.END, line)

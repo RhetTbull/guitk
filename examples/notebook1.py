@@ -1,19 +1,20 @@
-"""Example for guitk.Notebook widget """
+"""Example for Notebook widget """
 
-import guitk
+from guitk import EventType, Label, Layout, Notebook, Tab, Window
 
 
-class NotebookWindow(guitk.Window):
+class NotebookWindow(Window):
     def config(self):
-        tab1 = [[guitk.Label("Hello World")]]
-        tab2 = [[guitk.Label("Tab 2")]]
-        self.layout = [
-            [guitk.Notebook(key="NOTEBOOK", tabs={"Tab 1": tab1, "Tab 2": tab2})]
-        ]
+        with Layout():
+            with Notebook(key="NOTEBOOK"):
+                with Tab("Tab 1"):
+                    Label("Hello World")
+                with Tab("Tab 2"):
+                    Label("Tab 2")
         self.title = "Notebook"
 
     def handle_event(self, event):
-        if event.event_type == guitk.EventType.NotebookTabChanged:
+        if event.event_type == EventType.NotebookTabChanged:
             # The name of the currently selected tab is available in Notebook.current_tab
             print(f"Tab changed to tab: {self['NOTEBOOK'].current_tab}")
 

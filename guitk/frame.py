@@ -7,10 +7,11 @@ from tkinter import ttk
 
 from guitk.constants import GUITK
 
-from .layout import pop_parent, push_parent
+from .layout import Layout, VerticalLayout, pop_parent, push_parent
+from .spacer import Spacer, VerticalSpacer
 from .tooltips import Hovertip
 from .ttk_label import Label
-from .types import LayoutType, TooltipType, Window
+from .types import HAlign, LayoutType, TooltipType, VAlign, Window
 from .widget import Widget
 
 _valid_frame_attributes = {
@@ -29,22 +30,45 @@ class _LayoutMixin:
 
     layout = []
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
     def _layout(self, parent: tk.BaseWidget, window: Window, autoframe: bool):
         """Create widgets from layout"""
         # as this is a mixin, make sure class being mixed into has necessary attributes
+        try:
+            valign = self.layout.valign.lower() if self.layout.valign else "top"
+            halign = self.layout.halign.lower() if self.layout.halign else "left"
+        except AttributeError:
+            try:
+                valign = self.valign.lower() if self.valign else "top"
+                halign = self.halign.lower() if self.halign else "left"
+            except AttributeError:
+                valign = "top"
+                halign = "left"
+
+        layout = list(self.layout)
+
+        if valign in ["bottom", "center"]:
+            layout.insert(0, [VerticalSpacer()])
+        if valign == "center":
+            layout.append([VerticalSpacer()])
+
+        if halign in ["right", "center"]:
+            for row in layout:
+                row.insert(0, Spacer())
+        if halign == "center":
+            for row in layout:
+                row.append(Spacer())
 
         row_offset = 0
-        for row_count, row in enumerate(self.layout):
+        for row_count, row in enumerate(layout):
             col_offset = 0
 
             if autoframe and (
                 len(row) != 1
                 or row[0].widget_type not in ["ttk.Frame", "tk.Frame", "LabelFrame"]
             ):
-                row_ = [_Container(layout=[row], autoframe=False)]
+                row_ = [
+                    _Container(layout=[row], autoframe=False, sticky="nsew", weightx=1)
+                ]
             else:
                 row_ = row
             for col_count, widget in enumerate(row_):
@@ -81,6 +105,15 @@ class _LayoutMixin:
                 if widget.columnspan and widget.columnspan > 1:
                     col_offset += widget.columnspan - 1
 
+                if widget.weightx is not None:
+                    parent.grid_columnconfigure(
+                        col_count + col_offset, weight=widget.weightx
+                    )
+                if widget.weighty is not None:
+                    parent.grid_rowconfigure(
+                        row_count + row_offset, weight=widget.weighty
+                    )
+
 
 class _Container(Widget, _LayoutMixin):
     """Container base class for Frame and other containers; intended for internal use only"""
@@ -106,6 +139,10 @@ class _Container(Widget, _LayoutMixin):
         autoframe: bool | None = True,
         padx: int | None = None,
         pady: int | None = None,
+        weightx: int | None = None,
+        weighty: int | None = None,
+        valign: VAlign | None = None,
+        halign: HAlign | None = None,
         **kwargs,
     ):
         # padx and pady passed to Widget not Frame
@@ -119,6 +156,8 @@ class _Container(Widget, _LayoutMixin):
             tooltip=tooltip,
             padx=padx,
             pady=pady,
+            weightx=weightx,
+            weighty=weighty,
         )
         _LayoutMixin.__init__(self)
 
@@ -145,6 +184,8 @@ class _Container(Widget, _LayoutMixin):
         self.text = text
         self.labelanchor = labelanchor or "nw"
         self.kwargs = kwargs
+        self.valign = valign
+        self.halign = halign
 
     def _create_widget(self, parent, window: Window, row, col):
         self.window = window
@@ -263,6 +304,8 @@ class Frame(_Container):
         sticky: str | None = None,
         tooltip: TooltipType | None = None,
         autoframe: bool = True,
+        valign: VAlign | None = None,
+        halign: HAlign | None = None,
         **kwargs,
     ):
         super().__init__(
@@ -282,6 +325,8 @@ class Frame(_Container):
             tooltip=tooltip,
             autoframe=autoframe,
             kwargs=kwargs,
+            valign=valign,
+            halign=halign,
         )
 
 
@@ -306,6 +351,8 @@ class LabelFrame(_Container):
         sticky: str | None = None,
         tooltip: TooltipType | None = None,
         autoframe: bool = True,
+        valign: VAlign | None = None,
+        halign: HAlign | None = None,
         **kwargs,
     ):
         super().__init__(
@@ -327,4 +374,6 @@ class LabelFrame(_Container):
             tooltip=tooltip,
             autoframe=autoframe,
             kwargs=kwargs,
+            valign=valign,
+            halign=halign,
         )

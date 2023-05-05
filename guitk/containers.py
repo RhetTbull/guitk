@@ -7,7 +7,7 @@ from guitk.constants import GUITK
 from .constants import DEFAULT_PADX, DEFAULT_PADY
 from .frame import _Container, _VerticalContainer
 from .layout import get_parent, pop_parent, push_parent
-from .types import Window
+from .types import Window, VAlign, HAlign
 from .widget import Widget
 
 
@@ -22,6 +22,8 @@ class Stack(_VerticalContainer):
         padding: int | None = None,
         disabled: bool | None = False,
         sticky: str | None = "ns",
+        valign: VAlign | None = None,
+        halign: HAlign | None = None,
     ):
         super().__init__(
             frametype=GUITK.ELEMENT_FRAME,
@@ -41,6 +43,8 @@ class Stack(_VerticalContainer):
             autoframe=False,
             padx=0,
             pady=0,
+            valign=valign,
+            halign=halign,
         )
 
     def _create_widget(self, parent: tk.BaseWidget, window: Window, row: int, col: int):
@@ -55,6 +59,8 @@ class Row(_Container):
         self,
         disabled: bool | None = False,
         sticky: str | None = "ew",
+        valign: VAlign | None = None,
+        halign: HAlign | None = None,
     ):
         super().__init__(
             frametype=GUITK.ELEMENT_FRAME,
@@ -74,6 +80,8 @@ class Row(_Container):
             autoframe=False,
             padx=0,
             pady=0,
+            valign=valign,
+            halign=halign,
         )
 
     def _create_widget(self, parent: tk.BaseWidget, window: Window, row: int, col: int):

@@ -5,7 +5,6 @@ from __future__ import annotations
 import tkinter as tk
 
 from .ttk_label import Label
-from .frame import Frame
 from .types import Window
 from .layout import get_parent
 

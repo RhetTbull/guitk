@@ -35,9 +35,7 @@ _valid_ttk_entry_attributes = {
 
 
 class Entry(Widget):
-    """
-    ttk.Entry text entry / input box
-    """
+    """ttk.Entry text entry / input box"""
 
     def __init__(
         self,
@@ -54,10 +52,11 @@ class Entry(Widget):
         command: CommandType | None = None,
         hscrollbar: bool = False,
         focus: bool = False,
+        weightx: int | None = None,
+        weighty: int | None = None,
         **kwargs,
     ):
-        """
-        Initialize an Entry widget.
+        """Initialize an Entry widget.
 
         Args:
             key (Hashable, optional): Unique key for this widget. Defaults to None.
@@ -86,6 +85,8 @@ class Entry(Widget):
             sticky=sticky,
             tooltip=tooltip,
             command=command,
+            weightx=weightx,
+            weighty=weighty,
         )
         self.widget_type = "ttk.Entry"
         default = default or ""
@@ -153,8 +154,7 @@ class _ttkLabelEntry(ttk.Entry):
     """ttk.Entry with a Label"""
 
     def __init__(self, master=None, text=None, **kwargs):
-        """
-        Initialize a _ttkLabelEntry widget.
+        """Initialize a _ttkLabelEntry widget.
 
         Args:
             master (tk.Widget, optional): Parent widget. Defaults to None.
@@ -182,9 +182,9 @@ class _ttkLabelEntry(ttk.Entry):
 
 
 class LabelEntry(Entry):
-    """
-    Text entry / input box with a label
-    """
+    """Text entry / input box with a label"""
+
+    # TODO: add option to put label above the entry box
 
     def __init__(
         self,
@@ -204,8 +204,7 @@ class LabelEntry(Entry):
         focus: bool = False,
         **kwargs,
     ):
-        """
-        Initialize an Entry widget.
+        """Initialize an Entry widget.
 
         Args:
             text (str): Label text.

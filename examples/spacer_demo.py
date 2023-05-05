@@ -9,11 +9,16 @@ class SpacerDemo(Window):
         self.size = (640, 480)
         with Layout() as layout:
             with Stack():
-                Label("Hello")
+                Label("Top left")
                 VerticalSpacer()
-                Label("Always on the bottom")
+                Label("Bottom left")
             Spacer()
-            Label("Always on the right", sticky="nw")
+            Label("Center")
+            Spacer()
+            with Stack():
+                Label("Top right", sticky="e")
+                VerticalSpacer()
+                Label("Bottom right", sticky="e")
         self.layout = layout
 
 
