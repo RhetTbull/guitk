@@ -46,12 +46,12 @@ class _LayoutMixin:
 
         layout = list(self.layout)
 
-        if valign in ["bottom", "center"]:
+        if valign in {"bottom", "center"}:
             layout.insert(0, [VerticalSpacer()])
         if valign == "center":
             layout.append([VerticalSpacer()])
 
-        if halign in ["right", "center"]:
+        if halign in {"right", "center"}:
             for row in layout:
                 row.insert(0, Spacer())
         if halign == "center":
@@ -64,7 +64,7 @@ class _LayoutMixin:
 
             if autoframe and (
                 len(row) != 1
-                or row[0].widget_type not in ["ttk.Frame", "tk.Frame", "LabelFrame"]
+                or row[0].widget_type not in {"ttk.Frame", "tk.Frame", "LabelFrame"}
             ):
                 row_ = [
                     _Container(layout=[row], autoframe=False, sticky="nsew", weightx=1)
@@ -163,11 +163,11 @@ class _Container(Widget, _LayoutMixin):
 
         self._autoframe = autoframe
 
-        if frametype not in [
+        if frametype not in {
             GUITK.ELEMENT_FRAME,
             GUITK.ELEMENT_LABEL_FRAME,
             GUITK.ELEMENT_TK_FRAME,
-        ]:
+        }:
             raise ValueError(f"bad frametype: {frametype}")
         self.frametype = frametype
         self.widget_type = frametype.value

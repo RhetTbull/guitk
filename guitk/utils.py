@@ -53,7 +53,7 @@ def scrolled_widget_factory(
         methods = methods.difference(widget_meths)
 
         for m in methods:
-            if m[0] != "_" and m not in ["config", "configure"]:
+            if m[0] != "_" and m not in {"config", "configure"}:
                 setattr(widget, m, getattr(frame, m))
 
     return widget
