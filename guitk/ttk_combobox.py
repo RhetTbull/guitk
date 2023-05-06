@@ -47,6 +47,8 @@ class Combobox(Widget):
         command: CommandType | None = None,
         readonly: bool = False,
         autosize: bool = False,
+        weightx: int | None = None,
+        weighty: int | None = None,
         **kwargs,
     ):
         super().__init__(
@@ -60,6 +62,8 @@ class Combobox(Widget):
             sticky=sticky,
             tooltip=tooltip,
             command=command,
+            weightx=weightx,
+            weighty=weighty,
             **kwargs,
         )
 

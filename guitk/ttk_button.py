@@ -56,6 +56,8 @@ class Button(Widget):
         sticky: str | None = None,
         tooltip: TooltipType | None = None,
         command: CommandType | None = None,
+        weightx: int | None = None,
+        weighty: int | None = None,
         **kwargs,
     ):
         """
@@ -73,6 +75,8 @@ class Button(Widget):
             sticky (str | None, optional): Sticky direction for widget layout. Defaults to None.
             tooltip (TooltipType | None, optional): Tooltip text or callback to generate tooltip text. Defaults to None.
             command (CommandType | None, optional): Command callback. Defaults to None.
+            weightx (int | None, optional): Weight in x direction. Defaults to None.
+            weighty (int | None, optional): Weight in y direction. Defaults to None.
             **kwargs: Additional keyword arguments are passed to ttk.Button.
         """
         super().__init__(
@@ -86,6 +90,8 @@ class Button(Widget):
             sticky=sticky,
             tooltip=tooltip,
             command=command,
+            weightx=weightx,
+            weighty=weighty,
             **kwargs,
         )
 
@@ -168,6 +174,8 @@ class BrowseFileButton(Button):
         sticky: str | None = None,
         tooltip: TooltipType | None = None,
         filename_only: bool = False,
+        weightx: int | None = None,
+        weighty: int | None = None,
         **kwargs,
     ):
         """
@@ -187,6 +195,8 @@ class BrowseFileButton(Button):
             sticky (str | None, optional): Sticky direction for widget layout. Defaults to None.
             tooltip (TooltipType | None, optional): Tooltip text or callback to generate tooltip text. Defaults to None.
             filename_only (bool, optional): If True, only the filename is returned. Defaults to False.
+            weightx (int | None, optional): Weight in x direction. Defaults to None.
+            weighty (int | None, optional): Weight in y direction. Defaults to None.
             **kwargs: Additional keyword arguments are passed to ttk.Button or filedialog.askopenfilename as appropriate.
         """
         super().__init__(
@@ -200,6 +210,8 @@ class BrowseFileButton(Button):
             events=events,
             sticky=sticky,
             tooltip=tooltip,
+            weightx=weightx,
+            weighty=weighty,
         )
         self.target_key = target_key
         self.widget_type = "guitk.BrowseFileButton"
@@ -236,7 +248,7 @@ class BrowseFileButton(Button):
         self._filename = filedialog.askopenfilename(**kwargs_options)
         if self._filename_only and self._filename:
             # only want the name, not the path
-            self._filename = str(pathlib.Path(self._filename).name)
+            self._filename = pathlib.Path(self._filename).name
         if self.target_key and self._filename:
             self.window[self.target_key].value = self._filename
         event = Event(self, self.window, self.key, EventType.BrowseFile)
@@ -257,6 +269,8 @@ class BrowseDirectoryButton(Button):
         events: bool = True,
         sticky: str | None = None,
         tooltip: TooltipType | None = None,
+        weightx: int | None = None,
+        weighty: int | None = None,
         **kwargs,
     ):
         """
@@ -275,6 +289,8 @@ class BrowseDirectoryButton(Button):
             events (bool, optional): Enable events for this widget. Defaults to False.
             sticky (str | None, optional): Sticky direction for widget layout. Defaults to None.
             tooltip (TooltipType | None, optional): Tooltip text or callback to generate tooltip text. Defaults to None.
+            weightx (int | None, optional): Weight in x direction. Defaults to None.
+            weighty (int | None, optional): Weight in y direction. Defaults to None.
             **kwargs: Additional keyword arguments are passed to ttk.Button or filedialog.askopenfilename as appropriate.
         """
         super().__init__(
@@ -288,6 +304,8 @@ class BrowseDirectoryButton(Button):
             events=events,
             sticky=sticky,
             tooltip=tooltip,
+            weightx=weightx,
+            weighty=weighty,
         )
         self.target_key = target_key
         self.widget_type = "guitk.BrowseDirectoryButton"

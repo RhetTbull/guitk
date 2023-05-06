@@ -77,6 +77,8 @@ class Label(Widget):
             events (bool, optional): Enable events for this widget. Defaults to False.
             sticky (str | None, optional): Sticky direction for widget layout. Defaults to None.
             tooltip (TooltipType | None, optional): Tooltip text or callback to generate tooltip text. Defaults to None.
+            weightx (int | None, optional): Weight of this widget in the horizontal direction. Defaults to None.
+            weighty (int | None, optional): Weight of this widget in the vertical direction. Defaults to None.
             **kwargs: Additional keyword arguments are passed to ttk.Entry.
         """
         super().__init__(
@@ -144,6 +146,8 @@ class LinkLabel(Label):
         tooltip: TooltipType = None,
         underline_font: bool = False,
         command: CommandType | None = None,
+        weightx: int | None = None,
+        weighty: int | None = None,
         **kwargs,
     ):
         """
@@ -162,6 +166,8 @@ class LinkLabel(Label):
             tooltip (TooltipType | None, optional): Tooltip text or callback to generate tooltip text. Defaults to None.
             underline_font (bool, optional): If True, underline the font. Defaults to False.
             command (CommandType | None, optional): Command to execute when clicked. Defaults to None.
+            weightx (int | None, optional): Weight of this widget in the horizontal direction. Defaults to None.
+            weighty (int | None, optional): Weight of this widget in the vertical direction. Defaults to None.
             **kwargs: Additional keyword arguments are passed to ttk.Entry.
         """
         self.cursor = (
@@ -181,6 +187,8 @@ class LinkLabel(Label):
             sticky=sticky,
             tooltip=tooltip,
             cursor=self.cursor,
+            weightx=weightx,
+            weighty=weighty,
         )
         self.widget_type = "guitk.LinkLabel"
         self.text = text

@@ -103,6 +103,8 @@ class Text(Widget):
             command (CommandType | None, optional): Command callback. Defaults to None.
             vscrollbar (bool, optional): Show vertical scrollbar. Defaults to False.
             hscrollbar (bool, optional): Show horizontal scrollbar. Defaults to False.
+            weightx (int | None, optional): Weight of the widget in the x direction. Defaults to None.
+            weighty (int | None, optional): Weight of the widget in the y direction. Defaults to None.
             **kwargs: Additional keyword arguments are passed to tk Text.
         """
         super().__init__(
@@ -237,6 +239,8 @@ class Output(Text):
             stdout (bool, optional): Redirect stdout to the text box. Defaults to True.
             stderr (bool, optional): Redirect stderr to the text box. Defaults to True.
             echo (bool, optional): Echo stdout and stderr to the console. Defaults to False.
+            weightx (int | None, optional): Weight of the widget in the x direction. Defaults to None.
+            weighty (int | None, optional): Weight of the widget in the y direction. Defaults to None.
             **kwargs: Additional keyword arguments are passed to tk Text.
         """
         super().__init__(

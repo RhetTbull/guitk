@@ -50,6 +50,8 @@ class Checkbutton(Widget):
         sticky: str | None = None,
         tooltip: TooltipType | None = None,
         command: CommandType | None = None,
+        weightx: int | None = None,
+        weighty: int | None = None,
         **kwargs,
     ):
         """
@@ -67,6 +69,8 @@ class Checkbutton(Widget):
             sticky (str | None, optional): Sticky direction for widget layout. Defaults to None.
             tooltip (TooltipType | None, optional): Tooltip text or callback to generate tooltip text. Defaults to None.
             command (CommandType | None, optional): Command callback. Defaults to None.
+            weightx (int | None, optional): Weight of widget in X direction. Defaults to None.
+            weighty (int | None, optional): Weight of widget in Y direction. Defaults to None.
             **kwargs: Additional keyword arguments are passed to ttk.Checkbutton.
 
         Notes:
@@ -83,6 +87,8 @@ class Checkbutton(Widget):
             sticky=sticky,
             tooltip=tooltip,
             command=command,
+            weightx=weightx,
+            weighty=weighty,
         )
         self.widget_type = "ttk.Checkbutton"
         self.text = text

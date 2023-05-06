@@ -57,6 +57,8 @@ class Scale(Widget):
         command=None,
         cursor=None,
         style=None,
+        weightx=None,
+        weighty=None,
     ):
         super().__init__(
             key=key,
@@ -72,6 +74,8 @@ class Scale(Widget):
             takefocus=takefocus,
             command=command,
             value_type=tk.DoubleVar,
+            weightx=weightx,
+            weighty=weighty,
         )
         self.widget_type = "ttk.Scale"
         self.key = key or "Scale"

@@ -56,6 +56,8 @@ class Progressbar(Widget):
         sticky: str | None = None,
         tooltip: TooltipType = None,
         events: bool = True,
+        weightx: int | None = None,
+        weighty: int | None = None,
         **kwargs,
     ):
         """Initialize a ttk.Progressbar widget
@@ -75,6 +77,8 @@ class Progressbar(Widget):
             sticky (str, optional): Sticky direction. Defaults to None.
             tooltip (TooltipType, optional): Tooltip for the widget. Defaults to None.
             events (bool, optional): Enable events for this widget. Defaults to True.
+            weightx (int, optional): Weight in x direction. Defaults to None.
+            weighty (int, optional): Weight in y direction. Defaults to None.
             **kwargs: Additional keyword arguments to pass to ttk.Progressbar.
         """
         super().__init__(

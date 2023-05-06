@@ -72,6 +72,8 @@ class Entry(Widget):
             command (CommandType | None, optional): Command callback. Defaults to None.
             hscrollbar (bool, optional): Show horizontal scrollbar. Defaults to False.
             focus (bool, optional): If True, widget has focus. Defaults to False. Only one widget in a window can have focus.
+            weightx (int | None, optional): Weight for horizontal resizing. Defaults to None.
+            weighty (int | None, optional): Weight for vertical resizing. Defaults to None.
             **kwargs: Additional keyword arguments are passed to ttk.Entry.
         """
         super().__init__(
@@ -202,6 +204,8 @@ class LabelEntry(Entry):
         command: CommandType | None = None,
         hscrollbar: bool = False,
         focus: bool = False,
+        weightx: int | None = None,
+        weighty: int | None = None,
         **kwargs,
     ):
         """Initialize an Entry widget.
@@ -221,6 +225,8 @@ class LabelEntry(Entry):
             command (CommandType | None, optional): Command callback. Defaults to None.
             hscrollbar (bool, optional): Show horizontal scrollbar. Defaults to False.
             focus (bool, optional): If True, widget will have focus. Defaults to False. Only one widget can have focus.
+            weightx (int | None, optional): Weight for horizontal resizing. Defaults to None.
+            weighty (int | None, optional): Weight for vertical resizing. Defaults to None.
             **kwargs: Additional keyword arguments are passed to ttk.Entry.
         """
         super().__init__(
@@ -237,6 +243,8 @@ class LabelEntry(Entry):
             command=command,
             hscrollbar=hscrollbar,
             focus=focus,
+            weightx=weightx,
+            weighty=weighty,
         )
         self.widget_type = "guitk.LabelEntry"
         self.text = text

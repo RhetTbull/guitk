@@ -54,22 +54,12 @@ class Treeview(Widget):
         command: CommandType | None = None,
         hscrollbar: bool = False,
         vscrollbar: bool = False,
+        weightx: int | None = None,
+        weighty: int | None = None,
         **kwargs,
     ):
-        super().__init__(
-            key=key,
-            disabled=disabled,
-            rowspan=rowspan,
-            columnspan=columnspan,
-            padx=padx,
-            pady=pady,
-            events=events,
-            sticky=sticky,
-            tooltip=tooltip,
-            command=command,
-        )
         """Initialize a ttk.Treeview widget
-        
+
         Args:
             headings (list[str]): List of column headings, required.
             key (Hashable, optional): Key to use for this widget. Defaults to None.
@@ -85,8 +75,24 @@ class Treeview(Widget):
             command (CommandType, optional): Command to run when selection changes. Defaults to None.
             hscrollbar (bool, optional): Whether to display a horizontal scrollbar. Defaults to False.
             vscrollbar (bool, optional): Whether to display a vertical scrollbar. Defaults to False.
+            weightx (int, optional): Horizontal weight. Defaults to None.
+            weighty (int, optional): Vertical weight. Defaults to None.
             **kwargs: Additional keyword arguments to pass to ttk.Treeview.
         """
+        super().__init__(
+            key=key,
+            disabled=disabled,
+            rowspan=rowspan,
+            columnspan=columnspan,
+            padx=padx,
+            pady=pady,
+            events=events,
+            sticky=sticky,
+            tooltip=tooltip,
+            command=command,
+            weightx=weightx,
+            weighty=weighty,
+        )
         self.key = key or "Treeview"
         self.widget_type = "ttk.Treeview"
 
@@ -228,6 +234,8 @@ class Listbox(Treeview):
         hscrollbar: bool = False,
         vscrollbar: bool = False,
         width: int = 200,
+        weightx: int | None = None,
+        weighty: int | None = None,
         **kwargs,
     ):
         """Create a Listbox widget
@@ -247,6 +255,8 @@ class Listbox(Treeview):
             hscrollbar (bool, optional): Show a horizontal scrollbar. Defaults to False.
             vscrollbar (bool, optional): Show a vertical scrollbar. Defaults to False.
             width (int, optional): Width of the widget in pixels. Defaults to 200.
+            weightx (int, optional): Horizontal weight. Defaults to None.
+            weighty (int, optional): Vertical weight. Defaults to None.
             **kwargs: Additional keyword arguments to pass to the widget constructor.
         """
         self.key = key or "Listbox"
@@ -273,6 +283,8 @@ class Listbox(Treeview):
             command=command,
             hscrollbar=hscrollbar,
             vscrollbar=vscrollbar,
+            weightx=weightx,
+            weighty=weighty,
             **kwargs,
         )
 

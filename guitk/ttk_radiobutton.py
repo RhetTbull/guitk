@@ -52,6 +52,8 @@ class Radiobutton(Widget):
         tooltip: TooltipType = None,
         selected: bool = False,
         command: CommandType | None = None,
+        weightx: int | None = None,
+        weighty: int | None = None,
         **kwargs: Any,
     ):
         """Initialize a ttk.Radiobutton widget
@@ -71,6 +73,8 @@ class Radiobutton(Widget):
             tooltip (TooltipType, optional): Tooltip text. Defaults to None.
             selected (bool, optional): Whether to select this widget. Defaults to False.
             command (CommandType, optional): Command to execute when selected. Defaults to None.
+            weightx (int, optional): Weight in x direction. Defaults to None.
+            weighty (int, optional): Weight in y direction. Defaults to None.
             **kwargs: Additional keyword arguments are passed to ttk.Radiobutton.
         """
         super().__init__(
@@ -84,6 +88,8 @@ class Radiobutton(Widget):
             sticky=sticky,
             tooltip=tooltip,
             command=command,
+            weightx=weightx,
+            weighty=weighty,
         )
         self.widget_type = "ttk.Radiobutton"
         self.text = text

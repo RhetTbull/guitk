@@ -47,6 +47,8 @@ class Notebook(_Container):
         sticky: str | None = None,
         tooltip: TooltipType = None,
         command: CommandType | None = None,
+        weightx: int | None = None,
+        weighty: int | None = None,
         **kwargs,
     ):
         """
@@ -64,6 +66,8 @@ class Notebook(_Container):
             sticky (str | None, optional): Sticky direction for widget layout. Defaults to None.
             tooltip (TooltipType | None, optional): Tooltip text or callback to generate tooltip text. Defaults to None.
             command (CommandType | None, optional): Command to execute when clicked. Defaults to None.
+            weightx (int | None, optional): Horizontal weight. Defaults to None.
+            weighty (int | None, optional): Vertical weight. Defaults to None.
             **kwargs: Additional keyword arguments are passed to ttk.Entry.
         """
         super().__init__(
@@ -84,6 +88,8 @@ class Notebook(_Container):
             autoframe=False,
             padx=0,
             pady=0,
+            weightx=weightx,
+            weighty=weighty,
         )
         self.widget_type = "ttk.Notebook"
         self.key = key or "Notebook"
