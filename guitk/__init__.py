@@ -31,6 +31,7 @@ from .ttk_progressbar import (
 )
 from .ttk_radiobutton import Radiobutton, RadioButton
 from .ttk_scale import Scale
+from .ttk_separator import Separator, VerticalSeparator
 from .ttk_treeview import Listbox, ListBox, Treeview, TreeView
 from .widget import Widget
 from .window import Window
@@ -73,6 +74,7 @@ __all__ = [
     "Radiobutton",
     "Row",
     "Scale",
+    "Separator",
     "Stack",
     "Spacer",
     "Tab",
@@ -80,6 +82,7 @@ __all__ = [
     "TreeView",
     "Treeview",
     "VerticalLayout",
+    "VerticalSeparator",
     "VerticalSpacer",
     "VerticalTab",
     "Widget",
