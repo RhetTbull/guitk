@@ -13,7 +13,7 @@ from .layout import get_parent, push_parent
 from .types import CommandType, TooltipType
 from .widget import Widget
 
-__all__ = ["Notebook", "NoteBook"]
+__all__ = ["Notebook", "NoteBook", "Tab", "VerticalTab"]
 
 _valid_standard_attributes = {
     "width",
@@ -204,6 +204,7 @@ class Tab(_Container):
         self.name = name
         self.kwargs = kwargs
 
+
 class VerticalTab(Tab, _VerticalContainer):
     """Tab for Notebook widget that arranges its widgets vertically"""
 
@@ -230,4 +231,4 @@ class VerticalTab(Tab, _VerticalContainer):
             pady=0,
         )
         self.name = name
-        self.kwargs = kwargs 
+        self.kwargs = kwargs
