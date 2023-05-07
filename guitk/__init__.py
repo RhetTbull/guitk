@@ -35,6 +35,14 @@ from .ttk_separator import Separator, VerticalSeparator
 from .ttk_treeview import Listbox, ListBox, Treeview, TreeView
 from .widget import Widget
 from .window import Window
+from .ttk_panedwindow import (
+    Panedwindow,
+    PanedWindow,
+    Pane,
+    VerticalPane,
+    LabelPane,
+    VerticalLabelPane,
+)
 
 __version__ = "0.3.0"
 __author__ = "Rhet Turnbull"
@@ -57,6 +65,7 @@ __all__ = [
     "Label",
     "LabelEntry",
     "LabelFrame",
+    "LabelPane",
     "Layout",
     "LinkLabel",
     "Linklabel",
@@ -68,6 +77,9 @@ __all__ = [
     "Output",
     "PROGRESS_DETERMINATE",
     "PROGRESS_INDETERMINATE",
+    "Pane",
+    "PanedWindow",
+    "Panedwindow",
     "ProgressBar",
     "Progressbar",
     "RadioButton",
@@ -75,13 +87,15 @@ __all__ = [
     "Row",
     "Scale",
     "Separator",
-    "Stack",
     "Spacer",
+    "Stack",
     "Tab",
     "Text",
     "TreeView",
     "Treeview",
+    "VerticalLabelPane",
     "VerticalLayout",
+    "VerticalPane",
     "VerticalSeparator",
     "VerticalSpacer",
     "VerticalTab",
