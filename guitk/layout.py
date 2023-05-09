@@ -6,11 +6,13 @@ from __future__ import annotations
 import contextlib
 import threading
 from inspect import currentframe, getmro
-from typing import Any, Literal
+from typing import Any
 
-from .types import HAlign, VAlign
+from .types import HAlign, LayoutType, VAlign
 
 _current_parent = {}
+
+__all__ = ["Layout", "VerticalLayout"]
 
 
 class DummyParent:
@@ -50,8 +52,14 @@ def get_parent() -> Any:
 class Layout:
     """A Layout manager that aligns widgets horizontally"""
 
-    def __init__(self, valign: VAlign | None = None, halign: HAlign | None = None):
-        self._layout = []
+    def __init__(
+        self,
+        layout: LayoutType = None,
+        *,
+        valign: VAlign | None = None,
+        halign: HAlign | None = None,
+    ):
+        self._layout = layout or []
         self.index = 0
         self.valign = valign
         self.halign = halign
@@ -71,8 +79,15 @@ class Layout:
         self._layout.append(widget)
 
     @property
-    def layout(self):
-        return [self._layout]
+    def layout(self) -> LayoutType:
+        """Return the layout list"""
+        # if layout manually created, it will be a list of lists
+        # otherwise it's a row of widgets, so wrap it in a list
+        return (
+            self._layout
+            if self._layout and isinstance(self._layout[0], (list, tuple))
+            else [self._layout]
+        )
 
     def __enter__(self):
         push_parent(self)

@@ -23,6 +23,14 @@ from .ttk_combobox import Combobox, ComboBox
 from .ttk_entry import Entry, LabelEntry
 from .ttk_label import Label, LinkLabel, Linklabel
 from .ttk_notebook import Notebook, NoteBook, Tab, VerticalTab
+from .ttk_panedwindow import (
+    LabelPane,
+    Pane,
+    Panedwindow,
+    PanedWindow,
+    VerticalLabelPane,
+    VerticalPane,
+)
 from .ttk_progressbar import (
     PROGRESS_DETERMINATE,
     PROGRESS_INDETERMINATE,
@@ -35,14 +43,6 @@ from .ttk_separator import Separator, VerticalSeparator
 from .ttk_treeview import Listbox, ListBox, Treeview, TreeView
 from .widget import Widget
 from .window import Window
-from .ttk_panedwindow import (
-    Panedwindow,
-    PanedWindow,
-    Pane,
-    VerticalPane,
-    LabelPane,
-    VerticalLabelPane,
-)
 
 __version__ = "0.3.0"
 __author__ = "Rhet Turnbull"
