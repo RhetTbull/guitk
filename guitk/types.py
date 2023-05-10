@@ -13,6 +13,7 @@ LayoutType = list[list[Widget | None]]
 Window = TypeVar("Window")
 VAlign = Literal["top", "bottom", "center"]
 HAlign = Literal["left", "right", "center"]
+DecoratedType = TypeVar("DecoratedType")
 
 
 class _WindowBaseClass:

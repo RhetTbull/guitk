@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import contextlib
+import inspect
 import time
 import tkinter as tk
 from tkinter import ttk
@@ -160,6 +161,8 @@ class Window(_LayoutMixin, _WindowBaseClass):
             100, EventType.WindowFinishedLoading.value, EventType.WindowFinishedLoading
         )
 
+        self._bind_event_handlers()
+
     def _config(self):
         self.title = "My Window"
         """Title to display in the window's title bar """
@@ -271,6 +274,13 @@ class Window(_LayoutMixin, _WindowBaseClass):
         except Exception as e:
             raise e
 
+    def _bind_event_handlers(self):
+        """Bind any event handlers decorated with @on"""
+        for method in self.__class__.__dict__.values():
+            if hasattr(method, "_guitk_event_handlers"):
+                for key, event_type in getattr(method, "_guitk_event_handlers"):
+                    self.bind_command(key=key, event_type=event_type, command=method)
+
     def run(self):
         self._tk.run_mainloop()
         return self._return_value
@@ -375,6 +385,7 @@ class Window(_LayoutMixin, _WindowBaseClass):
                 self._destroy()
 
     def _handle_commands(self, event):
+        """Handle commands bound to widgets in the window"""
         for command in self._commands:
             if (
                 (command.widget is None or command.widget == event.widget)
@@ -383,10 +394,18 @@ class Window(_LayoutMixin, _WindowBaseClass):
                     command.event_type is None or command.event_type == event.event_type
                 )
             ):
-                command.command()
+                if hasattr(command.command, "_guitk_event_handlers"):
+                    # command was decorated with @on, so it's a method of this class
+                    if len(inspect.signature(command.command).parameters) == 2:
+                        # command has a second argument, assume it's the event
+                        command.command(self, event)
+                    else:
+                        command.command(self)
+                else:
+                    command.command()
 
     def __getitem__(self, key) -> "Widget":
         try:
             return self._widget_by_key[key]
-        except KeyError:
-            raise KeyError(f"Invalid key: no widget with key {key}")
+        except KeyError as e:
+            raise KeyError(f"Invalid key: no widget with key {key}") from e

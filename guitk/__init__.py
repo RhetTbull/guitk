@@ -8,6 +8,7 @@
 # TODO: add style to all controls
 # TODO: standardize value_type
 
+from ._on import on
 from .containers import Row, Stack
 from .debugwindow import DebugWindow
 from .events import Event, EventCommand, EventType
@@ -101,4 +102,5 @@ __all__ = [
     "VerticalTab",
     "Widget",
     "Window",
+    "on",
 ]
