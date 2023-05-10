@@ -49,6 +49,7 @@ class Notebook(_Container):
         command: CommandType | None = None,
         weightx: int | None = None,
         weighty: int | None = None,
+        focus: bool = False,
         **kwargs,
     ):
         """Initialize a Notebook widget.
@@ -67,6 +68,7 @@ class Notebook(_Container):
             command (CommandType | None, optional): Command to execute when clicked. Defaults to None.
             weightx (int | None, optional): Horizontal weight. Defaults to None.
             weighty (int | None, optional): Vertical weight. Defaults to None.
+            focus (bool, optional): If True, widget will have focus. Defaults to False. Only one widget in a window can have focus.
             **kwargs: Additional keyword arguments are passed to ttk.Entry.
         """
         super().__init__(
@@ -89,6 +91,7 @@ class Notebook(_Container):
             pady=0,
             weightx=weightx,
             weighty=weighty,
+            focus=focus,
         )
         self.widget_type = "ttk.Notebook"
         self.key = key or "Notebook"

@@ -100,6 +100,8 @@ class _LayoutMixin:
                 window._widgets.append(widget)
                 widget.parent = self
                 window._widget_by_key[widget.key] = widget
+
+                # configure row/columns/weight
                 if widget.rowspan and widget.rowspan > 1:
                     row_offset += widget.rowspan - 1
                 if widget.columnspan and widget.columnspan > 1:
@@ -113,6 +115,10 @@ class _LayoutMixin:
                     parent.grid_rowconfigure(
                         row_count + row_offset, weight=widget.weighty
                     )
+
+                # take focus if needed
+                if widget._focus:
+                    widget.widget.focus()
 
 
 class _Container(Widget, _LayoutMixin):

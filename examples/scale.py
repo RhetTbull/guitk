@@ -2,25 +2,22 @@
 
 from tkinter import HORIZONTAL
 
-import guitk
+from guitk import Label, Scale, VerticalLayout, Window
 
 
-class ScaleDemo(guitk.Window):
+class ScaleDemo(Window):
     def config(self):
         default = 5.0
-        self.layout = [
-            [
-                guitk.Scale(
-                    0,
-                    100,
-                    value=default,
-                    orient=HORIZONTAL,
-                    target_key="SCALE_LABEL",
-                    precision=0,
-                )
-            ],
-            [guitk.Label(text=f"{default:.1f}", key="SCALE_LABEL")],
-        ]
+        with VerticalLayout():
+            Scale(
+                0,
+                100,
+                value=default,
+                orient=HORIZONTAL,
+                target_key="SCALE_LABEL",
+                precision=0,
+            )
+            Label(text=f"{default:.1f}", key="SCALE_LABEL")
         self.padx = 20
         self.pady = 20
 

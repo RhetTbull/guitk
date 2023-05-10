@@ -51,9 +51,9 @@ class Entry(Widget):
         tooltip: TooltipType = None,
         command: CommandType | None = None,
         hscrollbar: bool = False,
-        focus: bool = False,
         weightx: int | None = None,
         weighty: int | None = None,
+        focus: bool = False,
         **kwargs,
     ):
         """Initialize an Entry widget.
@@ -71,9 +71,9 @@ class Entry(Widget):
             tooltip (TooltipType | None, optional): Tooltip text or callback to generate tooltip text. Defaults to None.
             command (CommandType | None, optional): Command callback. Defaults to None.
             hscrollbar (bool, optional): Show horizontal scrollbar. Defaults to False.
-            focus (bool, optional): If True, widget has focus. Defaults to False. Only one widget in a window can have focus.
             weightx (int | None, optional): Weight for horizontal resizing. Defaults to None.
             weighty (int | None, optional): Weight for vertical resizing. Defaults to None.
+            focus (bool, optional): If True, widget has focus. Defaults to False. Only one widget in a window can have focus.
             **kwargs: Additional keyword arguments are passed to ttk.Entry.
         """
         super().__init__(
@@ -89,6 +89,7 @@ class Entry(Widget):
             command=command,
             weightx=weightx,
             weighty=weighty,
+            focus=focus,
         )
         self.widget_type = "ttk.Entry"
         default = default or ""
@@ -98,7 +99,6 @@ class Entry(Widget):
         self.rowspan = rowspan
         self.hscrollbar = hscrollbar
         self.kwargs = kwargs
-        self.focus = focus
 
     def _create_widget(self, parent, window: Window, row, col):
         self.window = window
@@ -141,9 +141,6 @@ class Entry(Widget):
         if self._disabled:
             self.widget.state(["disabled"])
 
-        if self.focus:
-            self.widget.focus()
-
         return self.widget
 
     @property
@@ -176,7 +173,7 @@ class _ttkLabelEntry(ttk.Entry):
         methods = methods.difference(text_meths)
 
         for m in methods:
-            if m[0] != "_" and m != "config" and m != "configure":
+            if m[0] != "_" and m not in {"config", "configure", "focus"}:
                 setattr(self, m, getattr(self.frame, m))
 
     def __str__(self):
@@ -203,9 +200,9 @@ class LabelEntry(Entry):
         tooltip: TooltipType = None,
         command: CommandType | None = None,
         hscrollbar: bool = False,
-        focus: bool = False,
         weightx: int | None = None,
         weighty: int | None = None,
+        focus: bool = False,
         **kwargs,
     ):
         """Initialize an Entry widget.
@@ -224,9 +221,9 @@ class LabelEntry(Entry):
             tooltip (TooltipType | None, optional): Tooltip text or callback to generate tooltip text. Defaults to None.
             command (CommandType | None, optional): Command callback. Defaults to None.
             hscrollbar (bool, optional): Show horizontal scrollbar. Defaults to False.
-            focus (bool, optional): If True, widget will have focus. Defaults to False. Only one widget can have focus.
             weightx (int | None, optional): Weight for horizontal resizing. Defaults to None.
             weighty (int | None, optional): Weight for vertical resizing. Defaults to None.
+            focus (bool, optional): If True, widget will have focus. Defaults to False. Only one widget can have focus.
             **kwargs: Additional keyword arguments are passed to ttk.Entry.
         """
         super().__init__(
@@ -281,9 +278,6 @@ class LabelEntry(Entry):
 
         if self._disabled:
             self.widget.state(["disabled"])
-
-        if self.focus:
-            self.widget.focus()
 
         return self.widget
 

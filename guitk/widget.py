@@ -30,7 +30,26 @@ class Widget:
         value_type: ValueType | None = None,
         weightx: int | None = None,
         weighty: int | None = None,
+        focus: bool = False,
     ):
+        """Initialize a widget.
+
+        Args:
+            key (Hashable, optional): Unique key for this widget. Defaults to None.
+            default (str | None, optional): Default text for the entry box. Defaults to None.
+            disabled (bool, optional): If True, widget is disabled. Defaults to False.
+            columnspan (int | None, optional): Number of columns to span. Defaults to None.
+            rowspan (int | None, optional): Number of rows to span. Defaults to None.
+            padx (int | None, optional): X padding. Defaults to None.
+            pady (int | None, optional): Y padding. Defaults to None.
+            events (bool, optional): Enable events for this widget. Defaults to False.
+            sticky (str | None, optional): Sticky direction for widget layout. Defaults to None.
+            tooltip (TooltipType | None, optional): Tooltip text or callback to generate tooltip text. Defaults to None.
+            command (CommandType | None, optional): Command callback. Defaults to None.
+            weightx (int | None, optional): Weight for horizontal resizing. Defaults to None.
+            weighty (int | None, optional): Weight for vertical resizing. Defaults to None.
+            focus (bool, optional): If True, widget has focus. Defaults to False. Only one widget in a window can have focus.
+        """
         super().__init__()
 
         self.key = key
@@ -44,6 +63,7 @@ class Widget:
         self.tooltip = tooltip
         self.weightx = weightx
         self.weighty = weighty
+        self._focus = focus
 
         self._command = command
         self._commands = {}
@@ -67,6 +87,9 @@ class Widget:
     @value.setter
     def value(self, value):
         self._value.set(value)
+
+    def focus(self):
+        self.widget.focus()
 
     def _grid(self, row, column, rowspan, columnspan):
         sticky = self.sticky or tk.W

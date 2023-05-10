@@ -59,9 +59,7 @@ Window = TypeVar("Window")
 
 
 class Text(Widget):
-    """
-    A tk Text box
-    """
+    """A tk Text box"""
 
     def __init__(
         self,
@@ -82,6 +80,7 @@ class Text(Widget):
         hscrollbar: bool = False,
         weightx: int | None = None,
         weighty: int | None = None,
+        focus: bool = False,
         **kwargs,
     ):
         """
@@ -105,6 +104,7 @@ class Text(Widget):
             hscrollbar (bool, optional): Show horizontal scrollbar. Defaults to False.
             weightx (int | None, optional): Weight of the widget in the x direction. Defaults to None.
             weighty (int | None, optional): Weight of the widget in the y direction. Defaults to None.
+            focus (bool, optional): If True, widget has focus. Defaults to False. Only one widget in a window can have focus.
             **kwargs: Additional keyword arguments are passed to tk Text.
         """
         super().__init__(
@@ -120,6 +120,7 @@ class Text(Widget):
             command=command,
             weightx=weightx,
             weighty=weighty,
+            focus=focus,
         )
         self.widget_type = "tk.Text"
         self.key = key or "Text"
@@ -190,9 +191,7 @@ class Text(Widget):
 
 # TODO: how to make Output read-only?
 class Output(Text):
-    """
-    Text box that redirects stderr and/or stdout to the text box.
-    """
+    """Text box that redirects stderr and/or stdout to the text box."""
 
     def __init__(
         self,
@@ -215,6 +214,7 @@ class Output(Text):
         echo: bool = False,
         weightx: int | None = None,
         weighty: int | None = None,
+        focus: bool = False,
         **kwargs,
     ):
         """
@@ -241,6 +241,7 @@ class Output(Text):
             echo (bool, optional): Echo stdout and stderr to the console. Defaults to False.
             weightx (int | None, optional): Weight of the widget in the x direction. Defaults to None.
             weighty (int | None, optional): Weight of the widget in the y direction. Defaults to None.
+            focus (bool, optional): If True, widget has focus. Defaults to False. Only one widget in a window can have focus.
             **kwargs: Additional keyword arguments are passed to tk Text.
         """
         super().__init__(
@@ -260,6 +261,7 @@ class Output(Text):
             hscrollbar=hscrollbar,
             weightx=weightx,
             weighty=weighty,
+            focus=focus,
             **kwargs,
         )
 

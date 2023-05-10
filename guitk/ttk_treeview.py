@@ -54,6 +54,7 @@ class Treeview(Widget):
         vscrollbar: bool = False,
         weightx: int | None = None,
         weighty: int | None = None,
+        focus: bool = False,
         **kwargs,
     ):
         """Initialize a ttk.Treeview widget
@@ -75,6 +76,7 @@ class Treeview(Widget):
             vscrollbar (bool, optional): Whether to display a vertical scrollbar. Defaults to False.
             weightx (int, optional): Horizontal weight. Defaults to None.
             weighty (int, optional): Vertical weight. Defaults to None.
+            focus (bool, optional): If True, widget will have focus. Defaults to False. Only one widget in a window can have focus.
             **kwargs: Additional keyword arguments to pass to ttk.Treeview.
         """
         super().__init__(
@@ -90,6 +92,7 @@ class Treeview(Widget):
             command=command,
             weightx=weightx,
             weighty=weighty,
+            focus=focus,
         )
         self.key = key or "Treeview"
         self.widget_type = "ttk.Treeview"

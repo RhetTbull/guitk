@@ -52,6 +52,7 @@ class Radiobutton(Widget):
         command: CommandType | None = None,
         weightx: int | None = None,
         weighty: int | None = None,
+        focus: bool = False,
         **kwargs: Any,
     ):
         """Initialize a ttk.Radiobutton widget
@@ -73,6 +74,7 @@ class Radiobutton(Widget):
             command (CommandType, optional): Command to execute when selected. Defaults to None.
             weightx (int, optional): Weight in x direction. Defaults to None.
             weighty (int, optional): Weight in y direction. Defaults to None.
+            focus (bool, optional): If True, widget will have focus. Defaults to False. Only one widget in a window can have focus.
             **kwargs: Additional keyword arguments are passed to ttk.Radiobutton.
         """
         super().__init__(
@@ -88,6 +90,7 @@ class Radiobutton(Widget):
             command=command,
             weightx=weightx,
             weighty=weighty,
+            focus=focus,
         )
         self.widget_type = "ttk.Radiobutton"
         self.text = text

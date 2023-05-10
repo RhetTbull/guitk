@@ -49,6 +49,7 @@ class Combobox(Widget):
         autosize: bool = False,
         weightx: int | None = None,
         weighty: int | None = None,
+        focus: bool = False,
         **kwargs,
     ):
         super().__init__(
@@ -64,6 +65,7 @@ class Combobox(Widget):
             command=command,
             weightx=weightx,
             weighty=weighty,
+            focus=focus,
             **kwargs,
         )
 

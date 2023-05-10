@@ -58,6 +58,7 @@ class Button(Widget):
         command: CommandType | None = None,
         weightx: int | None = None,
         weighty: int | None = None,
+        focus: bool = False,
         **kwargs,
     ):
         """
@@ -77,6 +78,7 @@ class Button(Widget):
             command (CommandType | None, optional): Command callback. Defaults to None.
             weightx (int | None, optional): Weight in x direction. Defaults to None.
             weighty (int | None, optional): Weight in y direction. Defaults to None.
+            focus (bool, optional): If True, widget has focus. Defaults to False. Only one widget in a window can have focus.
             **kwargs: Additional keyword arguments are passed to ttk.Button.
         """
         super().__init__(
@@ -92,6 +94,7 @@ class Button(Widget):
             command=command,
             weightx=weightx,
             weighty=weighty,
+            focus=focus,
             **kwargs,
         )
 
@@ -174,6 +177,7 @@ class BrowseFileButton(Button):
         filename_only: bool = False,
         weightx: int | None = None,
         weighty: int | None = None,
+        focus: bool = False,
         **kwargs,
     ):
         """Initialize a BrowseFileButton widget.
@@ -194,6 +198,7 @@ class BrowseFileButton(Button):
             filename_only (bool, optional): If True, only the filename is returned. Defaults to False.
             weightx (int | None, optional): Weight in x direction. Defaults to None.
             weighty (int | None, optional): Weight in y direction. Defaults to None.
+            focus (bool, optional): If True, widget has focus. Defaults to False. Only one widget in a window can have focus.
             **kwargs: Additional keyword arguments are passed to ttk.Button or filedialog.askopenfilename as appropriate.
         """
         super().__init__(
@@ -209,6 +214,7 @@ class BrowseFileButton(Button):
             tooltip=tooltip,
             weightx=weightx,
             weighty=weighty,
+            focus=focus,
         )
         self.target_key = target_key
         self.widget_type = "guitk.BrowseFileButton"
@@ -270,6 +276,7 @@ class BrowseDirectoryButton(Button):
         tooltip: TooltipType | None = None,
         weightx: int | None = None,
         weighty: int | None = None,
+        focus: bool = False,
         **kwargs,
     ):
         """
@@ -290,6 +297,7 @@ class BrowseDirectoryButton(Button):
             tooltip (TooltipType | None, optional): Tooltip text or callback to generate tooltip text. Defaults to None.
             weightx (int | None, optional): Weight in x direction. Defaults to None.
             weighty (int | None, optional): Weight in y direction. Defaults to None.
+            focus (bool, optional): If True, widget has focus. Defaults to False. Only one widget in a window can have focus.
             **kwargs: Additional keyword arguments are passed to ttk.Button or filedialog.askopenfilename as appropriate.
         """
         super().__init__(
@@ -305,6 +313,7 @@ class BrowseDirectoryButton(Button):
             tooltip=tooltip,
             weightx=weightx,
             weighty=weighty,
+            focus=focus,
         )
         self.target_key = target_key
         self.widget_type = "guitk.BrowseDirectoryButton"

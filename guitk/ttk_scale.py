@@ -4,9 +4,32 @@ from __future__ import annotations
 
 import tkinter as tk
 import tkinter.ttk as ttk
+from typing import Hashable, Union
 
 from .events import Event, EventCommand, EventType
+from .types import CommandType, TooltipType, Window
 from .widget import Widget
+
+__all__ = ["Scale"]
+
+
+_valid_standard_attributes = {
+    "class",
+    "command",
+    "cursor",
+    "length",
+    "orient",
+    "state",
+    "style",
+    "takefocus",
+    "value",
+    "variable",
+}
+
+_valid_ttk_scale_attributes = {
+    "from",
+    "to",
+} | _valid_standard_attributes
 
 
 def _interval(from_, to, interval, value, tolerance=1e-9):
@@ -40,27 +63,52 @@ class Scale(Widget):
         from_value: float,
         to_value: float,
         value: float | None = None,
-        orient=tk.VERTICAL,
-        interval=None,
-        precision=None,
-        key=None,
-        target_key=None,
-        disabled=False,
-        columnspan=None,
-        rowspan=None,
-        padx=None,
-        pady=None,
-        length=None,
-        events=True,
-        sticky=None,
-        tooltip=None,
-        takefocus=None,
-        command=None,
-        cursor=None,
-        style=None,
-        weightx=None,
-        weighty=None,
+        orient: Union[tk.VERTICAL, tk.HORIZONTAL] = tk.VERTICAL,
+        interval: float | None = None,
+        precision: int | None = None,
+        key: Hashable = None,
+        target_key: Hashable = None,
+        disabled: bool = False,
+        columnspan: int | None = None,
+        rowspan: int | None = None,
+        padx: int | None = None,
+        pady: int | None = None,
+        events: bool = False,
+        sticky: str | None = None,
+        tooltip: TooltipType = None,
+        command: CommandType | None = None,
+        weightx: int | None = None,
+        weighty: int | None = None,
+        focus: bool = False,
+        **kwargs,
     ):
+        """Initialize a ttk.Scale widget
+
+        Args:
+            from_value (float): Minimum value for the scale.
+            to_value (float): Maximum value for the scale.
+            value (float, optional): Initial value for the scale. Defaults to None (from_value).
+            orient (tk.VERTICAL | tk.HORIZONTAL, optional): Orientation of the scale. Defaults to tk.VERTICAL.
+            interval (float, optional): Interval between values. Defaults to None (no interval).
+            precision (int, optional): Number of decimal places to display. Defaults to None (no rounding).
+            key (Hashable, optional): Unique key for this widget. Defaults to None.
+            target_key: (Hashable, optional): Unique key for the target widget. Defaults to None.
+            default (str | None, optional): Default text for the entry box. Defaults to None.
+            disabled (bool, optional): If True, widget is disabled. Defaults to False.
+            columnspan (int | None, optional): Number of columns to span. Defaults to None.
+            rowspan (int | None, optional): Number of rows to span. Defaults to None.
+            padx (int | None, optional): X padding. Defaults to None.
+            pady (int | None, optional): Y padding. Defaults to None.
+            events (bool, optional): Enable events for this widget. Defaults to False.
+            sticky (str | None, optional): Sticky direction for widget layout. Defaults to None.
+            tooltip (TooltipType | None, optional): Tooltip text or callback to generate tooltip text. Defaults to None.
+            command (CommandType | None, optional): Command callback. Defaults to None.
+            hscrollbar (bool, optional): Show horizontal scrollbar. Defaults to False.
+            weightx (int | None, optional): Weight for horizontal resizing. Defaults to None.
+            weighty (int | None, optional): Weight for vertical resizing. Defaults to None.
+            focus (bool, optional): If True, widget has focus. Defaults to False. Only one widget in a window can have focus.
+            **kwargs: Additional keyword arguments are passed to ttk.Entry.
+        """
         super().__init__(
             key=key,
             disabled=disabled,
@@ -71,39 +119,31 @@ class Scale(Widget):
             events=events,
             sticky=sticky,
             tooltip=tooltip,
-            anchor=None,
-            takefocus=takefocus,
             command=command,
             value_type=tk.DoubleVar,
             weightx=weightx,
             weighty=weighty,
+            focus=focus,
         )
         self.widget_type = "ttk.Scale"
         self.key = key or "Scale"
         self.target_key = target_key
+        self.kwargs = kwargs
 
-        self._cursor = cursor
-        self._from_ = from_value
-        self._to = to_value
-        self._orient = orient
-        self._interval = interval
-        self._precision = precision
-        self._style = style
-        self._length = length
-        self._initial_value = value
-        self._takefocus = takefocus
-
-        self.columnspan = columnspan
-        self.rowspan = rowspan
-        self.tooltip = tooltip
+        self.from_ = from_value
+        self.to = to_value
+        self.orient = orient
+        self.interval = interval
+        self.precision = precision
+        self.initial_value = value
 
     @property
     def value(self):
         value = self.widget.get()
-        if self._interval:
-            value = _interval(self._from_, self._to, self._interval, value)
-        if self._precision is not None:
-            value = round(float(value), self._precision)
+        if self.interval:
+            value = _interval(self.from_, self.to, self.interval, value)
+        if self.precision is not None:
+            value = round(float(value), self.precision)
         return value
 
     @value.setter
@@ -115,18 +155,22 @@ class Scale(Widget):
         self._parent = parent
         event = Event(self, window, self.key, EventType.ScaleUpdate)
 
-        # TODO: standardize attribute names
-        kwargs = {}
-        for kw in ["cursor", "takefocus", "from_", "to", "length", "orient", "style"]:
-            val = getattr(self, f"_{kw}")
-            if val is not None:
-                kwargs[kw] = val
-
+        # build arg list for ttk.Scale
+        kwargs = {
+            k: v for k, v in self.kwargs.items() if k in _valid_ttk_scale_attributes
+        }
         kwargs["variable"] = self._value
-        if self._initial_value is not None:
-            self._value.set(self._initial_value)
+        if self.initial_value is not None:
+            self._value.set(self.initial_value)
 
-        self.widget = ttk.Scale(parent, command=window._make_callback(event), **kwargs)
+        self.widget = ttk.Scale(
+            parent,
+            from_=self.from_,
+            to=self.to,
+            orient=self.orient,
+            command=window._make_callback(event),
+            **kwargs,
+        )
         self._grid(
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
         )
