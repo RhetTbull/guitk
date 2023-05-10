@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import tkinter as tk
 
+from .layout import get_parent
 from .ttk_label import Label
 from .types import Window
-from .layout import get_parent
 
 __all__ = ["Spacer", "VerticalSpacer"]
 
@@ -26,6 +26,7 @@ class Spacer(Label):
     def _create_widget(self, parent: tk.BaseWidget, window: Window, row: int, col: int):
         super()._create_widget(parent, window, row, col)
         parent.grid_columnconfigure(col, weight=1)
+
 
 class VerticalSpacer(Label):
     """ "Spacer widget that expands to fill the vertical space in the layout"""

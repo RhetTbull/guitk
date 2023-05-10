@@ -18,7 +18,7 @@ class MyWindow(guitk.Window):
         # launch a debug window
         # don't need to use .run() as event loop already running in the parent window
         guitk.DebugWindow(parent=self.window, output_width=100, output_height=30)
-        
+
     def handle_event(self, event):
         value = self["INPUT"].value
         if event.key == "STDOUT":

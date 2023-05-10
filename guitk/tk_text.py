@@ -272,7 +272,6 @@ class Output(Text):
         self._redirect = []
         self._redirect_id = {}
 
-
     def _create_widget(self, parent, window: "Window", row, col):
         self.widget = super()._create_widget(parent, window, row, col)
 

@@ -1,6 +1,6 @@
 """ Demo of Separator and VerticalSeparator widgets """
 
-from guitk import Label, Layout, Separator, Stack, VerticalSeparator, Window
+from guitk import Label, Layout, Separator, VerticalSeparator, VStack, Window
 
 
 class SeparatorDemo(Window):
@@ -11,7 +11,7 @@ class SeparatorDemo(Window):
             VerticalSeparator()
             Label("World")
 
-            with Stack(width=200, valign="center"):
+            with VStack(width=200, valign="center"):
                 Label("Hello", sticky="EW", weightx=1, anchor="center")
                 Separator()
                 Label("World", sticky="EW", weightx=1, anchor="center")

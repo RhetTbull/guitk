@@ -8,9 +8,8 @@ from typing import Hashable, Literal, TypeVar
 from guitk.constants import GUITK
 
 from .events import EventCommand, EventType
-from .frame import _Container, _VerticalContainer
+from .frame import Frame, LabelFrame, _Container, _VerticalContainer
 from .types import CommandType, TooltipType
-from .frame import LabelFrame, Frame
 
 __all__ = [
     "Panedwindow",
@@ -61,8 +60,7 @@ class Panedwindow(_Container):
         weighty: int | None = None,
         **kwargs,
     ):
-        """
-        Initialize a Notebook widget.
+        """Initialize a Notebook widget.
 
         Args:
             key (Hashable, optional): Unique key for this widget. Defaults to None.
@@ -206,7 +204,7 @@ class Pane(Frame):
 
 
 class VerticalPane(_VerticalContainer, Pane):
-    """pane for Panedwindow widget that arranges its widgets vertically"""
+    """Pane for Panedwindow widget that arranges its widgets vertically"""
 
     def __init__(self, sticky: str | None = "nsew", **kwargs):
         """Initialize a VerticalPane"""
@@ -264,7 +262,7 @@ class LabelPane(LabelFrame):
 
 
 class VerticalLabelPane(_VerticalContainer, LabelPane):
-    """pane for Panedwindow widget that includes a name and  arranges its widgets vertically"""
+    """Pane for Panedwindow widget that includes a name and  arranges its widgets vertically"""
 
     def __init__(self, name=None, sticky: str | None = "nsew", **kwargs):
         """Initialize a VerticalLabelPane"""

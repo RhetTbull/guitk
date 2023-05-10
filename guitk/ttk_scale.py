@@ -10,7 +10,7 @@ from .widget import Widget
 
 
 def _interval(from_, to, interval, value, tolerance=1e-9):
-    """clamp value to an interval between from_ and to range"""
+    """Clamp value to an interval between from_ and to range"""
 
     if interval > (to - from_):
         raise ValueError("Invalid increment")
@@ -31,6 +31,7 @@ def _interval(from_, to, interval, value, tolerance=1e-9):
     else:
         return interval * quotient
 
+
 class Scale(Widget):
     """ttk.Scale / slider"""
 
@@ -38,7 +39,7 @@ class Scale(Widget):
         self,
         from_value: float,
         to_value: float,
-        value: float | None =None,
+        value: float | None = None,
         orient=tk.VERTICAL,
         interval=None,
         precision=None,
@@ -165,4 +166,3 @@ class Scale(Widget):
     def scale(self):
         """Return the ttk.Scale widget"""
         return self.widget
-

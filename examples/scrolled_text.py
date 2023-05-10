@@ -1,6 +1,7 @@
 """ Demo of how to use scrollbars on Text widget """
-import guitk
 import tkinter as tk
+
+import guitk
 
 sample_text = """Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam ut ornare nunc. Duis vulputate sodales ultrices. Nulla vitae nisl at magna consequat semper ut vel mi. Proin dignissim efficitur nisi sed pulvinar. Interdum et malesuada fames ac ante ipsum primis in faucibus. Etiam pulvinar est tellus, nec rutrum purus aliquet sed. Vivamus non ornare tortor. Aenean sodales congue tincidunt. Aliquam ut mauris eget augue dictum scelerisque. Praesent in turpis a magna ullamcorper ultricies. Suspendisse efficitur ullamcorper turpis, at molestie lacus rhoncus id. Fusce faucibus sagittis molestie. Aenean et enim sollicitudin, bibendum odio vitae, mattis felis.
 

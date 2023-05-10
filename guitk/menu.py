@@ -24,7 +24,6 @@ def _map_key_binding_from_shortcut(shortcut):
     return "<" + "-".join(keybinding) + ">"
 
 
-
 class Menu:
     def __init__(
         self,
@@ -115,4 +114,3 @@ class Command(Menu):
                 Event(self, self.window, self._key, EventType.MenuCommand)
             ),
         )
-

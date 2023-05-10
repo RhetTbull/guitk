@@ -36,9 +36,7 @@ PROGRESS_INDETERMINATE = "indeterminate"
 
 
 class Progressbar(Widget):
-    """
-    ttk.Progressbar
-    """
+    """ttk.Progressbar"""
 
     def __init__(
         self,
@@ -153,8 +151,6 @@ class Progressbar(Widget):
 
 
 class ProgressBar(Progressbar):
-    """
-    ttk.Progressbar
-    """
+    """ttk.Progressbar"""
 
     pass

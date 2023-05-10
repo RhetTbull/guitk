@@ -1,6 +1,6 @@
 """Hello World example using guitk, shows how to use callback style instead of event loop """
 
-from guitk import Button, Entry, Event, Label, Row, VerticalLayout, Window
+from guitk import Button, Entry, Event, HStack, Label, VerticalLayout, Window
 
 
 # subclass Window as the starting point for your app's main window
@@ -18,9 +18,11 @@ class HelloWorld(Window):
         # callbacks are specified with the `command` parameter
         with VerticalLayout() as layout:
             Label("What's your name?")
-            Entry(key="ENTRY_NAME", events=True, command=self.on_entry_changed, focus=True)
+            Entry(
+                key="ENTRY_NAME", events=True, command=self.on_entry_changed, focus=True
+            )
             Label("", width=40, key="OUTPUT", columnspan=2)
-            with Row():
+            with HStack():
                 Button("Ok", command=self.on_ok)
                 Button("Quit", command=self.on_quit)
         self.layout = layout

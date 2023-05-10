@@ -4,13 +4,13 @@ from guitk import (
     Button,
     Event,
     EventType,
+    HStack,
     Label,
     Notebook,
     Tab,
     VerticalLayout,
     VerticalTab,
     Window,
-    Row,
 )
 
 
@@ -19,7 +19,7 @@ class NotebookWindow(Window):
         # tabs can be added to the Notebook later, here tabs are added in setup() after the notebook is created
         with VerticalLayout():
             Notebook(key="NOTEBOOK", sticky="nsew")
-            with Row():
+            with HStack():
                 Button("Add", key="ADD")
                 Button("Insert", key="INSERT")
         self.title = "Notebook"

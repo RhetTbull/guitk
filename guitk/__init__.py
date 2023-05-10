@@ -9,7 +9,7 @@
 # TODO: standardize value_type
 
 from ._on import on
-from .containers import Row, Stack
+from .containers import HStack, VStack
 from .debugwindow import DebugWindow
 from .events import Event, EventCommand, EventType
 from .frame import Frame, LabelFrame
@@ -63,6 +63,7 @@ __all__ = [
     "EventCommand",
     "EventType",
     "Frame",
+    "HStack",
     "Label",
     "LabelEntry",
     "LabelFrame",
@@ -85,15 +86,14 @@ __all__ = [
     "Progressbar",
     "RadioButton",
     "Radiobutton",
-    "Row",
     "Scale",
     "Separator",
     "Spacer",
-    "Stack",
     "Tab",
     "Text",
     "TreeView",
     "Treeview",
+    "VStack",
     "VerticalLabelPane",
     "VerticalLayout",
     "VerticalPane",

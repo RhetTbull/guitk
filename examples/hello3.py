@@ -1,6 +1,6 @@
 """ Simple hello world example using guitk demoing use of the event handler """
 
-from guitk import Button, Entry, Event, EventType, Label, Row, VerticalLayout, Window
+from guitk import Button, Entry, Event, EventType, HStack, Label, VerticalLayout, Window
 
 
 class HelloWorld(Window):
@@ -13,7 +13,7 @@ class HelloWorld(Window):
             Label("What's your name?")
             Entry(key="ENTRY_NAME", events=True, focus=True)
             Label("", width=40, key="OUTPUT")
-            with Row():
+            with HStack():
                 Button("Ok")
                 Button("Quit")
 

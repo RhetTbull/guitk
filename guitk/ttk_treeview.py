@@ -34,9 +34,7 @@ Window = TypeVar("Window")
 
 
 class Treeview(Widget):
-    """
-    ttk.Treeview widget
-    """
+    """ttk.Treeview widget"""
 
     def __init__(
         self,
@@ -214,9 +212,7 @@ class Treeview(Widget):
 
 
 class Listbox(Treeview):
-    """
-    Listbox widget
-    """
+    """Listbox widget"""
 
     def __init__(
         self,

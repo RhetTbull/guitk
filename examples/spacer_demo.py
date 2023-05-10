@@ -1,6 +1,6 @@
 """Demo of Spacer and VerticalSpacer widgets"""
 
-from guitk import Label, Layout, Spacer, Stack, VerticalSpacer, Window
+from guitk import Label, Layout, Spacer, VerticalSpacer, VStack, Window
 
 
 class SpacerDemo(Window):
@@ -8,14 +8,14 @@ class SpacerDemo(Window):
         self.title = "Spacer Demo"
         self.size = (640, 480)
         with Layout() as layout:
-            with Stack():
+            with VStack():
                 Label("Top left")
                 VerticalSpacer()
                 Label("Bottom left")
             Spacer()
             Label("Center")
             Spacer()
-            with Stack():
+            with VStack():
                 Label("Top right", sticky="e")
                 VerticalSpacer()
                 Label("Bottom right", sticky="e")

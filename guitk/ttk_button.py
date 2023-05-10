@@ -156,9 +156,7 @@ class Button(Widget):
 
 
 class BrowseFileButton(Button):
-    """
-    Button that opens a file dialog to select a file.
-    """
+    """Button that opens a file dialog to select a file."""
 
     def __init__(
         self,
@@ -178,8 +176,7 @@ class BrowseFileButton(Button):
         weighty: int | None = None,
         **kwargs,
     ):
-        """
-        Initialize a BrowseFileButton widget.
+        """Initialize a BrowseFileButton widget.
 
         Args:
             text (str): Text for the button.
@@ -256,6 +253,8 @@ class BrowseFileButton(Button):
 
 
 class BrowseDirectoryButton(Button):
+    """Button that opens a file dialog to select a directory."""
+
     def __init__(
         self,
         text="Browse",

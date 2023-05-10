@@ -29,8 +29,7 @@ class Separator(Widget):
         pady: int | None = None,
         weightx: int | None = 1,
     ):
-        """
-        Initialize a horizontal Separator widget.
+        """Initialize a horizontal Separator widget.
 
         Args:
             rowspan (int | None, optional): Number of rows to span. Defaults to None.
@@ -74,8 +73,7 @@ class VerticalSeparator(Widget):
         pady: int | None = None,
         weighty: int | None = 1,
     ):
-        """
-        Initialize a horizontal Separator widget.
+        """Initialize a horizontal Separator widget.
 
         Args:
             rowspan (int | None, optional): Number of rows to span. Defaults to None.

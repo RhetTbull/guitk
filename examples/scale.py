@@ -1,8 +1,8 @@
 """Demo for Scale widget."""
 
-import guitk
-
 from tkinter import HORIZONTAL
+
+import guitk
 
 
 class ScaleDemo(guitk.Window):

@@ -5,11 +5,11 @@ from guitk import (
     Entry,
     Event,
     EventType,
+    HStack,
     Label,
     Layout,
     ListBox,
-    Row,
-    Stack,
+    VStack,
     Window,
 )
 
@@ -19,12 +19,12 @@ class ShoppingList(Window):
         self.title = "My Shopping List"
 
         with Layout() as layout:
-            with Row():
+            with HStack():
                 # these will be stacked horizontally (side by side)
                 Label("Item to buy:")
                 Entry(key="item", events=True)
                 Button("Add", key="add")
-            with Stack():
+            with VStack():
                 # these will be stacked vertically (one on top of the other)
                 Label("Shopping list", anchor="center")
                 ListBox(key="list")

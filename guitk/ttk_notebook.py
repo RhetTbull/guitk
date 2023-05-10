@@ -51,8 +51,7 @@ class Notebook(_Container):
         weighty: int | None = None,
         **kwargs,
     ):
-        """
-        Initialize a Notebook widget.
+        """Initialize a Notebook widget.
 
         Args:
             key (Hashable, optional): Unique key for this widget. Defaults to None.

@@ -7,14 +7,14 @@ from guitk import (
     Checkbutton,
     Entry,
     Event,
+    HStack,
     Label,
     LabelFrame,
     Output,
-    Row,
-    Stack,
-    VerticalLayout,
-    Window,
     Text,
+    VerticalLayout,
+    VStack,
+    Window,
 )
 
 
@@ -30,15 +30,15 @@ class HelloWorld(Window):
             Entry(key="ENTRY_NAME")
             Label("", width=40, key="OUTPUT")
             with LabelFrame("Label Frame", labelanchor=tk.N):
-                with Row():
-                    with Stack():
+                with HStack():
+                    with VStack():
                         ...
                         Output(width=20, height=10)
                         Label("Output", key="LABEL_OUTPUT", sticky=tk.N)
-                    with Stack(valign="center"):
+                    with VStack(valign="center"):
                         Checkbutton("Upper case", key="CHECK_UPPER")
                         Checkbutton("Green text", key="CHECK_GREEN")
-            with Row():
+            with HStack():
                 Button("Ok")
                 Button("Quit")
 

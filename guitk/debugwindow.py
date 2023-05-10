@@ -41,4 +41,3 @@ class DebugWindow(Window):
                 lines = self["OUTPUT"].value.split("\n")
                 lines = [l for l in lines if filter in l]
                 self["OUTPUT"].value = "\n".join(lines) + "\n"
-

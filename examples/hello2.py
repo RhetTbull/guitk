@@ -1,15 +1,6 @@
 """Hello World example using guitk """
 
-from guitk import (
-    Button,
-    Entry,
-    Event,
-    EventType,
-    Label,
-    Row,
-    VerticalLayout,
-    Window,
-)
+from guitk import Button, Entry, Event, EventType, HStack, Label, VerticalLayout, Window
 
 
 # subclass guitk.Window as the starting point for your app's main window
@@ -29,10 +20,11 @@ class HelloWorld(Window):
         # use a Layout or VerticalLayout class to define the layout of the window
         with VerticalLayout():
             from guitk import VerticalSpacer
+
             Label("What's your name?", sticky="ew", anchor="center", weightx=1)
             Entry(key="ENTRY_NAME", events=True, focus=True, sticky="ew", weightx=1)
             Label("", width=40, key="OUTPUT", columnspan=2)
-            with Row():
+            with HStack():
                 # align these two buttons in a row
                 Button("Ok")
                 Button("Quit")

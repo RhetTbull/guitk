@@ -1,16 +1,16 @@
 """Example of how to use Panedwindow class"""
 
 from guitk import (
-    Window,
-    PanedWindow,
-    Layout,
-    LabelEntry,
     Button,
-    Pane,
-    VerticalPane,
+    LabelEntry,
     LabelPane,
+    Layout,
+    Pane,
+    PanedWindow,
     VerticalLabelPane,
+    VerticalPane,
     VerticalSeparator,
+    Window,
 )
 
 

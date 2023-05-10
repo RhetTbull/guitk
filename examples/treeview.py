@@ -1,7 +1,8 @@
 """ Demonstrates use of guitk.TreeView widget """
 
-import guitk
 import pathlib
+
+import guitk
 
 
 class ShowMeATree(guitk.Window):

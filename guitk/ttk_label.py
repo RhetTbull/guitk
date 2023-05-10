@@ -43,9 +43,7 @@ Window = TypeVar("Window")
 
 
 class Label(Widget):
-    """
-    ttk.Label widget
-    """
+    """ttk.Label widget"""
 
     def __init__(
         self,
@@ -150,8 +148,7 @@ class LinkLabel(Label):
         weighty: int | None = None,
         **kwargs,
     ):
-        """
-        Initialize a LinkLabel widget.
+        """Initialize a LinkLabel widget.
 
         Args:
             key (Hashable, optional): Unique key for this widget. Defaults to None.
@@ -227,6 +224,8 @@ class LinkLabel(Label):
             )
         return self.widget
 
+
 class Linklabel(LinkLabel):
     """Non-camel case version"""
+
     pass

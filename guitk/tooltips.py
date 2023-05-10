@@ -229,4 +229,3 @@ class Hovertip(_OnHoverTooltipBase):
             borderwidth=1,
         )
         label.pack()
-

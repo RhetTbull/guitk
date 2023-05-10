@@ -45,7 +45,7 @@ def on(
     """
     # Inspired by the implementation of the `on` decorator in textual
     # https://github.com/Textualize/textual
-    
+
     # Event handlers registered with the `on` decorator are stored in the
     # `_guitk_event_handlers` attribute of the decorated method and are bound
     # by Window._bind_event_handlers() then called by Window._handle_commands()

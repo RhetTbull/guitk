@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import tkinter as tk
 import tkinter.ttk as ttk
-from typing import Any, Union, Hashable, TypeVar
+from typing import Any, Hashable, TypeVar, Union
 
 from .events import Event, EventCommand, EventType
 from .types import CommandType, TooltipType
@@ -32,9 +32,7 @@ Window = TypeVar("Window")
 
 
 class Radiobutton(Widget):
-    """
-    ttk.Radiobutton class
-    """
+    """ttk.Radiobutton class"""
 
     def __init__(
         self,
@@ -172,8 +170,6 @@ class Radiobutton(Widget):
 
 
 class RadioButton(Radiobutton):
-    """
-    ttk.Radiobutton class
-    """
+    """ttk.Radiobutton class"""
 
     pass

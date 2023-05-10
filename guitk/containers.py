@@ -7,11 +7,11 @@ from guitk.constants import GUITK
 from .constants import DEFAULT_PADX, DEFAULT_PADY
 from .frame import _Container, _VerticalContainer
 from .layout import get_parent, pop_parent, push_parent
-from .types import Window, VAlign, HAlign
+from .types import HAlign, VAlign, Window
 from .widget import Widget
 
 
-class Stack(_VerticalContainer):
+class VStack(_VerticalContainer):
     """A container that stacks widgets vertically when added to a Layout"""
 
     def __init__(
@@ -52,7 +52,7 @@ class Stack(_VerticalContainer):
         parent.grid_rowconfigure(row, weight=1)
 
 
-class Row(_Container):
+class HStack(_Container):
     """A container that stacks widgets horizontally when added to a Layout"""
 
     def __init__(

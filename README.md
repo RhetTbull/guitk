@@ -60,7 +60,7 @@ if __name__ == "__main__":
 ```python
 """Demo to show how to use context managers to create widget layout"""
 
-from guitk import Button, Entry, Event, Label, Layout, ListBox, Row, Stack, Window
+from guitk import Button, Entry, Event, Label, Layout, ListBox, HStack, VStack, Window
 
 
 class ShoppingList(Window):
@@ -68,12 +68,12 @@ class ShoppingList(Window):
         self.title = "My Shopping List"
 
         with Layout() as layout:
-            with Row():
+            with HStack():
                 # these will be stacked horizontally (side by side)
                 Label("Item to buy:")
                 Entry(key="item", events=True)
                 Button("Add", key="add")
-            with Stack():
+            with VStack():
                 # these will be stacked vertically (one on top of the other)
                 Label("Shopping list", anchor="center")
                 ListBox(key="list")
@@ -125,7 +125,7 @@ from guitk import (
     Event,
     EventType,
     Label,
-    Row,
+    HStack,
     VerticalLayout,
     Window,
     Frame,
@@ -151,7 +151,7 @@ class HelloWorld(Window):
             Label("What's your name?")
             Entry(key="ENTRY_NAME", events=True, focus=True)
             Label("", width=40, key="OUTPUT", columnspan=2)
-            with Row():
+            with HStack():
                 # align these two buttons in a row
                 Button("Ok")
                 Button("Quit")
@@ -200,7 +200,7 @@ guitk supports both an event-loop style of app-development (very similar to how 
 ```python
 """Hello World example using guitk, shows how to use callback style instead of event loop """
 
-from guitk import Button, Entry, Event, Label, Row, VerticalLayout, Window
+from guitk import Button, Entry, Event, Label, HStack, VerticalLayout, Window
 
 
 # subclass Window as the starting point for your app's main window
@@ -220,7 +220,7 @@ class HelloWorld(Window):
             Label("What's your name?")
             Entry(key="ENTRY_NAME", events=True, command=self.on_entry_changed, focus=True)
             Label("", width=40, key="OUTPUT", columnspan=2)
-            with Row():
+            with HStack():
                 Button("Ok", command=self.on_ok)
                 Button("Quit", command=self.on_quit)
         self.layout = layout
@@ -272,9 +272,9 @@ class LayoutDemo(guitk.Window):
     def config(self):
         self.title = "Layouts are Lists of Lists"
         self.layout = [
-            [guitk.Label("Row 1"), guitk.Label("What's your name?")],
-            [guitk.Label("Row 2"), guitk.Entry()],
-            [guitk.Label("Row 3"), guitk.Button("Ok")],
+            [guitk.Label("HStack 1"), guitk.Label("What's your name?")],
+            [guitk.Label("HStack 2"), guitk.Entry()],
+            [guitk.Label("HStack 3"), guitk.Button("Ok")],
         ]
 
     def handle_event(self, event):
@@ -339,8 +339,8 @@ from guitk import (
     Label,
     LabelFrame,
     Output,
-    Row,
-    Stack,
+    HStack,
+    VStack,
     VerticalLayout,
     Window,
 )
@@ -358,14 +358,14 @@ class HelloWorld(Window):
             Entry(key="ENTRY_NAME")
             Label("", width=40, key="OUTPUT")
             with LabelFrame("Label Frame", labelanchor=tk.N):
-                with Row():
-                    with Stack():
+                with HStack():
+                    with VStack():
                         Output(width=20, height=10)
                         Label("Output", key="LABEL_OUTPUT", sticky=tk.N)
-                    with Stack():
+                    with VStack():
                         Checkbutton("Upper case", key="CHECK_UPPER")
                         Checkbutton("Green text", key="CHECK_GREEN")
-            with Row():
+            with HStack():
                 Button("Ok")
                 Button("Quit")
 
