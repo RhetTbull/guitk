@@ -1,23 +1,35 @@
 """Demo for Scale widget."""
 
-from tkinter import HORIZONTAL
+import tkinter as tk
 
-from guitk import Label, Scale, VerticalLayout, Window
+from guitk import Label, Scale, Layout, Window, VStack
 
 
 class ScaleDemo(Window):
     def config(self):
         default = 5.0
-        with VerticalLayout():
-            Scale(
-                0,
-                100,
-                value=default,
-                orient=HORIZONTAL,
-                target_key="SCALE_LABEL",
-                precision=0,
-            )
-            Label(text=f"{default:.1f}", key="SCALE_LABEL")
+        self.title = "Scale Demo"
+        with Layout():
+            with VStack(valign=tk.BOTTOM):
+                Scale(
+                    0,
+                    100,
+                    value=default,
+                    orient=tk.HORIZONTAL,
+                    target_key="SCALE_LABEL1",
+                    precision=0,
+                )
+                Label(text=f"{default:.1f}", key="SCALE_LABEL1")
+            with VStack(valign=tk.BOTTOM):
+                Scale(
+                    0,
+                    100,
+                    value=default,
+                    orient=tk.VERTICAL,
+                    target_key="SCALE_LABEL2",
+                    precision=1,
+                )
+                Label(text=f"{default:.1f}", key="SCALE_LABEL2")
         self.padx = 20
         self.pady = 20
 
