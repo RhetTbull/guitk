@@ -17,7 +17,8 @@ from .frame import _LayoutMixin
 from .layout import push_parent
 from .menu import Command, Menu
 from .ttk_label import Label
-from .widget import TooltipType, Widget
+from .types import SizeType, TooltipType
+from .widget import Widget
 
 
 class _WindowBaseClass:
@@ -43,7 +44,7 @@ class Window(_LayoutMixin, _WindowBaseClass):
         theme: str | None = None,
         tooltip: TooltipType | None = None,
         modal: bool | None = None,
-        size: tuple[int, int] | None = None,
+        size: SizeType = None,
     ):
         # call _config then subclass's config to initialize
         # layout, title, menu, etc.
@@ -54,20 +55,22 @@ class Window(_LayoutMixin, _WindowBaseClass):
         self.config()
 
         # override any layout defaults from constructor
-        self.title = title if title is not None else self.title
-        self.padx = padx if padx is not None else self.padx
-        self.pady = pady if pady is not None else self.pady
-        self.theme = theme if theme is not None else self.theme
-        self.tooltip = tooltip if tooltip is not None else self.tooltip
-        self.modal = modal if modal is not None else self.modal
-        self.size = size if size is not None else self.size
+        self.title: str | None = title if title is not None else self.title
+        self.padx: int | None = padx if padx is not None else self.padx
+        self.pady: int | None = pady if pady is not None else self.pady
+        self.theme: str | None = theme if theme is not None else self.theme
+        self.tooltip: TooltipType | None = (
+            tooltip if tooltip is not None else self.tooltip
+        )
+        self.modal: bool | None = modal if modal is not None else self.modal
+        self.size: SizeType = size if size is not None else self.size
 
-        self._id = id(self)
-        self._tk = _TKRoot()
+        self._id: int = id(self)
+        self._tk: _TKRoot = _TKRoot()
         self._parent = parent or self._tk.root
         self._topmost = topmost
 
-        self.window = tk.Toplevel(self._parent)
+        self.window: tk.TopLevel = tk.Toplevel(self._parent)
         self.window.title(self.title)
         self._widgets = []
         self._widget_by_key = {}
@@ -146,7 +149,12 @@ class Window(_LayoutMixin, _WindowBaseClass):
             self.window.grab_set()
 
         if self.size is not None:
-            self.window.geometry(f"{self.size[0]}x{self.size[1]}")
+            size = (
+                self.size
+                if isinstance(self.size, str)
+                else f"{self.size[0]}x{self.size[1]}"
+            )
+            self.window.geometry(size)
 
         # TODO: add geometry code to ensure window appears in good spot relative to parent
 

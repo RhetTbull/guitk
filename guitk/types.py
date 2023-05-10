@@ -14,6 +14,7 @@ Window = TypeVar("Window")
 VAlign = Literal["top", "bottom", "center"]
 HAlign = Literal["left", "right", "center"]
 DecoratedType = TypeVar("DecoratedType")
+SizeType = tuple[int, int] | str | None
 
 
 class _WindowBaseClass:
