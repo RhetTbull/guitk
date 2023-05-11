@@ -9,7 +9,7 @@ from guitk import (
     PanedWindow,
     VerticalLabelPane,
     VerticalPane,
-    VerticalSeparator,
+    VSeparator,
     Window,
 )
 
@@ -32,7 +32,7 @@ class PanedDemo(Window):
                 with VerticalLabelPane("Pane 4"):
                     LabelEntry("VerticalLabelPane")
                     Button("Hello")
-            VerticalSeparator()
+            VSeparator()
             with PanedWindow(orient="vertical", weightx=1, weighty=1, sticky="nsew"):
                 with Pane():
                     LabelEntry("Pane")

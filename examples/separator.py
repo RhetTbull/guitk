@@ -1,6 +1,6 @@
-""" Demo of Separator and VerticalSeparator widgets """
+""" Demo of HSeparator and VSeparator widgets """
 
-from guitk import HLayout, Label, Separator, VerticalSeparator, VStack, Window
+from guitk import HLayout, Label, HSeparator, VSeparator, VStack, Window
 
 
 class SeparatorDemo(Window):
@@ -8,12 +8,12 @@ class SeparatorDemo(Window):
         self.size = 320, 240
         with HLayout():
             Label("Hello")
-            VerticalSeparator()
+            VSeparator()
             Label("World")
 
             with VStack(width=200, valign="center"):
                 Label("Hello", sticky="EW", weightx=1, anchor="center")
-                Separator()
+                HSeparator()
                 Label("World", sticky="EW", weightx=1, anchor="center")
 
 

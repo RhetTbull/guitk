@@ -4,21 +4,18 @@ from __future__ import annotations
 
 import tkinter as tk
 import tkinter.ttk as ttk
-from typing import TypeVar
 
+from .types import Window
 from .widget import Widget
 
-__all__ = ["Separator", "VerticalSeparator"]
+__all__ = ["HSeparator", "VSeparator"]
 
 _valid_ttk_separator_attributes = {
     "orient",
 }
 
 
-Window = TypeVar("Window")
-
-
-class Separator(Widget):
+class HSeparator(Widget):
     """ttk.Separator widget with horizontal orientation"""
 
     def __init__(
@@ -28,7 +25,7 @@ class Separator(Widget):
         pady: int | None = None,
         weightx: int | None = 1,
     ):
-        """Initialize a horizontal Separator widget.
+        """Initialize a horizontal HSeparator widget.
 
         Args:
             rowspan (int | None, optional): Number of rows to span. Defaults to None.
@@ -58,11 +55,11 @@ class Separator(Widget):
 
     @property
     def separator(self):
-        """Return the ttk Separator widget"""
+        """Return the ttk HSeparator widget"""
         return self.widget
 
 
-class VerticalSeparator(Widget):
+class VSeparator(Widget):
     """ttk.Separator widget with vertical orientation"""
 
     def __init__(
@@ -72,7 +69,7 @@ class VerticalSeparator(Widget):
         pady: int | None = None,
         weighty: int | None = 1,
     ):
-        """Initialize a horizontal Separator widget.
+        """Initialize a horizontal HSeparator widget.
 
         Args:
             rowspan (int | None, optional): Number of rows to span. Defaults to None.
@@ -102,5 +99,5 @@ class VerticalSeparator(Widget):
 
     @property
     def separator(self):
-        """Return the ttk Separator widget"""
+        """Return the ttk HSeparator widget"""
         return self.widget
