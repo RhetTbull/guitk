@@ -7,7 +7,7 @@ from tkinter import ttk
 
 from guitk.constants import GUITK
 
-from .layout import HLayout, VLayout, pop_parent, push_parent
+from .layout import pop_parent, push_parent
 from .spacer import HSpacer, VSpacer
 from .tooltips import Hovertip
 from .ttk_label import Label
