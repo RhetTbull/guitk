@@ -1,9 +1,10 @@
 """ Debug Window that can be used to display debug information """
 
+from .containers import HStack
+from .layout import VerticalLayout
 from .tk_text import Output
 from .ttk_button import Button
-from .ttk_entry import Entry
-from .ttk_label import Label
+from .ttk_entry import LabelEntry
 from .window import Window
 
 
@@ -18,26 +19,20 @@ class DebugWindow(Window):
     def config(self):
         self.title = "Debug"
         self.padx = self.pady = 2
-        self.layout = [
-            [
-                Label("Filter"),
-                Entry(key="FILTER_TEXT", width=40),
+        with VerticalLayout():
+            with HStack():
+                LabelEntry("Filter", key="FILTER_TEXT", width=40),
                 Button("Filter", key="FILTER"),
-            ],
-            [
-                Output(
-                    width=self._output_width,
-                    height=self._output_height,
-                    key="OUTPUT",
-                    events=True,
-                )
-            ],
-        ]
+            Output(
+                width=self._output_width,
+                height=self._output_height,
+                key="OUTPUT",
+                events=True,
+            )
 
     def handle_event(self, event):
         if event.key in ["FILTER", "OUTPUT"]:
-            filter = self["FILTER_TEXT"].value
-            if filter:
+            if filter := self["FILTER_TEXT"].value:
                 lines = self["OUTPUT"].value.split("\n")
                 lines = [l for l in lines if filter in l]
                 self["OUTPUT"].value = "\n".join(lines) + "\n"

@@ -374,6 +374,7 @@ class DemoWindow(Window):
 
     def setup(self):
         """gets called right after __init__"""
+        print(f"Setting up: {self.__dict__}")
         # a place to store some data later
         GUI = self.GUI
         self.data = {

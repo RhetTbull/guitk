@@ -262,8 +262,13 @@ class LabelEntry(Entry):
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
         )
 
+        # bind key release event
         event = Event(self, window, self.key, EventType.KeyRelease)
         self.widget.bind("<KeyRelease>", window._make_callback(event))
+
+        # bind return key event
+        entry_return_key = Event(self, window, self.key, EventType.EntryReturn)
+        self.widget.bind("<Return>", window._make_callback(entry_return_key))
 
         if self._command:
             self.events = True

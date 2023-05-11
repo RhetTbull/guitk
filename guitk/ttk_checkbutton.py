@@ -7,7 +7,7 @@ import tkinter.ttk as ttk
 from typing import Hashable
 
 from .events import Event, EventCommand, EventType
-from .types import CommandType, TooltipType
+from .types import CommandType, TooltipType, Window
 from .widget import Widget
 
 __all__ = ["Checkbutton", "CheckButton"]
@@ -40,7 +40,8 @@ class Checkbutton(Widget):
     def __init__(
         self,
         text: str,
-        key=Hashable,
+        key: Hashable | None = None,
+        value: bool = False,
         disabled: bool = False,
         columnspan: int | None = None,
         rowspan: int | None = None,
@@ -61,6 +62,7 @@ class Checkbutton(Widget):
         Args:
             text (str): Text for the checkbutton.
             key (Hashable, optional): Unique key for this widget. Defaults to None.
+            value (bool, optional): Initial value. Defaults to False (not checked).
             disabled (bool, optional): If True, widget is disabled. Defaults to False.
             columnspan (int | None, optional): Number of columns to span. Defaults to None.
             rowspan (int | None, optional): Number of rows to span. Defaults to None.
@@ -98,10 +100,10 @@ class Checkbutton(Widget):
         self.key = key or text
         self.columnspan = columnspan
         self.rowspan = rowspan
-        self._value = tk.BooleanVar()
+        self._value = tk.BooleanVar(value=value)
         self.kwargs = kwargs
 
-    def _create_widget(self, parent, window: "Window", row, col):
+    def _create_widget(self, parent, window: Window, row, col):
         self.window = window
         self._parent = parent
         event = Event(self, window, self.key, EventType.Checkbutton)

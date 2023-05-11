@@ -8,7 +8,7 @@ import tkinter.ttk as ttk
 from typing import Hashable, TypeVar
 
 from .events import Event, EventCommand, EventType
-from .types import CommandType, TooltipType
+from .types import CommandType, TooltipType, Window
 from .utils import scrolled_widget_factory
 from .widget import Widget
 
@@ -97,6 +97,7 @@ class Treeview(Widget):
         self.key = key or "Treeview"
         self.widget_type = "ttk.Treeview"
 
+        print(f"TreeView: {locals()}")
         if headings and columns and len(headings) != len(columns):
             raise ValueError("headings and columns lists must be the same length")
 
@@ -115,7 +116,8 @@ class Treeview(Widget):
         self.hscrollbar = hscrollbar
         self.kwargs = kwargs
 
-    def _create_widget(self, parent, window: "Window", row, col):
+    def _create_widget(self, parent, window: Window, row, col):
+        print(f"TreeView._create_widget: {locals()}")
         self.window = window
         self._parent = parent
 
@@ -287,9 +289,10 @@ class Listbox(Treeview):
             **kwargs,
         )
 
-    def _create_widget(self, parent, window: "Window", row, col):
+    def _create_widget(self, parent, window: Window, row, col):
         """Create the widget"""
 
+        print(f"Listbox._create_widget: {locals()}")
         # build arg list for Treeview()
         kwargs_treeview = {
             k: v
@@ -333,6 +336,8 @@ class Listbox(Treeview):
                     command=self._command,
                 )
             )
+
+        return self.widget
 
     def insert(self, index, line):
         """Insert a line into Listbox"""

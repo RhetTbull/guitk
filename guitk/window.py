@@ -160,16 +160,16 @@ class Window(_LayoutMixin, _WindowBaseClass):
 
         self.events = True
 
-        self.setup()
-
-        if self.modal:
-            self.window.wait_window()
-
         self._bind_timer_event(
             100, EventType.WindowFinishedLoading.value, EventType.WindowFinishedLoading
         )
 
         self._bind_event_handlers()
+
+        self.setup()
+
+        if self.modal:
+            self.window.wait_window()
 
     def _config(self):
         self.title = "My Window"
@@ -377,6 +377,8 @@ class Window(_LayoutMixin, _WindowBaseClass):
         return _callback
 
     def _handle_event(self, event):
+        """Handle events for this window"""
+
         # only handle events if widget has events=True; Window objects always get events
         if isinstance(event.widget, (Widget, Window)) and not event.widget.events:
             return
