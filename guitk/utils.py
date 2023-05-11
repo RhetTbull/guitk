@@ -56,4 +56,8 @@ def scrolled_widget_factory(
             if m[0] != "_" and m not in {"config", "configure"}:
                 setattr(widget, m, getattr(frame, m))
 
+    # keep track of whether widget is framed
+    # so the correct geometry methods can be used
+    widget._guitk_framed_widget = bool(frame)
+
     return widget

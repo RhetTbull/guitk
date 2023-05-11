@@ -111,10 +111,19 @@ class _LayoutMixin:
                     parent.grid_columnconfigure(
                         col_count + col_offset, weight=widget.weightx
                     )
+                    # if widget created with scrolled_widget_factory
+                    # then need to configure the inner widget
+                    if getattr(widget.widget, "_guitk_framed_widget", False):
+                        widget.widget.grid_columnconfigure(
+                            0, weight=widget.weightx)
                 if widget.weighty is not None:
                     parent.grid_rowconfigure(
                         row_count + row_offset, weight=widget.weighty
                     )
+                    # configure inner widget if needed
+                    if getattr(widget.widget, "_guitk_framed_widget", False):
+                        widget.widget.grid_rowconfigure(
+                            0, weight=widget.weighty)
 
                 # take focus if needed
                 if widget._focus:

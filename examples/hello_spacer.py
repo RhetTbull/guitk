@@ -11,7 +11,6 @@ class Hello(Window):
             Entry(key="ENTRY_NAME", events=True)
             Spacer()
             Button("Ok")
-        self.layout = layout
 
 
 if __name__ == "__main__":
