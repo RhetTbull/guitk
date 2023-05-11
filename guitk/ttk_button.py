@@ -78,7 +78,8 @@ class Button(Widget):
             command (CommandType | None, optional): Command callback. Defaults to None.
             weightx (int | None, optional): Weight in x direction. Defaults to None.
             weighty (int | None, optional): Weight in y direction. Defaults to None.
-            focus (bool, optional): If True, widget has focus. Defaults to False. Only one widget in a window can have focus.
+            focus (bool, optional): If True, widget has focus. Defaults to False.
+                Only one widget in a window can have focus.HLayout
             **kwargs: Additional keyword arguments are passed to ttk.Button.
         """
         super().__init__(
@@ -198,7 +199,8 @@ class BrowseFileButton(Button):
             filename_only (bool, optional): If True, only the filename is returned. Defaults to False.
             weightx (int | None, optional): Weight in x direction. Defaults to None.
             weighty (int | None, optional): Weight in y direction. Defaults to None.
-            focus (bool, optional): If True, widget has focus. Defaults to False. Only one widget in a window can have focus.
+            focus (bool, optional): If True, widget has focus. Defaults to False.
+                Only one widget in a window can have focus.HLayout
             **kwargs: Additional keyword arguments are passed to ttk.Button or filedialog.askopenfilename as appropriate.
         """
         super().__init__(
@@ -297,7 +299,8 @@ class BrowseDirectoryButton(Button):
             tooltip (TooltipType | None, optional): Tooltip text or callback to generate tooltip text. Defaults to None.
             weightx (int | None, optional): Weight in x direction. Defaults to None.
             weighty (int | None, optional): Weight in y direction. Defaults to None.
-            focus (bool, optional): If True, widget has focus. Defaults to False. Only one widget in a window can have focus.
+            focus (bool, optional): If True, widget has focus. Defaults to False.
+                Only one widget in a window can have focus.HLayout
             **kwargs: Additional keyword arguments are passed to ttk.Button or filedialog.askopenfilename as appropriate.
         """
         super().__init__(

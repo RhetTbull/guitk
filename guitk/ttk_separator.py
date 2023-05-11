@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import sys
 import tkinter as tk
 import tkinter.ttk as ttk
 from typing import TypeVar

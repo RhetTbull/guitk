@@ -34,5 +34,5 @@ class DebugWindow(Window):
         if event.key in ["FILTER", "OUTPUT"]:
             if filter := self["FILTER_TEXT"].value:
                 lines = self["OUTPUT"].value.split("\n")
-                lines = [l for l in lines if filter in l]
+                lines = [line for line in lines if filter in line]
                 self["OUTPUT"].value = "\n".join(lines) + "\n"

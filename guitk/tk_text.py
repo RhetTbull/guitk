@@ -104,7 +104,8 @@ class Text(Widget):
             hscrollbar (bool, optional): Show horizontal scrollbar. Defaults to False.
             weightx (int | None, optional): Weight of the widget in the x direction. Defaults to None.
             weighty (int | None, optional): Weight of the widget in the y direction. Defaults to None.
-            focus (bool, optional): If True, widget has focus. Defaults to False. Only one widget in a window can have focus.
+            focus (bool, optional): If True, widget has focus. Defaults to False.
+                Only one widget in a window can have focus.HLayout
             **kwargs: Additional keyword arguments are passed to tk Text.
         """
         super().__init__(
@@ -241,7 +242,8 @@ class Output(Text):
             echo (bool, optional): Echo stdout and stderr to the console. Defaults to False.
             weightx (int | None, optional): Weight of the widget in the x direction. Defaults to None.
             weighty (int | None, optional): Weight of the widget in the y direction. Defaults to None.
-            focus (bool, optional): If True, widget has focus. Defaults to False. Only one widget in a window can have focus.
+            focus (bool, optional): If True, widget has focus. Defaults to False.
+                Only one widget in a window can have focus.HLayout
             **kwargs: Additional keyword arguments are passed to tk Text.
         """
         super().__init__(

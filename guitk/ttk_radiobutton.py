@@ -74,7 +74,8 @@ class Radiobutton(Widget):
             command (CommandType, optional): Command to execute when selected. Defaults to None.
             weightx (int, optional): Weight in x direction. Defaults to None.
             weighty (int, optional): Weight in y direction. Defaults to None.
-            focus (bool, optional): If True, widget will have focus. Defaults to False. Only one widget in a window can have focus.
+            focus (bool, optional): If True, widget will have focus. Defaults to False.
+                Only one widget in a window can have focus.HLayout
             **kwargs: Additional keyword arguments are passed to ttk.Radiobutton.
         """
         super().__init__(

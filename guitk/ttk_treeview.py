@@ -30,9 +30,6 @@ _valid_standard_attributes = {
 _valid_ttk_treeview_attributes = _valid_standard_attributes
 
 
-Window = TypeVar("Window")
-
-
 class Treeview(Widget):
     """ttk.Treeview widget"""
 
@@ -76,7 +73,8 @@ class Treeview(Widget):
             vscrollbar (bool, optional): Whether to display a vertical scrollbar. Defaults to False.
             weightx (int, optional): Horizontal weight. Defaults to None.
             weighty (int, optional): Vertical weight. Defaults to None.
-            focus (bool, optional): If True, widget will have focus. Defaults to False. Only one widget in a window can have focus.
+            focus (bool, optional): If True, widget will have focus. Defaults to False.
+                Only one widget in a window can have focus.HLayout
             **kwargs: Additional keyword arguments to pass to ttk.Treeview.
         """
         super().__init__(

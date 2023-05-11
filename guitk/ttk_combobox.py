@@ -83,11 +83,13 @@ class Combobox(Widget):
             sticky (str | None, optional): Sticky direction for widget layout. Defaults to None.
             tooltip (TooltipType | None, optional): Tooltip text or callback to generate tooltip text. Defaults to None.
             command (CommandType | None, optional): Command callback. Defaults to None.
-            readonly (bool, optional): If True, widget is read-only. Defaults to False. If Combobox is not readonly, user can type in a value that is not in the list of values.
+            readonly (bool, optional): If True, widget is read-only. Defaults to False.
+                If Combobox is not readonly, user can type in a value that is not in the list of values.
             autosize (bool, optional): If True, automatically set width to fit longest value. Defaults to False.
             weightx (int | None, optional): Weight of widget in X direction. Defaults to None.
             weighty (int | None, optional): Weight of widget in Y direction. Defaults to None.
-            focus (bool, optional): If True, widget has focus. Defaults to False. Only one widget in a window can have focus.
+            focus (bool, optional): If True, widget has focus. Defaults to False.
+                Only one widget in a window can have focus.HLayout
             **kwargs: Additional keyword arguments are passed to ttk.Checkbutton.
         """
         self.widget_type = "ttk.Combobox"

@@ -76,7 +76,8 @@ class Panedwindow(_Container):
             command (CommandType | None, optional): Command to execute when clicked. Defaults to None.
             weightx (int | None, optional): Horizontal weight. Defaults to None.
             weighty (int | None, optional): Vertical weight. Defaults to None.
-            focus (bool, optional): If True, widget will have focus. Defaults to False. Only one widget in a window can have focus.
+            focus (bool, optional): If True, widget will have focus. Defaults to False.
+                Only one widget in a window can have focus.HLayout
             **kwargs: Additional keyword arguments are passed to ttk.Entry.
         """
         super().__init__(
@@ -138,8 +139,9 @@ class Panedwindow(_Container):
         if self._command:
             self.events = True
             window._bind_command(
-                # the actual widget will be a tk widget in form widget=.!toplevel.!frame.!notebook, so it won't match self.widget
-                # so set widget=None or _handle_commands won't correctly handle the command
+                # the actual widget will be a tk widget in form widget=.!toplevel.!frame.!notebook
+                # so it won't match self.widget
+                # set widget=None or _handle_commands won't correctly handle the command
                 EventCommand(
                     widget=None,
                     key=self.key,

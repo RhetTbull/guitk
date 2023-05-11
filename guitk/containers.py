@@ -4,11 +4,8 @@ import tkinter as tk
 
 from guitk.constants import GUITK
 
-from .constants import DEFAULT_PADX, DEFAULT_PADY
 from .frame import _Container, _VerticalContainer
-from .layout import get_parent, pop_parent, push_parent
 from .types import HAlign, VAlign, Window
-from .widget import Widget
 
 
 class VStack(_VerticalContainer):

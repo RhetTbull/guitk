@@ -68,7 +68,8 @@ class Notebook(_Container):
             command (CommandType | None, optional): Command to execute when clicked. Defaults to None.
             weightx (int | None, optional): Horizontal weight. Defaults to None.
             weighty (int | None, optional): Vertical weight. Defaults to None.
-            focus (bool, optional): If True, widget will have focus. Defaults to False. Only one widget in a window can have focus.
+            focus (bool, optional): If True, widget will have focus. Defaults to False.
+                Only one widget in a window can have focus.HLayout
             **kwargs: Additional keyword arguments are passed to ttk.Entry.
         """
         super().__init__(

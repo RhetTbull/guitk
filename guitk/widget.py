@@ -48,7 +48,8 @@ class Widget:
             command (CommandType | None, optional): Command callback. Defaults to None.
             weightx (int | None, optional): Weight for horizontal resizing. Defaults to None.
             weighty (int | None, optional): Weight for vertical resizing. Defaults to None.
-            focus (bool, optional): If True, widget has focus. Defaults to False. Only one widget in a window can have focus.
+            focus (bool, optional): If True, widget has focus. Defaults to False.
+                Only one widget in a window can have focus.HLayout
         """
         super().__init__()
 

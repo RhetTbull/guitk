@@ -16,6 +16,11 @@ mkdocs-material = "^9.0.13"
 mkdocstrings-python = "^0.8.3"
 bump2version = "^1.0.1"
 markdownpp = "^1.5.1"
+ruff = "^0.0.265"
+
+[tool.ruff]
+target-version = "py39"
+line-length = 125
 
 [build-system]
 requires = ["poetry-core"]

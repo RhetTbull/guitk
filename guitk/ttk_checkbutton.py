@@ -74,7 +74,8 @@ class Checkbutton(Widget):
             command (CommandType | None, optional): Command callback. Defaults to None.
             weightx (int | None, optional): Weight of widget in X direction. Defaults to None.
             weighty (int | None, optional): Weight of widget in Y direction. Defaults to None.
-            focus (bool, optional): If True, widget has focus. Defaults to False. Only one widget in a window can have focus.
+            focus (bool, optional): If True, widget has focus. Defaults to False.
+                Only one widget in a window can have focus.HLayout
             **kwargs: Additional keyword arguments are passed to ttk.Checkbutton.
 
         Notes:
