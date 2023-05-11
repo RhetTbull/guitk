@@ -1,7 +1,7 @@
 """ Debug Window that can be used to display debug information """
 
 from .containers import HStack
-from .layout import VerticalLayout
+from .layout import VLayout
 from .tk_text import Output
 from .ttk_button import Button
 from .ttk_entry import LabelEntry
@@ -19,7 +19,7 @@ class DebugWindow(Window):
     def config(self):
         self.title = "Debug"
         self.padx = self.pady = 2
-        with VerticalLayout():
+        with VLayout():
             with HStack():
                 LabelEntry("Filter", key="FILTER_TEXT", width=40),
                 Button("Filter", key="FILTER"),

@@ -1,11 +1,11 @@
 """Example for Notebook widget """
 
-from guitk import EventType, Label, Layout, Notebook, Tab, Window
+from guitk import EventType, HLayout, Label, Notebook, Tab, Window
 
 
 class NotebookWindow(Window):
     def config(self):
-        with Layout():
+        with HLayout():
             with Notebook(key="NOTEBOOK"):
                 with Tab("Tab 1"):
                     Label("Hello World")

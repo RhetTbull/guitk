@@ -2,14 +2,14 @@
 
 import tkinter as tk
 
-from guitk import Label, Scale, Layout, Window, VStack
+from guitk import HLayout, Label, Scale, VStack, Window
 
 
 class ScaleDemo(Window):
     def config(self):
         default = 5.0
         self.title = "Scale Demo"
-        with Layout():
+        with HLayout():
             with VStack(valign=tk.BOTTOM):
                 Scale(
                     0,

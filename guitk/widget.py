@@ -202,7 +202,7 @@ class Widget:
                 self.parent = get_parent()
                 if isinstance(self.parent, DummyParent):
                     raise RuntimeError(
-                        "Widget must created within a Layout or Container"
+                        "Widget must created within a HLayout or Container"
                     )
                 self.parent.add_widget(self)
 

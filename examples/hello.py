@@ -1,6 +1,6 @@
 """Simple Hello World example using guitk """
 
-from guitk import Button, Entry, Event, Label, Layout, Window
+from guitk import Button, Entry, Event, HLayout, Label, Window
 
 
 # subclass guitk.Window as the starting point for your app's main window
@@ -13,7 +13,7 @@ class HelloWindow(Window):
 
         # define a layout for the window
         # the layout manager will automatically add widgets to the window
-        with Layout():
+        with HLayout():
             Label("What's your name?")
             Entry(key="name")
             Button("Ok")

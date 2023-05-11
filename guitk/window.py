@@ -303,7 +303,7 @@ class Window(_LayoutMixin, _WindowBaseClass):
         return self._tk.get_children(self)
 
     def add_widget(self, widget: Any):
-        """Dummy method to allow widgets to be addeded with Layout()"""
+        """Dummy method to allow widgets to be addeded with HLayout()"""
         pass
 
     def _add_menus(self, menu: Menu, menu_items, path=None):

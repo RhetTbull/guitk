@@ -1,6 +1,6 @@
 """Simple Hello World example using guitk with a vertical layout """
 
-from guitk import Button, Entry, Event, Label, VerticalLayout, Window
+from guitk import Button, Entry, Event, Label, VLayout, Window
 
 
 # subclass guitk.Window as the starting point for your app's main window
@@ -13,7 +13,7 @@ class HelloWindow(Window):
 
         # define a layout for the window
         # you must have a class variable named `layout` or you'll get an empty window
-        with VerticalLayout() as layout:
+        with VLayout() as layout:
             Label("What's your name?")
             Entry(key="name")
             Button("Ok")

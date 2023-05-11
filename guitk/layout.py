@@ -1,4 +1,4 @@
-""" Layout class for use with guitk widgets"""
+""" HLayout class for use with guitk widgets"""
 
 
 from __future__ import annotations
@@ -12,11 +12,11 @@ from .types import HAlign, LayoutType, VAlign
 
 _current_parent = {}
 
-__all__ = ["Layout", "VerticalLayout"]
+__all__ = ["HLayout", "VLayout"]
 
 
 class DummyParent:
-    """Dummy class that allows get_parent() to be used whether or not Layout context manager in use"""
+    """Dummy class that allows get_parent() to be used whether or not HLayout context manager in use"""
 
     def add_widget(self, widget: Any):
         pass
@@ -49,8 +49,8 @@ def get_parent() -> Any:
     return DummyParent()
 
 
-class Layout:
-    """A Layout manager that aligns widgets horizontally"""
+class HLayout:
+    """A HLayout manager that aligns widgets horizontally"""
 
     def __init__(
         self,
@@ -72,7 +72,7 @@ class Layout:
             # determine if the caller is a Window
             # need to use repr() because we can't import Window here without causing a circular import
             if "guitk.window.Window" in repr(getmro(caller_instance.__class__)):
-                # Layout is being used in a Window, so set the Window's layout automatically
+                # HLayout is being used in a Window, so set the Window's layout automatically
                 caller_instance.layout = self
 
     def add_widget(self, widget):
@@ -109,8 +109,8 @@ class Layout:
         return value
 
 
-class VerticalLayout(Layout):
-    """A Layout manager that aligns widgets vertically"""
+class VLayout(HLayout):
+    """A HLayout manager that aligns widgets vertically"""
 
     @property
     def layout(self):

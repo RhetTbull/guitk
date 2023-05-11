@@ -2,9 +2,9 @@
 
 from guitk import (
     Button,
+    HLayout,
     LabelEntry,
     LabelPane,
-    Layout,
     Pane,
     PanedWindow,
     VerticalLabelPane,
@@ -18,7 +18,7 @@ class PanedDemo(Window):
     def config(self):
         self.title = "Panedwindow Demo"
 
-        with Layout():
+        with HLayout():
             with PanedWindow(orient="horizontal", weightx=1, weighty=1, sticky="nsew"):
                 with Pane():
                     LabelEntry("Pane")

@@ -1,6 +1,6 @@
 """Simple Hello World example using guitk demonstrating use of @on decorator"""
 
-from guitk import Button, Entry, Event, EventType, Label, Layout, Window, on
+from guitk import Button, Entry, Event, EventType, HLayout, Label, Window, on
 
 
 # subclass guitk.Window as the starting point for your app's main window
@@ -13,7 +13,7 @@ class HelloWindow(Window):
 
         # define a layout for the window
         # the layout manager will automatically add widgets to the window
-        with Layout():
+        with HLayout():
             Label("What's your name?")
             Entry(key="name", events=True, focus=True)
             Button("Ok")

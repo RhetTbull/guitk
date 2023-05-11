@@ -1,6 +1,6 @@
 """Hello World example using guitk """
 
-from guitk import Button, Entry, Event, EventType, HStack, Label, VerticalLayout, Window
+from guitk import Button, Entry, Event, EventType, HStack, Label, VLayout, Window
 
 
 # subclass guitk.Window as the starting point for your app's main window
@@ -17,8 +17,8 @@ class HelloWorld(Window):
         # Define the window's contents
         # guitk.Label corresponds to a tkinter.ttk.Label, etc.
         # optionally provide a unique key to each element to easily reference the element later
-        # use a Layout or VerticalLayout class to define the layout of the window
-        with VerticalLayout():
+        # use a HLayout or VLayout class to define the layout of the window
+        with VLayout():
             from guitk import VSpacer
 
             Label("What's your name?", sticky="ew", anchor="center", weightx=1)

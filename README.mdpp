@@ -10,11 +10,11 @@ This is very much in alpha stage but in constant development so check back frequ
 
 GUITk allows you to build complete GUI applications with a few lines of code. With GUITk, you can use an event loop, inspired by [PySimpleGUI](https://github.com/PySimpleGUI/PySimpleGUI#example-2---interactive-window), or callbacks for event handling. For simple apps, I find an event loop is easy and intuitive to use.
 
-GUITk apps are built by subclasses the `guitk.Window` class. Your GUI elements are layed out using a `guitk.Layout` or `guitk.VerticalLayout` object which takes care of placing all widgets in the window using a declarative syntax. This is much simpler than using the underlying tkinter [grid manager](https://tkdocs.com/shipman/grid.html) or [pack](https://dafarry.github.io/tkinterbook/pack.htm) geometry managers.
+GUITk apps are built by subclasses the `guitk.Window` class. Your GUI elements are layed out using a `guitk.HLayout` or `guitk.VLayout` object which takes care of placing all widgets in the window using a declarative syntax. This is much simpler than using the underlying tkinter [grid manager](https://tkdocs.com/shipman/grid.html) or [pack](https://dafarry.github.io/tkinterbook/pack.htm) geometry managers.
 
 ## Code Example
 
-### Simple Layout
+### Simple HLayout
 
 ![hello.py example](https://raw.githubusercontent.com/RhetTbull/guitk/main/examples/hello.py.png "Hello World example")
 
@@ -22,7 +22,7 @@ GUITk apps are built by subclasses the `guitk.Window` class. Your GUI elements a
 !INCLUDE "examples/hello.py"
 ```
 
-### Hierarchical Layout
+### Hierarchical HLayout
 
 ![context_layout.py example](https://raw.githubusercontent.com/RhetTbull/guitk/main/examples/context_layout.py.png "Hierarchical layout example")
 
@@ -56,7 +56,7 @@ guitk supports both an event-loop style of app-development (very similar to how 
 
 guitk GUIs are created using a lists of lists where each element in the lists corresponds to a ttk or tk element.  This design pattern is borrowed from PySimpleGUI.
 
-![layout_lol.py example](https://raw.githubusercontent.com/RhetTbull/guitk/main/examples/layouts_lol.py.png "Layout using lists of lists example")
+![layout_lol.py example](https://raw.githubusercontent.com/RhetTbull/guitk/main/examples/layouts_lol.py.png "HLayout using lists of lists example")
 
 ```python
 !INCLUDE "examples/layouts_lol.py"
@@ -64,7 +64,7 @@ guitk GUIs are created using a lists of lists where each element in the lists co
 
 Because layouts are simply lists of lists, you can use python to create layouts programmatically, for example using list comprehensions.
 
-![layout2.py example](https://github.com/RhetTbull/guitk/raw/main/examples/layout2.py.png "Layout using list comprehensions, with tooltips!")
+![layout2.py example](https://github.com/RhetTbull/guitk/raw/main/examples/layout2.py.png "HLayout using list comprehensions, with tooltips!")
 
 ```python
 !INCLUDE "examples/layout2.py"

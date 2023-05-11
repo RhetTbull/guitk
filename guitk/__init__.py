@@ -13,7 +13,7 @@ from .containers import HStack, VStack
 from .debugwindow import DebugWindow
 from .events import Event, EventCommand, EventType
 from .frame import Frame, LabelFrame
-from .layout import Layout, VerticalLayout
+from .layout import HLayout, VLayout
 from .menu import Command, Menu
 from .spacer import HSpacer, VSpacer
 from .tk_text import Output, Text
@@ -68,7 +68,7 @@ __all__ = [
     "LabelEntry",
     "LabelFrame",
     "LabelPane",
-    "Layout",
+    "HLayout",
     "LinkLabel",
     "Linklabel",
     "ListBox",
@@ -95,7 +95,7 @@ __all__ = [
     "Treeview",
     "VStack",
     "VerticalLabelPane",
-    "VerticalLayout",
+    "VLayout",
     "VerticalPane",
     "VerticalSeparator",
     "VSpacer",

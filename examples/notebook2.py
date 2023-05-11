@@ -8,8 +8,8 @@ from guitk import (
     Label,
     Notebook,
     Tab,
-    VerticalLayout,
     VerticalTab,
+    VLayout,
     Window,
 )
 
@@ -17,7 +17,7 @@ from guitk import (
 class NotebookWindow(Window):
     def config(self):
         # tabs can be added to the Notebook later, here tabs are added in setup() after the notebook is created
-        with VerticalLayout():
+        with VLayout():
             Notebook(key="NOTEBOOK", sticky="nsew")
             with HStack():
                 Button("Add", key="ADD")

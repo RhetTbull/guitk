@@ -1,13 +1,13 @@
 """Demo of HSpacer and VSpacer widgets"""
 
-from guitk import Label, Layout, HSpacer, VSpacer, VStack, Window
+from guitk import HLayout, HSpacer, Label, VSpacer, VStack, Window
 
 
 class SpacerDemo(Window):
     def config(self):
         self.title = "Spacer Demo"
         self.size = (640, 480)
-        with Layout():
+        with HLayout():
             with VStack():
                 Label("Top left")
                 VSpacer()

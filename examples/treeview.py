@@ -2,13 +2,13 @@
 
 import pathlib
 
-from guitk import EventType, Layout, Treeview, Window
+from guitk import EventType, HLayout, Treeview, Window
 
 
 class ShowMeATree(Window):
     def config(self):
         self.title = "Tree View"
-        with Layout():
+        with HLayout():
             Treeview(
                 headings=["Filename", "Size"],
                 key="TREE",

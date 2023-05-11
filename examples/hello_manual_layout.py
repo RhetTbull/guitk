@@ -1,6 +1,6 @@
 """Simple Hello World example using guitk with manual layout"""
 
-from guitk import Button, Entry, Event, Label, Layout, Window
+from guitk import Button, Entry, Event, HLayout, Label, Window
 
 
 # subclass guitk.Window as the starting point for your app's main window
@@ -16,7 +16,7 @@ class HelloWindow(Window):
         # if you don't want to use the layout context manager
         # you can manually create the layout as a list of lists of widgets
         # each inner list is a row of widgets
-        Layout(
+        HLayout(
             [
                 [Label("Hello")],
                 [Label("Please enter your name:"), Entry(key="name")],

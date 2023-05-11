@@ -12,7 +12,7 @@ from .widget import Widget
 
 
 class VStack(_VerticalContainer):
-    """A container that stacks widgets vertically when added to a Layout"""
+    """A container that stacks widgets vertically when added to a HLayout"""
 
     def __init__(
         self,
@@ -53,7 +53,7 @@ class VStack(_VerticalContainer):
 
 
 class HStack(_Container):
-    """A container that stacks widgets horizontally when added to a Layout"""
+    """A container that stacks widgets horizontally when added to a HLayout"""
 
     def __init__(
         self,

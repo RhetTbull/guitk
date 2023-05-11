@@ -5,9 +5,9 @@ from guitk import (
     Entry,
     Event,
     EventType,
+    HLayout,
     HStack,
     Label,
-    Layout,
     ListBox,
     VStack,
     Window,
@@ -18,7 +18,7 @@ class ShoppingList(Window):
     def config(self):
         self.title = "My Shopping List"
 
-        with Layout() as layout:
+        with HLayout() as layout:
             with HStack():
                 # these will be stacked horizontally (side by side)
                 Label("Item to buy:")

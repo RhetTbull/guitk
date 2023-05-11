@@ -1,12 +1,12 @@
 """Demo showing use of HSpacer()"""
 
-from guitk import Button, Entry, Label, Layout, HSpacer, Window
+from guitk import Button, Entry, HLayout, HSpacer, Label, Window
 
 
 class Hello(Window):
     def config(self):
         self.size = (640, 200)
-        with Layout(valign="center") as layout:
+        with HLayout(valign="center") as layout:
             Label("What's your name?")
             Entry(key="ENTRY_NAME", events=True)
             HSpacer()

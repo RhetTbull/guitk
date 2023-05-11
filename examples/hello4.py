@@ -12,7 +12,7 @@ from guitk import (
     LabelFrame,
     Output,
     Text,
-    VerticalLayout,
+    VLayout,
     VStack,
     Window,
 )
@@ -25,7 +25,7 @@ class HelloWorld(Window):
         # Define the window's contents
         # use variables to define rows to make your layout more readable
         # use guitk.Frame to group sub-layouts into columns
-        with VerticalLayout():
+        with VLayout():
             Label("What's your name?")
             Entry(key="ENTRY_NAME")
             Label("", width=40, key="OUTPUT")

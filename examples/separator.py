@@ -1,12 +1,12 @@
 """ Demo of Separator and VerticalSeparator widgets """
 
-from guitk import Label, Layout, Separator, VerticalSeparator, VStack, Window
+from guitk import HLayout, Label, Separator, VerticalSeparator, VStack, Window
 
 
 class SeparatorDemo(Window):
     def config(self):
         self.size = 320, 240
-        with Layout():
+        with HLayout():
             Label("Hello")
             VerticalSeparator()
             Label("World")

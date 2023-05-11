@@ -1,12 +1,12 @@
 """Combobox demo."""
 
-from guitk import Combobox, Label, VerticalLayout, VSpacer, Window
+from guitk import Combobox, Label, VLayout, VSpacer, Window
 
 
 class ComboboxWindow(Window):
     def config(self):
         self.title = "Combobox Demo"
-        with VerticalLayout():
+        with VLayout():
             Combobox(key="COMBOBOX1", values=["Foo", "Bar", "XYZZY"], autosize=True)
             Combobox(
                 key="COMBOBOX2",

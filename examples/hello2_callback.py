@@ -1,6 +1,6 @@
 """Hello World example using guitk, shows how to use callback style instead of event loop """
 
-from guitk import Button, Entry, Event, HStack, Label, VerticalLayout, Window
+from guitk import Button, Entry, Event, HStack, Label, VLayout, Window
 
 
 # subclass Window as the starting point for your app's main window
@@ -16,7 +16,7 @@ class HelloWorld(Window):
         # optionally provide a unique key to each element to easily reference the element later
         # callbacks are functions that will be called when the user interact with the widget
         # callbacks are specified with the `command` parameter
-        with VerticalLayout() as layout:
+        with VLayout() as layout:
             Label("What's your name?")
             Entry(
                 key="ENTRY_NAME", events=True, command=self.on_entry_changed, focus=True

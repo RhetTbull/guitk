@@ -1,6 +1,6 @@
 """ Simple hello world example using guitk demoing use of the event handler """
 
-from guitk import Button, Entry, Event, EventType, HStack, Label, VerticalLayout, Window
+from guitk import Button, Entry, Event, EventType, HStack, Label, VLayout, Window
 
 
 class HelloWorld(Window):
@@ -9,7 +9,7 @@ class HelloWorld(Window):
 
         self.title = "Hello, World"
 
-        with VerticalLayout():
+        with VLayout():
             Label("What's your name?")
             Entry(key="ENTRY_NAME", events=True, focus=True)
             Label("", width=40, key="OUTPUT")

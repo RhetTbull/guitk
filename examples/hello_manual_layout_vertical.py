@@ -1,6 +1,6 @@
 """Simple Hello World example using guitk with vertical manual layout"""
 
-from guitk import Button, Event, Label, LabelEntry, VerticalLayout, Window
+from guitk import Button, Event, Label, LabelEntry, VLayout, Window
 
 
 # subclass guitk.Window as the starting point for your app's main window
@@ -17,7 +17,7 @@ class HelloWindow(Window):
         # you can manually create the layout as a list of widgets
         # each widget will be added to the window in the order they are defined
         # and will be stacked vertically
-        VerticalLayout(
+        VLayout(
             [
                 Label("Hello"),
                 LabelEntry("Please enter your name:", key="name"),

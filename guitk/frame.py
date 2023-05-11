@@ -1,4 +1,4 @@
-"""Layout widget to enable SwiftUI style layout"""
+"""HLayout widget to enable SwiftUI style layout"""
 
 from __future__ import annotations
 
@@ -7,7 +7,7 @@ from tkinter import ttk
 
 from guitk.constants import GUITK
 
-from .layout import Layout, VerticalLayout, pop_parent, push_parent
+from .layout import HLayout, VLayout, pop_parent, push_parent
 from .spacer import HSpacer, VSpacer
 from .tooltips import Hovertip
 from .ttk_label import Label

@@ -10,18 +10,18 @@ This is very much early alpha stage but in constant development so check back fr
 
 GUITk allows you to build complete GUI applications with a few lines of code. With GUITk, you can use an event loop, inspired by [PySimpleGUI](https://github.com/PySimpleGUI/PySimpleGUI#example-2---interactive-window), or callbacks for event handling. For simple apps, I find an event loop is easy and intuitive to use.
 
-GUITk apps are built by subclasses the `guitk.Window` class. Your GUI elements are layed out using a `guitk.Layout` or `guitk.VerticalLayout` object which takes care of placing all widgets in the window using a declarative syntax. This is much simpler than using the underlying tkinter [grid manager](https://tkdocs.com/shipman/grid.html) or [pack](https://dafarry.github.io/tkinterbook/pack.htm) geometry managers.
+GUITk apps are built by subclasses the `guitk.Window` class. Your GUI elements are layed out using a `guitk.HLayout` or `guitk.VLayout` object which takes care of placing all widgets in the window using a declarative syntax. This is much simpler than using the underlying tkinter [grid manager](https://tkdocs.com/shipman/grid.html) or [pack](https://dafarry.github.io/tkinterbook/pack.htm) geometry managers.
 
 ## Code Example
 
-### Simple Layout
+### Simple HLayout
 
 ![hello.py example](https://raw.githubusercontent.com/RhetTbull/guitk/main/examples/hello.py.png "Hello World example")
 
 ```python
 """Simple Hello World example using guitk """
 
-from guitk import Button, Entry, Event, Label, Layout, Window
+from guitk import Button, Entry, Event, Label, HLayout, Window
 
 
 # subclass guitk.Window as the starting point for your app's main window
@@ -34,7 +34,7 @@ class HelloWindow(Window):
 
         # define a layout for the window
         # the layout manager will automatically add widgets to the window
-        with Layout():
+        with HLayout():
             Label("What's your name?")
             Entry(key="name")
             Button("Ok")
@@ -53,21 +53,21 @@ if __name__ == "__main__":
     HelloWindow().run()
 ```
 
-### Hierarchical Layout
+### Hierarchical HLayout
 
 ![context_layout.py example](https://raw.githubusercontent.com/RhetTbull/guitk/main/examples/context_layout.py.png "Hierarchical layout example")
 
 ```python
 """Demo to show how to use context managers to create widget layout"""
 
-from guitk import Button, Entry, Event, Label, Layout, ListBox, HStack, VStack, Window
+from guitk import Button, Entry, Event, Label, HLayout, ListBox, HStack, VStack, Window
 
 
 class ShoppingList(Window):
     def config(self):
         self.title = "My Shopping List"
 
-        with Layout() as layout:
+        with HLayout() as layout:
             with HStack():
                 # these will be stacked horizontally (side by side)
                 Label("Item to buy:")
@@ -126,7 +126,7 @@ from guitk import (
     EventType,
     Label,
     HStack,
-    VerticalLayout,
+    VLayout,
     Window,
     Frame,
 )
@@ -146,8 +146,8 @@ class HelloWorld(Window):
         # Define the window's contents
         # guitk.Label corresponds to a tkinter.ttk.Label, etc.
         # optionally provide a unique key to each element to easily reference the element later
-        # use a Layout or VerticalLayout class to define the layout of the window
-        with VerticalLayout():
+        # use a HLayout or VLayout class to define the layout of the window
+        with VLayout():
             Label("What's your name?")
             Entry(key="ENTRY_NAME", events=True, focus=True)
             Label("", width=40, key="OUTPUT", columnspan=2)
@@ -200,7 +200,7 @@ guitk supports both an event-loop style of app-development (very similar to how 
 ```python
 """Hello World example using guitk, shows how to use callback style instead of event loop """
 
-from guitk import Button, Entry, Event, Label, HStack, VerticalLayout, Window
+from guitk import Button, Entry, Event, Label, HStack, VLayout, Window
 
 
 # subclass Window as the starting point for your app's main window
@@ -216,7 +216,7 @@ class HelloWorld(Window):
         # optionally provide a unique key to each element to easily reference the element later
         # callbacks are functions that will be called when the user interact with the widget
         # callbacks are specified with the `command` parameter
-        with VerticalLayout() as layout:
+        with VLayout() as layout:
             Label("What's your name?")
             Entry(key="ENTRY_NAME", events=True, command=self.on_entry_changed, focus=True)
             Label("", width=40, key="OUTPUT", columnspan=2)
@@ -260,7 +260,7 @@ if __name__ == "__main__":
 
 guitk GUIs are created using a lists of lists where each element in the lists corresponds to a ttk or tk element.  This design pattern is borrowed from PySimpleGUI.
 
-![layout_lol.py example](https://raw.githubusercontent.com/RhetTbull/guitk/main/examples/layouts_lol.py.png "Layout using lists of lists example")
+![layout_lol.py example](https://raw.githubusercontent.com/RhetTbull/guitk/main/examples/layouts_lol.py.png "HLayout using lists of lists example")
 
 ```python
 """ Example for guitk showing how to use lists of lists for creating GUI layout """
@@ -288,7 +288,7 @@ if __name__ == "__main__":
 
 Because layouts are simply lists of lists, you can use python to create layouts programmatically, for example using list comprehensions.
 
-![layout2.py example](https://github.com/RhetTbull/guitk/raw/main/examples/layout2.py.png "Layout using list comprehensions, with tooltips!")
+![layout2.py example](https://github.com/RhetTbull/guitk/raw/main/examples/layout2.py.png "HLayout using list comprehensions, with tooltips!")
 
 ```python
 """ Example for guitk showing how to use list comprehensions to create a GUI """
@@ -341,7 +341,7 @@ from guitk import (
     Output,
     HStack,
     VStack,
-    VerticalLayout,
+    VLayout,
     Window,
 )
 
@@ -353,7 +353,7 @@ class HelloWorld(Window):
         # Define the window's contents
         # use variables to define rows to make your layout more readable
         # use guitk.Frame to group sub-layouts into columns
-        with VerticalLayout() as layout:
+        with VLayout() as layout:
             Label("What's your name?")
             Entry(key="ENTRY_NAME")
             Label("", width=40, key="OUTPUT")
@@ -477,7 +477,7 @@ You can access the underlying ttk widget, for example, to change style.  guitk a
 ```python
 """ Demonstrates use of LinkLabel widget """
 
-from guitk import Layout, LinkLabel, Window
+from guitk import HLayout, LinkLabel, Window
 
 
 class ClickMe(Window):
@@ -486,7 +486,7 @@ class ClickMe(Window):
 
         # you can pass tkinter.ttk options to the widgets
         # e.g. width and anchor
-        with Layout() as layout:
+        with HLayout() as layout:
             LinkLabel("Click me!", width=20, anchor="center", key="CLICK_ME").font(
                 family="Helvetica", size=24, underline=True
             ).style(foreground="blue")
