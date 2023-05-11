@@ -1,6 +1,6 @@
-"""Demo of Spacer and VerticalSpacer widgets"""
+"""Demo of HSpacer and VSpacer widgets"""
 
-from guitk import Label, Layout, Spacer, VerticalSpacer, VStack, Window
+from guitk import Label, Layout, HSpacer, VSpacer, VStack, Window
 
 
 class SpacerDemo(Window):
@@ -10,14 +10,14 @@ class SpacerDemo(Window):
         with Layout():
             with VStack():
                 Label("Top left")
-                VerticalSpacer()
+                VSpacer()
                 Label("Bottom left")
-            Spacer()
+            HSpacer()
             Label("Center")
-            Spacer()
+            HSpacer()
             with VStack():
                 Label("Top right", sticky="e")
-                VerticalSpacer()
+                VSpacer()
                 Label("Bottom right", sticky="e")
 
 

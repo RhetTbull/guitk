@@ -15,7 +15,7 @@ from .events import Event, EventCommand, EventType
 from .frame import Frame, LabelFrame
 from .layout import Layout, VerticalLayout
 from .menu import Command, Menu
-from .spacer import Spacer, VerticalSpacer
+from .spacer import HSpacer, VSpacer
 from .tk_text import Output, Text
 from .tkroot import *
 from .ttk_button import BrowseDirectoryButton, BrowseFileButton, Button
@@ -88,7 +88,7 @@ __all__ = [
     "Radiobutton",
     "Scale",
     "Separator",
-    "Spacer",
+    "HSpacer",
     "Tab",
     "Text",
     "TreeView",
@@ -98,7 +98,7 @@ __all__ = [
     "VerticalLayout",
     "VerticalPane",
     "VerticalSeparator",
-    "VerticalSpacer",
+    "VSpacer",
     "VerticalTab",
     "Widget",
     "Window",

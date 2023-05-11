@@ -1,6 +1,6 @@
 """Combobox demo."""
 
-from guitk import Combobox, Label, VerticalLayout, VerticalSpacer, Window
+from guitk import Combobox, Label, VerticalLayout, VSpacer, Window
 
 
 class ComboboxWindow(Window):
@@ -15,7 +15,7 @@ class ComboboxWindow(Window):
                 readonly=True,
                 default="Foo",
             )
-            VerticalSpacer()
+            VSpacer()
             Label("", key="STATUS", sticky="EW")
 
     def setup(self):

@@ -1,4 +1,4 @@
-"""Spacer class that expands to fill space in the layout"""
+"""HSpacer class that expands to fill space in the layout"""
 
 from __future__ import annotations
 
@@ -8,11 +8,11 @@ from .layout import get_parent
 from .ttk_label import Label
 from .types import Window
 
-__all__ = ["Spacer", "VerticalSpacer"]
+__all__ = ["HSpacer", "VSpacer"]
 
 
-class Spacer(Label):
-    """Spacer widget that expands to fill the horizontal space in the layout"""
+class HSpacer(Label):
+    """HSpacer widget that expands to fill the horizontal space in the layout"""
 
     def __init__(self):
         super().__init__(
@@ -28,8 +28,8 @@ class Spacer(Label):
         parent.grid_columnconfigure(col, weight=1)
 
 
-class VerticalSpacer(Label):
-    """ "Spacer widget that expands to fill the vertical space in the layout"""
+class VSpacer(Label):
+    """ "HSpacer widget that expands to fill the vertical space in the layout"""
 
     def __init__(self):
         super().__init__(

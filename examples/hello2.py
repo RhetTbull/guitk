@@ -19,7 +19,7 @@ class HelloWorld(Window):
         # optionally provide a unique key to each element to easily reference the element later
         # use a Layout or VerticalLayout class to define the layout of the window
         with VerticalLayout():
-            from guitk import VerticalSpacer
+            from guitk import VSpacer
 
             Label("What's your name?", sticky="ew", anchor="center", weightx=1)
             Entry(key="ENTRY_NAME", events=True, focus=True, sticky="ew", weightx=1)

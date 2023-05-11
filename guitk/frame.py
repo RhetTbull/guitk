@@ -8,7 +8,7 @@ from tkinter import ttk
 from guitk.constants import GUITK
 
 from .layout import Layout, VerticalLayout, pop_parent, push_parent
-from .spacer import Spacer, VerticalSpacer
+from .spacer import HSpacer, VSpacer
 from .tooltips import Hovertip
 from .ttk_label import Label
 from .types import HAlign, LayoutType, TooltipType, VAlign, Window
@@ -47,16 +47,16 @@ class _LayoutMixin:
         layout = list(self.layout)
 
         if valign in {"bottom", "center"}:
-            layout.insert(0, [VerticalSpacer()])
+            layout.insert(0, [VSpacer()])
         if valign == "center":
-            layout.append([VerticalSpacer()])
+            layout.append([VSpacer()])
 
         if halign in {"right", "center"}:
             for row in layout:
-                row.insert(0, Spacer())
+                row.insert(0, HSpacer())
         if halign == "center":
             for row in layout:
-                row.append(Spacer())
+                row.append(HSpacer())
 
         row_offset = 0
         for row_count, row in enumerate(layout):
@@ -114,16 +114,14 @@ class _LayoutMixin:
                     # if widget created with scrolled_widget_factory
                     # then need to configure the inner widget
                     if getattr(widget.widget, "_guitk_framed_widget", False):
-                        widget.widget.grid_columnconfigure(
-                            0, weight=widget.weightx)
+                        widget.widget.grid_columnconfigure(0, weight=widget.weightx)
                 if widget.weighty is not None:
                     parent.grid_rowconfigure(
                         row_count + row_offset, weight=widget.weighty
                     )
                     # configure inner widget if needed
                     if getattr(widget.widget, "_guitk_framed_widget", False):
-                        widget.widget.grid_rowconfigure(
-                            0, weight=widget.weighty)
+                        widget.widget.grid_rowconfigure(0, weight=widget.weighty)
 
                 # take focus if needed
                 if widget._focus:

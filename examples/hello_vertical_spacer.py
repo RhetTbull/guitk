@@ -1,6 +1,6 @@
-"""Demo showing use of VerticalSpacer()"""
+"""Demo showing use of VSpacer()"""
 
-from guitk import Button, Entry, Label, VerticalLayout, VerticalSpacer, Window
+from guitk import Button, Entry, Label, VerticalLayout, VSpacer, Window
 
 
 class Hello(Window):
@@ -9,7 +9,7 @@ class Hello(Window):
         with VerticalLayout() as layout:
             Label("What's your name?")
             Entry(key="ENTRY_NAME", events=True)
-            VerticalSpacer()
+            VSpacer()
             Button("Ok")
         self.layout = layout
 

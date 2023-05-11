@@ -1,6 +1,6 @@
-"""Demo showing use of Spacer()"""
+"""Demo showing use of HSpacer()"""
 
-from guitk import Button, Entry, Label, Layout, Spacer, Window
+from guitk import Button, Entry, Label, Layout, HSpacer, Window
 
 
 class Hello(Window):
@@ -9,7 +9,7 @@ class Hello(Window):
         with Layout(valign="center") as layout:
             Label("What's your name?")
             Entry(key="ENTRY_NAME", events=True)
-            Spacer()
+            HSpacer()
             Button("Ok")
 
 
