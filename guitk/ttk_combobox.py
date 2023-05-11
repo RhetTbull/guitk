@@ -4,7 +4,7 @@ import tkinter.ttk as ttk
 from typing import Hashable
 
 from .events import Event, EventCommand, EventType
-from .types import CommandType, TooltipType
+from .types import CommandType, TooltipType, Window
 from .widget import Widget
 
 __all__ = ["Combobox", "ComboBox"]
@@ -23,7 +23,7 @@ _valid_ttk_combobox_attributes = {
     "postcommand",
     "state",
     "textvariable",
-    # "values",
+    "values",
     "width",
 } | _valid_standard_attributes
 
@@ -66,9 +66,30 @@ class Combobox(Widget):
             weightx=weightx,
             weighty=weighty,
             focus=focus,
-            **kwargs,
         )
+        """
+        Initialize a ttk.Combobox widget.
 
+        Args:
+            key (Hashable, optional): Unique key for this widget. Defaults to None.
+            default (str, optional): Default value. Defaults to None.
+            values (list[str], optional): List of values for the combobox. Defaults to None.
+            disabled (bool, optional): If True, widget is disabled. Defaults to False.
+            columnspan (int | None, optional): Number of columns to span. Defaults to None.
+            rowspan (int | None, optional): Number of rows to span. Defaults to None.
+            padx (int | None, optional): X padding. Defaults to None.
+            pady (int | None, optional): Y padding. Defaults to None.
+            events (bool, optional): Enable events for this widget. Defaults to False.
+            sticky (str | None, optional): Sticky direction for widget layout. Defaults to None.
+            tooltip (TooltipType | None, optional): Tooltip text or callback to generate tooltip text. Defaults to None.
+            command (CommandType | None, optional): Command callback. Defaults to None.
+            readonly (bool, optional): If True, widget is read-only. Defaults to False. If Combobox is not readonly, user can type in a value that is not in the list of values.
+            autosize (bool, optional): If True, automatically set width to fit longest value. Defaults to False.
+            weightx (int | None, optional): Weight of widget in X direction. Defaults to None.
+            weighty (int | None, optional): Weight of widget in Y direction. Defaults to None.
+            focus (bool, optional): If True, widget has focus. Defaults to False. Only one widget in a window can have focus.
+            **kwargs: Additional keyword arguments are passed to ttk.Checkbutton.
+        """
         self.widget_type = "ttk.Combobox"
         self.key = key or "Combobox"
         self.columnspan = columnspan
@@ -79,25 +100,25 @@ class Combobox(Widget):
         self.values = values
         self.default = default
 
-    def _create_widget(self, parent, window: "Window", row, col):
+    def _create_widget(self, parent, window: Window, row, col):
         self.window = window
         self._parent = parent
 
         # build arg list for Combobox
-        kwargs_combobox = {
+        kwargs = {
             k: v for k, v in self.kwargs.items() if k in _valid_ttk_combobox_attributes
         }
 
         if self._autosize:
             # automatically set width, override any width value provided
             width = len(max(self.values, key=len))
-            kwargs_combobox["width"] = width + 1
+            kwargs["width"] = width + 1
 
         self.widget = ttk.Combobox(
             parent,
             textvariable=self._value,
             values=self.values,
-            **kwargs_combobox,
+            **kwargs,
         )
         self._grid(
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan

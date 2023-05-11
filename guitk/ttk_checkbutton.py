@@ -56,7 +56,7 @@ class Checkbutton(Widget):
         **kwargs,
     ):
         """
-        Initialize a Checkbutton widget.
+        Initialize a ttk.Checkbutton widget.
 
         Args:
             text (str): Text for the checkbutton.

@@ -1,32 +1,29 @@
-import guitk
+"""Combobox demo."""
+
+from guitk import Combobox, Label, VerticalLayout, VerticalSpacer, Window
 
 
-class ComboboxWindow(guitk.Window):
+class ComboboxWindow(Window):
     def config(self):
         self.title = "Combobox Demo"
-        self.layout = [
-            [
-                guitk.Combobox(
-                    key="COMBOBOX1", values=["Foo", "Bar", "XYZZY"], autosize=True
-                )
-            ],
-            [
-                guitk.Combobox(
-                    key="COMBOBOX2",
-                    values=["Foo", "Bar", "XYZZY"],
-                    width=6,
-                    readonly=True,
-                    default="Foo",
-                )
-            ],
-        ]
+        with VerticalLayout():
+            Combobox(key="COMBOBOX1", values=["Foo", "Bar", "XYZZY"], autosize=True)
+            Combobox(
+                key="COMBOBOX2",
+                values=["Foo", "Bar", "XYZZY"],
+                width=6,
+                readonly=True,
+                default="Foo",
+            )
+            VerticalSpacer()
+            Label("", key="STATUS", sticky="EW")
 
     def setup(self):
         self.window.geometry("400x200")
 
     def handle_event(self, event):
         if event.key in ["COMBOBOX1", "COMBOBOX2"]:
-            print(event, self[event.key].value)
+            self["STATUS"].value = f"Selected {event.key} {self[event.key].value}"
 
 
 if __name__ == "__main__":
