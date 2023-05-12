@@ -6,10 +6,11 @@ from guitk.constants import GUITK
 
 from .frame import _Container, _VerticalContainer
 from .types import HAlign, VAlign, Window
+from .widget import Widget
 
 
 class VStack(_VerticalContainer):
-    """A container that stacks widgets vertically when added to a HLayout"""
+    """A container that stacks widgets vertically when added to a Layout"""
 
     def __init__(
         self,
@@ -48,9 +49,14 @@ class VStack(_VerticalContainer):
         super()._create_widget(parent, window, row, col)
         parent.grid_rowconfigure(row, weight=1)
 
+    def add_widget(self, widget: Widget):
+        """Add a widget to the bottom of the VStack"""
+        super().add_widget(widget, self.row_count + 1, 0)
+        self.row_count += 1
+
 
 class HStack(_Container):
-    """A container that stacks widgets horizontally when added to a HLayout"""
+    """A container that stacks widgets horizontally when added to a Layout"""
 
     def __init__(
         self,
@@ -84,3 +90,8 @@ class HStack(_Container):
     def _create_widget(self, parent: tk.BaseWidget, window: Window, row: int, col: int):
         super()._create_widget(parent, window, row, col)
         parent.grid_columnconfigure(col, weight=1)
+
+    def add_widget(self, widget: Widget):
+        """Add a widget to the end of the HStack"""
+        super().add_widget(widget, 0, self.col_count + 1)
+        self.col_count += 1

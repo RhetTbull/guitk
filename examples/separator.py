@@ -1,6 +1,6 @@
 """ Demo of HSeparator and VSeparator widgets """
 
-from guitk import HLayout, Label, HSeparator, VSeparator, VStack, Window
+from guitk import HLayout, HSeparator, Label, VSeparator, VStack, Window
 
 
 class SeparatorDemo(Window):

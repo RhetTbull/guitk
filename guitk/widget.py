@@ -205,6 +205,6 @@ class Widget:
                     raise RuntimeError(
                         "Widget must created within a HLayout or Container"
                     )
-                self.parent.add_widget(self)
+                self.parent._add_widget(self)
 
         subclass.__init__ = new_init

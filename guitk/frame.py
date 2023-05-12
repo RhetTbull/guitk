@@ -30,7 +30,7 @@ class _LayoutMixin:
 
     layout = []
 
-    def _layout(self, parent: tk.BaseWidget, window: Window, autoframe: bool):
+    def _layout(self, parent: tk.BaseWidget, window: Window):
         """Create widgets from layout"""
         # as this is a mixin, make sure class being mixed into has necessary attributes
         try:
@@ -58,11 +58,10 @@ class _LayoutMixin:
             for row in layout:
                 row.append(HSpacer())
 
-        row_offset = 0
+        self.row_count = 0
+        self.col_count = 0
         for row_count, row in enumerate(layout):
-            col_offset = 0
-
-            if autoframe and (
+            if self.autoframe and (
                 len(row) != 1
                 or row[0].widget_type not in {"ttk.Frame", "tk.Frame", "LabelFrame"}
             ):
@@ -71,61 +70,70 @@ class _LayoutMixin:
                 ]
             else:
                 row_ = row
+            self.row_count = row_count
             for col_count, widget in enumerate(row_):
                 if widget is None:
                     # add blank label to maintain column spacing
                     widget = Label("", disabled=True, events=False)
-
-                widget.key = (
-                    widget.key or f"{widget.widget_type},{row_count},{col_count}"
+                self._create_and_add_widget(
+                    widget, parent, window, row_count, col_count
                 )
-                widget._create_widget(
-                    parent, window, row_count + row_offset, col_count + col_offset
-                )
-                if tooltip := widget.tooltip or window.tooltip:
-                    _tooltip = tooltip(widget.key) if callable(tooltip) else tooltip
-                    widget._tooltip = (
-                        Hovertip(widget.widget, _tooltip) if _tooltip else None
-                    )
-                else:
-                    widget._tooltip = None
+                self.col_count = col_count
 
-                # configure style if needed
-                if widget._style_kwargs:
-                    style = ttk.Style()
-                    style_name = f"{id(widget)}.{widget.widget.winfo_class()}"
-                    style.configure(style_name, **widget._style_kwargs)
-                    widget.widget.configure(style=style_name)
+    def _create_and_add_widget(self, widget, parent, window, row, col):
+        """Create the widget and add it to layout"""
 
-                window._widgets.append(widget)
-                widget.parent = self
-                window._widget_by_key[widget.key] = widget
+        # keep track of row/column offset for widgets that use rowspan/columnspan
+        row_offset = 0
+        col_offset = 0
 
-                # configure row/columns/weight
-                if widget.rowspan and widget.rowspan > 1:
-                    row_offset += widget.rowspan - 1
-                if widget.columnspan and widget.columnspan > 1:
-                    col_offset += widget.columnspan - 1
+        widget.key = widget.key or f"{widget.widget_type},{row},{col}"
+        widget._create_widget(parent, window, row + row_offset, col + col_offset)
 
-                if widget.weightx is not None:
-                    parent.grid_columnconfigure(
-                        col_count + col_offset, weight=widget.weightx
-                    )
-                    # if widget created with scrolled_widget_factory
-                    # then need to configure the inner widget
-                    if getattr(widget.widget, "_guitk_framed_widget", False):
-                        widget.widget.grid_columnconfigure(0, weight=widget.weightx)
-                if widget.weighty is not None:
-                    parent.grid_rowconfigure(
-                        row_count + row_offset, weight=widget.weighty
-                    )
-                    # configure inner widget if needed
-                    if getattr(widget.widget, "_guitk_framed_widget", False):
-                        widget.widget.grid_rowconfigure(0, weight=widget.weighty)
+        # add tooltip if needed
+        if tooltip := widget.tooltip or window.tooltip:
+            _tooltip = tooltip(widget.key) if callable(tooltip) else tooltip
+            widget._tooltip = Hovertip(widget.widget, _tooltip) if _tooltip else None
+        else:
+            widget._tooltip = None
 
-                # take focus if needed
-                if widget._focus:
-                    widget.widget.focus()
+        # configure style if needed
+        if widget._style_kwargs:
+            style = ttk.Style()
+            style_name = f"{id(widget)}.{widget.widget.winfo_class()}"
+            style.configure(style_name, **widget._style_kwargs)
+            widget.widget.configure(style=style_name)
+
+        window._widgets.append(widget)
+        widget.parent = self
+        window._widget_by_key[widget.key] = widget
+
+        # configure row/columns/weight
+        if widget.rowspan and widget.rowspan > 1:
+            row_offset += widget.rowspan - 1
+        if widget.columnspan and widget.columnspan > 1:
+            col_offset += widget.columnspan - 1
+
+        if widget.weightx is not None:
+            parent.grid_columnconfigure(col + col_offset, weight=widget.weightx)
+            # if widget created with scrolled_widget_factory
+            # then need to configure the inner widget
+            if getattr(widget.widget, "_guitk_framed_widget", False):
+                widget.widget.grid_columnconfigure(0, weight=widget.weightx)
+        if widget.weighty is not None:
+            parent.grid_rowconfigure(row + row_offset, weight=widget.weighty)
+            # configure inner widget if needed
+            if getattr(widget.widget, "_guitk_framed_widget", False):
+                widget.widget.grid_rowconfigure(0, weight=widget.weighty)
+
+        # configure padding
+        padx = widget.padx if widget.padx is not None else window.padx
+        pady = widget.pady if widget.pady is not None else window.pady
+        widget.widget.grid_configure(padx=padx, pady=pady)
+
+        # take focus if needed
+        if widget._focus:
+            widget.widget.focus()
 
 
 class _Container(Widget, _LayoutMixin):
@@ -174,7 +182,8 @@ class _Container(Widget, _LayoutMixin):
         )
         _LayoutMixin.__init__(self)
 
-        self._autoframe = autoframe
+        # if autoframe is True, each widget or row of widgets will be placed in a frame
+        self.autoframe = autoframe
 
         if frametype not in {
             GUITK.ELEMENT_FRAME,
@@ -189,7 +198,7 @@ class _Container(Widget, _LayoutMixin):
         self.rowspan = rowspan
         self.width = width
         self.height = height
-        self.style = style
+        self._style = style  # Widget has style() method so can't use self.style
         self.borderwidth = borderwidth
         self.padding = padding
         self.relief = relief
@@ -209,8 +218,8 @@ class _Container(Widget, _LayoutMixin):
             for k, v in self.kwargs.items()
             if k in _valid_frame_attributes and v is not None
         }
-        if self.style is not None:
-            kwargs["style"] = self.style
+        if self._style is not None:
+            kwargs["style"] = self._style
 
         if self.frametype == GUITK.ELEMENT_FRAME:
             self.widget = ttk.Frame(
@@ -253,7 +262,7 @@ class _Container(Widget, _LayoutMixin):
         )
 
         if self.layout:
-            self._layout(self.widget, self.window, autoframe=self._autoframe)
+            self._layout(self.widget, self.window)
 
         if self.width or self.height:
             self.widget.grid_propagate(0)
@@ -261,6 +270,15 @@ class _Container(Widget, _LayoutMixin):
         if self._disabled:
             self.widget.state(["disabled"])
         return self.widget
+
+    def add_widget(self, widget: Widget, row: int, col: int):
+        """Add a widget to the container after the container has been created
+            Intended for use at run-time only when widgets need to be added dynamically
+
+        Args:
+            widget: (Widget) the widget to add
+        """
+        self._create_and_add_widget(widget, self.frame, self.window, row, col)
 
     @property
     def frame(self):
@@ -275,7 +293,7 @@ class _Container(Widget, _LayoutMixin):
     def value(self, value):
         pass
 
-    def add_widget(self, widget: Widget):
+    def _add_widget(self, widget: Widget):
         """Add a widget to the frame's layout"""
         self.layout[0].append(widget)
 

@@ -5,10 +5,10 @@ from __future__ import annotations
 import sys
 import tkinter.ttk as ttk
 from tkinter import font
-from typing import Hashable, TypeVar
+from typing import Hashable
 
 from .events import Event, EventCommand, EventType
-from .types import CommandType, TooltipType
+from .types import CommandType, TooltipType, Window
 from .widget import Widget
 
 __all__ = ["Label", "LinkLabel", "Linklabel"]
@@ -37,9 +37,6 @@ _valid_ttk_label_attributes = {
     "text",
     "wraplength",
 } | _valid_standard_attributes
-
-
-Window = TypeVar("Window")
 
 
 class Label(Widget):
@@ -99,7 +96,7 @@ class Label(Widget):
         self.rowspan = rowspan
         self.kwargs = kwargs
 
-    def _create_widget(self, parent, window: "Window", row, col):
+    def _create_widget(self, parent, window: Window, row, col):
         self.window = window
         self._parent = parent
 

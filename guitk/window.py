@@ -111,17 +111,13 @@ class Window(_LayoutMixin, _WindowBaseClass):
             ]
 
         self._commands = []
-        self._layout(self._mainframe, self, autoframe=autoframe)
+        self._layout(self._mainframe, self)
 
         # apply theme if necessary
         if self.theme is not None:
             self._tk.theme = self.theme
 
-        # apply padding, widget padding takes precedent over window
-        for widget in self._widgets:
-            padx = widget.padx if widget.padx is not None else self.padx
-            pady = widget.pady if widget.pady is not None else self.pady
-            widget.widget.grid_configure(padx=padx, pady=pady)
+        self._grid_configure_widgets()
 
         if self.menu:
             self._build_menu()
@@ -170,6 +166,14 @@ class Window(_LayoutMixin, _WindowBaseClass):
 
         if self.modal:
             self.window.wait_window()
+
+    def _grid_configure_widgets(self):
+        """Apply padding to all widgets in the window"""
+        # apply padding, widget padding takes precedent over window
+        for widget in self._widgets:
+            padx = widget.padx if widget.padx is not None else self.padx
+            pady = widget.pady if widget.pady is not None else self.pady
+            widget.widget.grid_configure(padx=padx, pady=pady)
 
     def _config(self):
         self.title = "My Window"
@@ -302,8 +306,8 @@ class Window(_LayoutMixin, _WindowBaseClass):
         """Return child windows"""
         return self._tk.get_children(self)
 
-    def add_widget(self, widget: Any):
-        """Dummy method to allow widgets to be addeded with HLayout()"""
+    def _add_widget(self, widget: Any):
+        """Dummy method to allow widgets to be added with VLayout()/HLayout()"""
         pass
 
     def _add_menus(self, menu: Menu, menu_items, path=None):

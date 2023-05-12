@@ -18,7 +18,7 @@ __all__ = ["HLayout", "VLayout"]
 class DummyParent:
     """Dummy class that allows get_parent() to be used whether or not HLayout context manager in use"""
 
-    def add_widget(self, widget: Any):
+    def _add_widget(self, widget: Any):
         pass
 
 
@@ -75,7 +75,7 @@ class HLayout:
                 # HLayout is being used in a Window, so set the Window's layout automatically
                 caller_instance.layout = self
 
-    def add_widget(self, widget):
+    def _add_widget(self, widget):
         self._layout.append(widget)
 
     @property
