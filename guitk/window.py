@@ -293,6 +293,13 @@ class Window(_LayoutMixin, _WindowBaseClass):
                 for key, event_type in getattr(method, "_guitk_event_handlers"):
                     self.bind_command(key=key, event_type=event_type, command=method)
 
+    def add_widget(self, widget: Widget, row: int, col: int):
+        """Add a widget to the window's mainframe"""
+        widget._create_widget(self._mainframe, self, row, col)
+        self._widgets.append(widget)
+        self._widget_by_key[widget.key] = widget
+        self._grid_configure_widgets()
+
     def run(self):
         self._tk.run_mainloop()
         return self._return_value

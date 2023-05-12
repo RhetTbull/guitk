@@ -19,7 +19,6 @@ class Demo(Window):
         with HLayout():
             with VStack() as self.vs:
                 Button("Say Hello", key="Hello")
-                Label("Hello")
             VSeparator()
             with HStack() as self.hs:
                 Button("Say Goodbye", key="Goodbye")

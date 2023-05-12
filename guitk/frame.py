@@ -279,6 +279,8 @@ class _Container(Widget, _LayoutMixin):
             widget: (Widget) the widget to add
         """
         self._create_and_add_widget(widget, self.frame, self.window, row, col)
+        self.window._widgets.append(widget)
+        self.window._widget_by_key[widget.key] = widget
 
     @property
     def frame(self):

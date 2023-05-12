@@ -51,8 +51,8 @@ class VStack(_VerticalContainer):
 
     def add_widget(self, widget: Widget):
         """Add a widget to the bottom of the VStack"""
-        super().add_widget(widget, self.row_count + 1, 0)
         self.row_count += 1
+        super().add_widget(widget, self.row_count, 0)
 
 
 class HStack(_Container):
@@ -93,5 +93,5 @@ class HStack(_Container):
 
     def add_widget(self, widget: Widget):
         """Add a widget to the end of the HStack"""
-        super().add_widget(widget, 0, self.col_count + 1)
         self.col_count += 1
+        super().add_widget(widget, 0, self.col_count)

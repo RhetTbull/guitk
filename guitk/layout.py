@@ -8,7 +8,7 @@ import threading
 from inspect import currentframe, getmro
 from typing import Any
 
-from .types import HAlign, LayoutType, VAlign
+from .types import HAlign, LayoutType, VAlign, Widget
 
 _current_parent = {}
 
@@ -50,7 +50,7 @@ def get_parent() -> Any:
 
 
 class HLayout:
-    """A HLayout manager that aligns widgets horizontally"""
+    """A Layout manager that aligns widgets horizontally"""
 
     def __init__(
         self,
@@ -63,6 +63,7 @@ class HLayout:
         self.index = 0
         self.valign = valign
         self.halign = halign
+        self.window = None
 
         # get the caller's instance so we can set the layout
         caller_frame = currentframe().f_back
@@ -73,7 +74,18 @@ class HLayout:
             # need to use repr() because we can't import Window here without causing a circular import
             if "guitk.window.Window" in repr(getmro(caller_instance.__class__)):
                 # HLayout is being used in a Window, so set the Window's layout automatically
-                caller_instance.layout = self
+                self.window = caller_instance
+                self.window.layout = self
+
+    def add_widget(self, widget: Widget):
+        """Add a widget to the end of the HLayout"""
+        if not self.window:
+            # HLayout is not being used in a Window, can't add widget
+            raise RuntimeError(
+                "HLayout must have been created in a Window to add widgets"
+            )
+        self.window.col_count += 1
+        self.window.add_widget(widget, 0, self.window.col_count)
 
     def _add_widget(self, widget):
         self._layout.append(widget)
@@ -110,8 +122,18 @@ class HLayout:
 
 
 class VLayout(HLayout):
-    """A HLayout manager that aligns widgets vertically"""
+    """A Layout manager that aligns widgets vertically"""
 
     @property
     def layout(self):
         return [[w] for w in self._layout]
+
+    def add_widget(self, widget: Widget):
+        """Add a widget to the bottom of the VLayout"""
+        if not self.window:
+            # HLayout is not being used in a Window, can't add widget
+            raise RuntimeError(
+                "VLayout must have been created in a Window to add widgets"
+            )
+        self.window.row_count += 1
+        self.window.add_widget(widget, self.window.row_count, 0)

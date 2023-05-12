@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import tkinter as tk
 
-from .layout import get_parent
 from .ttk_label import Label
 from .types import Window
 
