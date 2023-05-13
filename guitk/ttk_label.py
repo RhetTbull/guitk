@@ -139,7 +139,6 @@ class LinkLabel(Label):
         events: bool = True,
         sticky: str | None = None,
         tooltip: TooltipType = None,
-        underline_font: bool = False,
         command: CommandType | None = None,
         weightx: int | None = None,
         weighty: int | None = None,
@@ -158,7 +157,6 @@ class LinkLabel(Label):
             events (bool, optional): Enable events for this widget. Defaults to True.
             sticky (str | None, optional): Sticky direction for widget layout. Defaults to None.
             tooltip (TooltipType | None, optional): Tooltip text or callback to generate tooltip text. Defaults to None.
-            underline_font (bool, optional): If True, underline the font. Defaults to False.
             command (CommandType | None, optional): Command to execute when clicked. Defaults to None.
             weightx (int | None, optional): Weight of this widget in the horizontal direction. Defaults to None.
             weighty (int | None, optional): Weight of this widget in the vertical direction. Defaults to None.
@@ -189,7 +187,6 @@ class LinkLabel(Label):
         self.key = key or text
         self.columnspan = columnspan
         self.rowspan = rowspan
-        self.underline_font = underline_font
         self._command = command
         self.kwargs = kwargs
 
@@ -203,11 +200,6 @@ class LinkLabel(Label):
         self.widget.bind("<Button-1>", window._make_callback(event))
 
         self.widget.configure(cursor=self.cursor)
-
-        if self.underline_font:
-            f = font.Font(self.widget, self.widget.cget("font"))
-            f.configure(underline=True)
-            self.widget.configure(font=f)
 
         if self._command:
             self.events = True

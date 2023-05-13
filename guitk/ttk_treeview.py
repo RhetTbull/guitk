@@ -3,9 +3,8 @@
 
 from __future__ import annotations
 
-import tkinter as tk
 import tkinter.ttk as ttk
-from typing import Hashable, TypeVar
+from typing import Hashable
 
 from .events import Event, EventCommand, EventType
 from .types import CommandType, TooltipType, Window
@@ -95,7 +94,6 @@ class Treeview(Widget):
         self.key = key or "Treeview"
         self.widget_type = "ttk.Treeview"
 
-        print(f"TreeView: {locals()}")
         if headings and columns and len(headings) != len(columns):
             raise ValueError("headings and columns lists must be the same length")
 
@@ -115,7 +113,6 @@ class Treeview(Widget):
         self.kwargs = kwargs
 
     def _create_widget(self, parent, window: Window, row, col):
-        print(f"TreeView._create_widget: {locals()}")
         self.window = window
         self._parent = parent
 
@@ -290,7 +287,6 @@ class Listbox(Treeview):
     def _create_widget(self, parent, window: Window, row, col):
         """Create the widget"""
 
-        print(f"Listbox._create_widget: {locals()}")
         # build arg list for Treeview()
         kwargs_treeview = {
             k: v

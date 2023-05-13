@@ -41,7 +41,7 @@ class Checkbutton(Widget):
         self,
         text: str,
         key: Hashable | None = None,
-        value: bool = False,
+        checked: bool = False,
         disabled: bool = False,
         columnspan: int | None = None,
         rowspan: int | None = None,
@@ -62,7 +62,7 @@ class Checkbutton(Widget):
         Args:
             text (str): Text for the checkbutton.
             key (Hashable, optional): Unique key for this widget. Defaults to None.
-            value (bool, optional): Initial value. Defaults to False (not checked).
+            checked (bool, optional): Initial state. Defaults to False (not checked).
             disabled (bool, optional): If True, widget is disabled. Defaults to False.
             columnspan (int | None, optional): Number of columns to span. Defaults to None.
             rowspan (int | None, optional): Number of rows to span. Defaults to None.
@@ -101,7 +101,8 @@ class Checkbutton(Widget):
         self.key = key or text
         self.columnspan = columnspan
         self.rowspan = rowspan
-        self._value = tk.BooleanVar(value=value)
+        self._value: tk.BooleanVar = tk.BooleanVar()
+        self._checked = checked
         self.kwargs = kwargs
 
     def _create_widget(self, parent, window: Window, row, col):
@@ -123,7 +124,6 @@ class Checkbutton(Widget):
             command=window._make_callback(event),
             variable=self._value,
             onvalue=True,
-            offvalue=False,
             **kwargs_checkbutton,
         )
         self._grid(
@@ -140,6 +140,9 @@ class Checkbutton(Widget):
                     command=self._command,
                 )
             )
+
+        if self._checked:
+            self.widget.invoke()
 
         if self._disabled:
             self.widget.state(["disabled"])

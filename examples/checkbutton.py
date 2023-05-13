@@ -6,14 +6,9 @@ import guitk
 class CheckbuttonDemo(guitk.Window):
     def config(self):
         self.title = "Check Button Demo"
-        self.layout = [
-            [
-                guitk.Checkbutton(
-                    "Checkbutton 1", key="check1", command=self.toggle_check2
-                )
-            ],
-            [guitk.Checkbutton("Checkbutton 2", key="check2", disabled=True)],
-        ]
+        with guitk.VLayout():
+            guitk.Checkbutton("Checkbutton 1", key="check1", command=self.toggle_check2)
+            guitk.Checkbutton("Checkbutton 2", key="check2", disabled=True)
 
     def toggle_check2(self):
         self["check2"].disabled = not self["check1"].value
