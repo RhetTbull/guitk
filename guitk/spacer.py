@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import tkinter as tk
 
+from .debug import debug_borderwidth, debug_relief
 from .ttk_label import Label
 from .types import Window
 
@@ -20,6 +21,8 @@ class HSpacer(Label):
             disabled=True,
             sticky="nsew",
             autoframe=False,
+            borderwidth=debug_borderwidth() or None,
+            relief=debug_relief() or None,
         )
 
     def _create_widget(self, parent: tk.BaseWidget, window: Window, row: int, col: int):
@@ -37,6 +40,8 @@ class VSpacer(Label):
             disabled=True,
             sticky="nsew",
             autoframe=False,
+            borderwidth=debug_borderwidth() or None,
+            relief=debug_relief() or None,
         )
 
     def _create_widget(self, parent: tk.BaseWidget, window: Window, row: int, col: int):

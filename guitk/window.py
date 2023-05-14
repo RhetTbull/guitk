@@ -111,6 +111,7 @@ class Window(_LayoutMixin, _WindowBaseClass):
             ]
 
         self._commands = []
+        print(self)
         self._layout(self._mainframe, self)
 
         # apply theme if necessary

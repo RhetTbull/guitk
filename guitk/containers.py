@@ -4,6 +4,7 @@ import tkinter as tk
 
 from guitk.constants import GUITK
 
+from .debug import debug_borderwidth, debug_relief
 from .frame import _Container, _VerticalContainer
 from .types import HAlign, VAlign, Window
 from .widget import Widget
@@ -15,24 +16,43 @@ class VStack(_VerticalContainer):
     def __init__(
         self,
         key: str | None = None,
-        width: int | None = None,
         height: int | None = None,
         padding: int | None = None,
         disabled: bool | None = False,
-        sticky: str | None = "ns",
+        sticky: str | None = "nsew",
         valign: VAlign | None = None,
         halign: HAlign | None = None,
+        expand: bool = True,
     ):
+        """A container that stacks widgets vertically when added to a Layout
+
+        Args:
+            key (str, optional): The key to use for the VStack. Defaults to None.
+            height (int, optional): The height of the VStack. Defaults to None.
+            padding (int, optional): The padding around the VStack. Defaults to None.
+            disabled (bool, optional): Whether the VStack is disabled. Defaults to False.
+            sticky (str, optional): The sticky value for the VStack. Defaults to "nsew".
+            valign (VAlign, optional): The vertical alignment for the widgets in the VStack.
+                Defaults to None.
+            halign (HAlign, optional): The horizontal alignment for the widgets in the VStack.
+                Defaults to None.
+            expand (bool, optional): Whether the VStack should expand to fill the available space.
+                Defaults to True.
+
+        Note:
+            If height is specified, the VStack will not expand to fill the available space and the
+            expand parameter will be ignored.
+        """
         super().__init__(
             frametype=GUITK.ELEMENT_FRAME,
             key=key,
-            width=width,
+            width=None,
             height=height,
             layout=None,
             style=None,
-            borderwidth=None,
+            borderwidth=debug_borderwidth() or None,
             padding=padding,
-            relief=None,
+            relief=debug_relief() or None,
             disabled=disabled,
             rowspan=None,
             columnspan=None,
@@ -44,10 +64,12 @@ class VStack(_VerticalContainer):
             valign=valign,
             halign=halign,
         )
+        self.expand = expand if height is None else False
 
     def _create_widget(self, parent: tk.BaseWidget, window: Window, row: int, col: int):
         super()._create_widget(parent, window, row, col)
-        parent.grid_rowconfigure(row, weight=1)
+        if self.expand:
+            parent.grid_rowconfigure(row, weight=1)
 
     def add_widget(self, widget: Widget):
         """Add a widget to the bottom of the VStack"""
@@ -61,10 +83,20 @@ class HStack(_Container):
     def __init__(
         self,
         disabled: bool | None = False,
-        sticky: str | None = "ew",
+        sticky: str | None = "nsew",
         valign: VAlign | None = None,
         halign: HAlign | None = None,
+        expand: bool = True,
     ):
+        """A container that stacks widgets horizontally when added to a Layout
+
+        Args:
+            disabled (bool, optional): Whether the HStack is disabled. Defaults to False.
+            sticky (str, optional): The sticky value for the HStack. Defaults to "nsew".
+            valign (VAlign, optional): The vertical alignment for the widgets in the HStack. Defaults to None.
+            halign (HAlign, optional): The horizontal alignment for the widgets in the HStack. Defaults to None.
+            expand (bool, optional): Whether the HStack should expand to fill the available space. Defaults to True.
+        """
         super().__init__(
             frametype=GUITK.ELEMENT_FRAME,
             key=None,
@@ -72,9 +104,9 @@ class HStack(_Container):
             height=None,
             layout=None,
             style=None,
-            borderwidth=None,
+            borderwidth=debug_borderwidth() or None,
             padding=0,
-            relief=None,
+            relief=debug_relief() or None,
             disabled=disabled,
             rowspan=None,
             columnspan=None,
@@ -86,10 +118,12 @@ class HStack(_Container):
             valign=valign,
             halign=halign,
         )
+        self.expand = expand
 
     def _create_widget(self, parent: tk.BaseWidget, window: Window, row: int, col: int):
         super()._create_widget(parent, window, row, col)
-        parent.grid_columnconfigure(col, weight=1)
+        if self.expand:
+            parent.grid_columnconfigure(col, weight=1)
 
     def add_widget(self, widget: Widget):
         """Add a widget to the end of the HStack"""

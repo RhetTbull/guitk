@@ -7,6 +7,7 @@ from tkinter import ttk
 
 from guitk.constants import GUITK
 
+from .debug import debug, debug_borderwidth, debug_relief
 from .layout import pop_parent, push_parent
 from .spacer import HSpacer, VSpacer
 from .tooltips import Hovertip
@@ -28,6 +29,8 @@ _valid_frame_attributes = {
 class _LayoutMixin:
     """Mixin class to provide layout; for internal use only"""
 
+    row_count = 0
+    col_count = 0
     layout = []
 
     def _layout(self, parent: tk.BaseWidget, window: Window):
@@ -44,6 +47,7 @@ class _LayoutMixin:
                 valign = "top"
                 halign = "left"
 
+        debug(f"valign={valign}, halign={halign}")
         layout = list(self.layout)
 
         if valign in {"bottom", "center"}:
@@ -58,8 +62,6 @@ class _LayoutMixin:
             for row in layout:
                 row.append(HSpacer())
 
-        self.row_count = 0
-        self.col_count = 0
         for row_count, row in enumerate(layout):
             if self.autoframe and (
                 len(row) != 1
@@ -199,9 +201,9 @@ class _Container(Widget, _LayoutMixin):
         self.width = width
         self.height = height
         self._style = style  # Widget has style() method so can't use self.style
-        self.borderwidth = borderwidth
+        self.borderwidth = debug_borderwidth() or borderwidth
         self.padding = padding
-        self.relief = relief
+        self.relief = debug_relief() or relief
         self.layout = layout or [[]]
         self.text = text
         self.labelanchor = labelanchor or "nw"
@@ -227,6 +229,7 @@ class _Container(Widget, _LayoutMixin):
                 width=self.width,
                 height=self.height,
                 borderwidth=self.borderwidth,
+                relief=self.relief,
                 **kwargs,
             )
         elif self.frametype == GUITK.ELEMENT_TK_FRAME:
@@ -247,6 +250,7 @@ class _Container(Widget, _LayoutMixin):
                 height=self.height,
                 labelanchor=self.labelanchor,
                 borderwidth=self.borderwidth,
+                relief=self.relief,
                 **kwargs,
             )
 
@@ -265,7 +269,7 @@ class _Container(Widget, _LayoutMixin):
             self._layout(self.widget, self.window)
 
         if self.width or self.height:
-            self.widget.grid_propagate(0)
+            self.widget.grid_propagate(False)
 
         if self._disabled:
             self.widget.state(["disabled"])

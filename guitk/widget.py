@@ -71,7 +71,7 @@ class Widget:
 
         self.widget_type = None
         self._tk = _TKRoot()
-        self.widget = None
+        self.widget: tk.BaseWidget | None = None
         self._value = value_type() if value_type is not None else tk.StringVar()
 
         # set by _create_widget in inherited classes
