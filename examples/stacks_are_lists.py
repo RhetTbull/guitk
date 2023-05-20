@@ -17,7 +17,9 @@ class Demo(Window):
                     with HStack():
                         Entry(key="index", default="1", width=3)
                         Button("Insert")
-
+                    with HStack():
+                        Entry(key="extend", default="2", width=3)
+                        Button("Extend")
                 with VStack(key="VStack") as self.vs:
                     Label("VStack")
                 VSeparator()
@@ -37,7 +39,6 @@ class Demo(Window):
         label = Label("Add")
         stack = self["stack"].value
         self[stack].append(label)
-        self.update_status_bar()
 
     @on(key="index")
     @on(key="Insert")
@@ -46,6 +47,16 @@ class Demo(Window):
         label = Label("Insert")
         stack = self["stack"].value
         self[stack].insert(idx, label)
+
+    @on(key="extend")
+    @on(key="Extend")
+    def on_extend(self):
+        count = int(self["extend"].value)
+        labels = [Label("Extend") for _ in range(count)]
+        stack = self["stack"].value
+        self[stack].extend(labels)
+
+    def handle_event(self, event: Event):
         self.update_status_bar()
 
     def update_status_bar(self):
@@ -55,5 +66,5 @@ class Demo(Window):
 
 
 if __name__ == "__main__":
-    set_debug(True)
+    # set_debug(True)
     Demo().run()

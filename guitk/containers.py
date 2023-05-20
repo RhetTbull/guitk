@@ -78,6 +78,11 @@ class VStack(_VerticalContainer):
         """Add a widget to the bottom of the VStack"""
         self._add_widget_row_col(widget, len(self), 0)
 
+    def extend(self, widgets: list[Widget]):
+        """Add a list of widgets to the end of the VStack"""
+        for widget in widgets:
+            self.append(widget)
+
     def insert(self, index: int, widget: Widget):
         """Insert a widget at the given index in the HStack.
 
@@ -155,6 +160,11 @@ class HStack(_Container):
     def append(self, widget: Widget):
         """Add a widget to the end of the HStack"""
         self._add_widget_row_col(widget, 0, len(self))
+
+    def extend(self, widgets: list[Widget]):
+        """Add a list of widgets to the end of the HStack"""
+        for widget in widgets:
+            self.append(widget)
 
     def insert(self, index: int, widget: Widget):
         """Insert a widget at the given index in the HStack.
