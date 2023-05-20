@@ -16,12 +16,12 @@ class Demo(ui.Window):
     @ui.on(key="Hello")
     def on_hello(self):
         label = ui.Label("Hello")
-        self.vs.add_widget(label)
+        self.vs.append(label)
 
     @ui.on(key="Goodbye")
     def on_goodbye(self):
         label = ui.Label("Goodbye")
-        self.hs.add_widget(label)
+        self.hs.append(label)
 
 
 if __name__ == "__main__":

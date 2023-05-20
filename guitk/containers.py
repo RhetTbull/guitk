@@ -71,7 +71,7 @@ class VStack(_VerticalContainer):
         if self.expand:
             parent.grid_rowconfigure(row, weight=1)
 
-    def add_widget(self, widget: Widget):
+    def append(self, widget: Widget):
         """Add a widget to the bottom of the VStack"""
         self.row_count += 1
         self._add_widget_row_col(widget, self.row_count, 0)
@@ -128,7 +128,7 @@ class HStack(_Container):
         if self.expand:
             parent.grid_columnconfigure(col, weight=1)
 
-    def add_widget(self, widget: Widget):
+    def append(self, widget: Widget):
         """Add a widget to the end of the HStack"""
         self.col_count += 1
         self._add_widget_row_col(widget, 0, self.col_count)
