@@ -8,7 +8,7 @@
 # TODO: add style to all controls
 # TODO: standardize value_type
 
-from ._debug import debug, is_debug, set_debug
+from ._debug import debug, debug_watch, is_debug, set_debug
 from ._on import on
 from .containers import HStack, VStack
 from .debugwindow import DebugWindow
@@ -104,6 +104,7 @@ __all__ = [
     "Widget",
     "Window",
     "debug",
+    "debug_watch",
     "is_debug",
     "on",
     "set_debug",

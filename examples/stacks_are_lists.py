@@ -9,26 +9,34 @@ class Demo(Window):
         with VLayout():
             with HStack():
                 with VStack():
-                    RadioButton(
-                        "VStack", "stack", key="stack", value="VStack", selected=True
-                    )
-                    RadioButton("HStack", "stack", value="HStack")
-                    Button("Add")
-                    with HStack():
-                        Entry(key="index", default="1", width=3)
-                        Button("Insert")
-                    with HStack():
-                        Entry(key="extend", default="2", width=3)
-                        Button("Extend")
-                with VStack(key="VStack") as self.vs:
-                    Label("VStack")
+                    self.add_control_widgets()
                 VSeparator()
-                with HStack(key="HStack") as self.hs:
-                    Label("HStack")
+                with VStack():
+                    Label("VStack").font(weight="bold", underline=True)
+                    with VStack(key="VStack") as self.vs:
+                        ...
+                VSeparator()
+                with VStack():
+                    Label("HStack").font(weight="bold", underline=True)
+                    with HStack(key="HStack") as self.hs:
+                        ...
             HSeparator()
             with HStack():
                 Label("VStack:", key="vstack_count")
                 Label("HStack:", key="hstack_count")
+
+    def add_control_widgets(self):
+        """Create the control widgets"""
+        RadioButton("VStack", "stack", key="stack", value="VStack", selected=True)
+        RadioButton("HStack", "stack", value="HStack")
+        Button("Add")
+        with HStack():
+            Entry(key="index", default="1", width=3)
+            Button("Insert")
+        with HStack():
+            Entry(key="extend", default="2", width=3)
+            Button("Extend")
+        Button("Clear")
 
     def setup(self):
         print(self.vs.layout)
@@ -56,6 +64,14 @@ class Demo(Window):
         stack = self["stack"].value
         self[stack].extend(labels)
 
+    @debug_watch
+    @on(key="Clear")
+    def on_clear(self):
+        print(self.vs.layout)
+        stack = self["stack"].value
+        self[stack].clear()
+        print(self.vs.layout)
+
     def handle_event(self, event: Event):
         self.update_status_bar()
 
@@ -66,5 +82,5 @@ class Demo(Window):
 
 
 if __name__ == "__main__":
-    # set_debug(True)
+    set_debug(True)
     Demo().run()

@@ -5,7 +5,7 @@ from typing import Hashable
 
 from guitk.constants import GUITK
 
-from ._debug import debug_borderwidth, debug_relief, debug_watch
+from ._debug import debug_borderwidth, debug_relief, debug_watch, debug
 from .frame import _Container, _VerticalContainer
 from .types import HAlign, VAlign, Window
 from .widget import Widget
@@ -98,6 +98,14 @@ class VStack(_VerticalContainer):
         """
         self._insert_widget_row_col(widget, index, 0, True)
 
+    def clear(self):
+        """Remove all widgets from the VStack"""
+        for row in self.layout:
+            for widget in row:
+                debug(f"destroying {widget} {widget.key=}")
+                widget.destroy()
+        self.layout = [[]]
+
     def _add_widget_row_col(self, widget: Widget, row: int, col: int):
         super()._add_widget_row_col(widget, row, col)
 
@@ -181,8 +189,17 @@ class HStack(_Container):
         """
         self._insert_widget_row_col(widget, 0, index)
 
+    @debug_watch
     def _add_widget_row_col(self, widget: Widget, row: int, col: int):
         super()._add_widget_row_col(widget, row, col)
+
+    def clear(self):
+        """Remove all widgets from the HStack"""
+        if not self.layout:
+            return
+        for widget in self.layout[0]:
+            widget.destroy()
+        self.layout = [[]]
 
     def __len__(self):
         """Length of the HStack (number of widgets contained"""

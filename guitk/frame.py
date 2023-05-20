@@ -306,7 +306,6 @@ class _Container(Widget, _LayoutMixin):
             self.widget.state(["disabled"])
         return self.widget
 
-    @debug_watch
     def _add_widget_row_col(self, widget: Widget, row: int, col: int):
         """Add a widget to the container after the container has been created
             Intended for use at run-time only when widgets need to be added dynamically
@@ -317,12 +316,10 @@ class _Container(Widget, _LayoutMixin):
         # add widget to self.layout
         self._ensure_layout_size(row, col)
         self.layout[row][col] = widget
-        debug(self.layout)
 
         # redraw the layout which will create the widget
         self._layout(self.frame, self.window)
 
-    @debug_watch
     def _insert_widget_row_col(
         self, widget: Widget, row: int, col: int, vertical: bool = False
     ):
@@ -336,28 +333,32 @@ class _Container(Widget, _LayoutMixin):
             vertical: (bool) if True, insert the widget vertically
         """
         # add widget to self.layout
-        debug(f"before insert: {self.layout}")
         if vertical:
             row = min(row, len(self.layout))
-            self._ensure_layout_size(row - 1, col)
+            self._ensure_layout_size(row - 1, col or None)
             self.layout.insert(row, [widget])
         else:
             # python list.insert() will insert at the end if index is greater than the length
             # so copy that behavior here
-            self._ensure_layout_size(row, 0)
             col = min(col, len(self.layout[row]))
+            self._ensure_layout_size(row, None)
             self.layout[row].insert(col, widget)
-        debug(f"after insert: {self.layout}")
 
         # redraw the layout which will create the widget
         self._layout(self.frame, self.window)
 
-    def _ensure_layout_size(self, row: int, col: int):
-        """Ensure the layout is at least row x col in size"""
+    def _ensure_layout_size(self, row: int, col: int | None):
+        """Ensure the layout is at least row x col in size
+
+        Args:
+            row: (int) the row size to ensure
+            col: (int or None) the column size to ensure; if None, does not add None to columns
+        """
         while len(self.layout) <= row:
             self.layout.append([])
-        while len(self.layout[row]) <= col:
-            self.layout[row].append(None)
+        if col is not None:
+            while len(self.layout[row]) <= col:
+                self.layout[row].append(None)
 
     @property
     def frame(self):
