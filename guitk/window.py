@@ -111,7 +111,7 @@ class Window(_LayoutMixin, _WindowBaseClass):
             ]
 
         self._commands = []
-        print(self)
+
         self._layout(self._mainframe, self)
 
         # apply theme if necessary
@@ -309,6 +309,11 @@ class Window(_LayoutMixin, _WindowBaseClass):
     def root(self):
         """Return Tk root instance"""
         return self._tk.root
+
+    @property
+    def widgets(self) -> list[Widget]:
+        """ "Return list of all widgets belonging to the window"""
+        return self._widgets
 
     def children(self):
         """Return child windows"""

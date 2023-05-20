@@ -9,7 +9,7 @@ from guitk.tkroot import _TKRoot
 
 from .events import Event, EventCommand
 from .layout import DummyParent, get_parent
-from .types import CommandType, TooltipType, ValueType
+from .types import CommandType, TooltipType, ValueType, VAlign, HAlign
 
 
 class Widget:
@@ -81,6 +81,11 @@ class Widget:
         # used by style()
         self._style_kwargs = {}
 
+        # will store where widget is placed in layout grid (row, column)
+        # set by the layout manager
+        self._row = None
+        self._col = None
+
     @property
     def value(self):
         return self._value.get()
@@ -139,6 +144,8 @@ class Widget:
         Args:
             **kwargs -- style options
 
+        Returns: Widget instance (self)
+
         Note:
         The specific style options available depend on the widget type.
         For example, to configure the foreground color to blue of a Label widget:
@@ -175,6 +182,8 @@ class Widget:
             underline -- font underlining: false (0), true (1)
             overstrike -- font strikeout: false (0), true (1)
 
+        Returns: Widget instance (self)
+
         Note:
             The font parameter is a string of the form "family size style", where style is a string
             containing any combination of "bold", "italic", "underline", and "overstrike" separated by spaces.
@@ -188,6 +197,44 @@ class Widget:
         if font_kwargs := {k: v for k, v in locals_.items() if v is not None}:
             self._style_kwargs["font"] = tk.font.Font(**font_kwargs)
         return self
+
+    # def valign(self, valign: VAlign | None = None) -> Widget:
+    #     """Set valig nthe widget
+
+    #     Args:
+    #         valign (VAlign | None): Vertical alignment
+
+    #     Returns: Widget instance (self)
+    #     """
+
+    #     return self
+
+    def destroy(self) -> None:
+        """Remove the widget from the layout and destroy it.
+
+        Note:
+            You should call this destroy() method and not the tkinter destroy() method
+            so that the widget is removed from the necessary bookkeeping is done in the
+            Window class.
+        """
+        self.widget.grid_forget()
+        self.widget.destroy()
+        self.widget = None
+        self.window._widget_by_key.pop(self.key, None)
+
+    def replace(self, widget: Widget) -> Widget:
+        """Replace widget with another widget.
+        This destroys the parent widget and replaces it with the new widget in the layout.
+
+        Args;
+            widget (Widget): New widget
+
+        Returns: Widget instance
+        """
+        self.widget.grid_forget()
+        self.parent._add_widget_row_col(widget, row=self._row, col=self._col)
+        self.destroy()
+        return widget
 
     def __init_subclass__(subclass, *args, **kwargs):
         """Ensure that all widgets are added to the parent layout"""

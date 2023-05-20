@@ -4,7 +4,7 @@ import tkinter as tk
 
 from guitk.constants import GUITK
 
-from .debug import debug_borderwidth, debug_relief
+from ._debug import debug_borderwidth, debug_relief, debug_watch
 from .frame import _Container, _VerticalContainer
 from .types import HAlign, VAlign, Window
 from .widget import Widget
@@ -74,7 +74,10 @@ class VStack(_VerticalContainer):
     def add_widget(self, widget: Widget):
         """Add a widget to the bottom of the VStack"""
         self.row_count += 1
-        super().add_widget(widget, self.row_count, 0)
+        self._add_widget_row_col(widget, self.row_count, 0)
+
+    def _add_widget_row_col(self, widget: Widget, row: int, col: int):
+        super()._add_widget_row_col(widget, row, col)
 
 
 class HStack(_Container):
@@ -128,4 +131,7 @@ class HStack(_Container):
     def add_widget(self, widget: Widget):
         """Add a widget to the end of the HStack"""
         self.col_count += 1
-        super().add_widget(widget, 0, self.col_count)
+        self._add_widget_row_col(widget, 0, self.col_count)
+
+    def _add_widget_row_col(self, widget: Widget, row: int, col: int):
+        super()._add_widget_row_col(widget, row, col)

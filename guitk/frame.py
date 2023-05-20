@@ -2,12 +2,13 @@
 
 from __future__ import annotations
 
+import contextlib
 import tkinter as tk
 from tkinter import ttk
 
 from guitk.constants import GUITK
 
-from .debug import debug, debug_borderwidth, debug_relief
+from ._debug import debug, debug_borderwidth, debug_relief, debug_watch
 from .layout import pop_parent, push_parent
 from .spacer import HSpacer, VSpacer
 from .tooltips import Hovertip
@@ -36,18 +37,25 @@ class _LayoutMixin:
     def _layout(self, parent: tk.BaseWidget, window: Window):
         """Create widgets from layout"""
         # as this is a mixin, make sure class being mixed into has necessary attributes
-        try:
-            valign = self.layout.valign.lower() if self.layout.valign else "top"
-            halign = self.layout.halign.lower() if self.layout.halign else "left"
-        except AttributeError:
-            try:
-                valign = self.valign.lower() if self.valign else "top"
-                halign = self.halign.lower() if self.halign else "left"
-            except AttributeError:
-                valign = "top"
-                halign = "left"
+
+        # get alignment from layout or from class attributes
+        debug(self)
+
+        valign = "top"
+        halign = "left"
+
+        # first get alignment from layout
+        with contextlib.suppress(AttributeError):
+            valign = self.layout.valign.lower() if self.layout.valign else valign
+            halign = self.layout.halign.lower() if self.layout.halign else halign
+
+        # if widget has alignment attributes (e.g. VStack, HStack...), use those instead
+        with contextlib.suppress(AttributeError):
+            valign = self.valign.lower() if self.valign else valign
+            halign = self.halign.lower() if self.halign else halign
 
         debug(f"valign={valign}, halign={halign}")
+
         layout = list(self.layout)
 
         if valign in {"bottom", "center"}:
@@ -61,6 +69,8 @@ class _LayoutMixin:
         if halign == "center":
             for row in layout:
                 row.append(HSpacer())
+
+        debug(f"{layout=}")
 
         for row_count, row in enumerate(layout):
             if self.autoframe and (
@@ -80,17 +90,17 @@ class _LayoutMixin:
                 self._create_and_add_widget(
                     widget, parent, window, row_count, col_count
                 )
+                widget._row, widget._col = row_count, col_count
                 self.col_count = col_count
+
+        debug(f"{self.row_count=}, {self.col_count=}")
 
     def _create_and_add_widget(self, widget, parent, window, row, col):
         """Create the widget and add it to layout"""
 
-        # keep track of row/column offset for widgets that use rowspan/columnspan
-        row_offset = 0
-        col_offset = 0
-
+        # create the widget
         widget.key = widget.key or f"{widget.widget_type},{row},{col}"
-        widget._create_widget(parent, window, row + row_offset, col + col_offset)
+        widget._create_widget(parent, window, row, col)
 
         # add tooltip if needed
         if tooltip := widget.tooltip or window.tooltip:
@@ -99,6 +109,21 @@ class _LayoutMixin:
         else:
             widget._tooltip = None
 
+        window._widgets.append(widget)
+        widget.parent = self
+        window._widget_by_key[widget.key] = widget
+
+        self._configure_widget(widget, parent, window, row, col)
+
+        # take focus if needed
+        if widget._focus:
+            widget.widget.focus()
+
+    def _configure_widget(
+        self, widget: Widget, parent: tk.BaseWidget, window: Window, row: int, col: int
+    ):
+        """Configure the widget"""
+
         # configure style if needed
         if widget._style_kwargs:
             style = ttk.Style()
@@ -106,11 +131,10 @@ class _LayoutMixin:
             style.configure(style_name, **widget._style_kwargs)
             widget.widget.configure(style=style_name)
 
-        window._widgets.append(widget)
-        widget.parent = self
-        window._widget_by_key[widget.key] = widget
-
         # configure row/columns/weight
+        row_offset = 0
+        col_offset = 0
+
         if widget.rowspan and widget.rowspan > 1:
             row_offset += widget.rowspan - 1
         if widget.columnspan and widget.columnspan > 1:
@@ -132,10 +156,6 @@ class _LayoutMixin:
         padx = widget.padx if widget.padx is not None else window.padx
         pady = widget.pady if widget.pady is not None else window.pady
         widget.widget.grid_configure(padx=padx, pady=pady)
-
-        # take focus if needed
-        if widget._focus:
-            widget.widget.focus()
 
 
 class _Container(Widget, _LayoutMixin):
@@ -275,7 +295,7 @@ class _Container(Widget, _LayoutMixin):
             self.widget.state(["disabled"])
         return self.widget
 
-    def add_widget(self, widget: Widget, row: int, col: int):
+    def _add_widget_row_col(self, widget: Widget, row: int, col: int):
         """Add a widget to the container after the container has been created
             Intended for use at run-time only when widgets need to be added dynamically
 

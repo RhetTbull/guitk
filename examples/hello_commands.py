@@ -1,23 +1,22 @@
 """ Example program showing how to use bind_command """
 
 
-import guitk
+import guitk as gui
 
 
-class HelloWorld(guitk.Window):
+class HelloWorld(gui.Window):
     def config(self):
         self.title = "Hello, World"
+        
         # Define the window's contents
-        self.layout = [
-            [guitk.Label("What's your name?")],
-            [guitk.Entry(key="ENTRY_NAME", events=True)],
-            [guitk.Label("", width=40, key="OUTPUT")],
-            [
-                guitk.Button("Ok", command=self.on_ok),
-                guitk.Button("Press Me", key="PRESSME"),
-                guitk.Button("Quit", command=self.on_quit),
-            ],
-        ]
+        with gui.VLayout():
+            gui.Label("What's your name?")
+            gui.Entry(key="ENTRY_NAME", events=True)
+            gui.Label("", width=40, key="OUTPUT")
+            with gui.HStack():
+                gui.Button("Ok", command=self.on_ok)
+                gui.Button("Press Me", key="PRESSME")
+                gui.Button("Quit", command=self.on_quit)
 
     def on_ok(self):
         print("Hello!")
@@ -36,9 +35,7 @@ class HelloWorld(guitk.Window):
 
     def setup(self):
         # commands can also be bound by event type or key value
-        self.bind_command(
-            event_type=guitk.EventType.ButtonPress, command=self.on_button
-        )
+        self.bind_command(event_type=gui.EventType.ButtonPress, command=self.on_button)
         self.bind_command(key="PRESSME", command=self.on_pressme)
 
         # commands can be bound via the widget as well
@@ -53,7 +50,7 @@ class HelloWorld(guitk.Window):
         if event.key == "Ok":
             # set the output Label to the value of the Entry box
             name = self["ENTRY_NAME"].value
-            self["OUTPUT"].value = f"Hello {name}! Thanks for trying guitk."
+            self["OUTPUT"].value = f"Hello {name}! Thanks for trying gui."
 
 
 if __name__ == "__main__":

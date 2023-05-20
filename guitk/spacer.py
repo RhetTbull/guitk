@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import tkinter as tk
 
-from .debug import debug_borderwidth, debug_relief
+from ._debug import debug_borderwidth, debug_relief
 from .ttk_label import Label
 from .types import Window
 

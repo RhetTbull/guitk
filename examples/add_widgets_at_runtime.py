@@ -1,36 +1,26 @@
 """Demo showing how to add widgets at runtime"""
 
-import tkinter as tk
 
-from guitk import (
-    Button,
-    HLayout,
-    HStack,
-    Label,
-    VSeparator,
-    VStack,
-    Window,
-    on,
-)
+import guitk as ui
 
 
-class Demo(Window):
+class Demo(ui.Window):
     def config(self):
-        with HLayout():
-            with VStack() as self.vs:
-                Button("Say Hello", key="Hello")
-            VSeparator()
-            with HStack() as self.hs:
-                Button("Say Goodbye", key="Goodbye")
+        with ui.HLayout():
+            with ui.VStack() as self.vs:
+                ui.Button("Say Hello", key="Hello")
+            ui.VSeparator()
+            with ui.HStack() as self.hs:
+                ui.Button("Say Goodbye", key="Goodbye")
 
-    @on(key="Hello")
+    @ui.on(key="Hello")
     def on_hello(self):
-        label = Label("Hello")
+        label = ui.Label("Hello")
         self.vs.add_widget(label)
 
-    @on(key="Goodbye")
+    @ui.on(key="Goodbye")
     def on_goodbye(self):
-        label = Label("Goodbye")
+        label = ui.Label("Goodbye")
         self.hs.add_widget(label)
 
 

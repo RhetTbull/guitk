@@ -8,6 +8,7 @@
 # TODO: add style to all controls
 # TODO: standardize value_type
 
+from ._debug import debug, is_debug, set_debug
 from ._on import on
 from .containers import HStack, VStack
 from .debugwindow import DebugWindow
@@ -63,12 +64,14 @@ __all__ = [
     "EventCommand",
     "EventType",
     "Frame",
+    "HLayout",
+    "HSeparator",
+    "HSpacer",
     "HStack",
     "Label",
     "LabelEntry",
     "LabelFrame",
     "LabelPane",
-    "HLayout",
     "LinkLabel",
     "Linklabel",
     "ListBox",
@@ -87,20 +90,21 @@ __all__ = [
     "RadioButton",
     "Radiobutton",
     "Scale",
-    "HSeparator",
-    "HSpacer",
     "Tab",
     "Text",
     "TreeView",
     "Treeview",
-    "VStack",
-    "VerticalLabelPane",
     "VLayout",
-    "VerticalPane",
     "VSeparator",
     "VSpacer",
+    "VStack",
+    "VerticalLabelPane",
+    "VerticalPane",
     "VerticalTab",
     "Widget",
     "Window",
+    "debug",
+    "is_debug",
     "on",
+    "set_debug",
 ]
