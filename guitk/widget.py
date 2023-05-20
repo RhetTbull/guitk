@@ -86,6 +86,9 @@ class Widget:
         self._row = None
         self._col = None
 
+        # set to True when _layout creates the widget
+        self._has_been_created = False
+
     @property
     def value(self):
         return self._value.get()

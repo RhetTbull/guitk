@@ -30,6 +30,9 @@ _valid_ttk_radiobutton_attributes = _valid_standard_attributes
 
 Window = TypeVar("Window")
 
+# TODO: need a better way to get radio button value
+# only way now is the key but you really only need one key for the group to get the value
+
 
 class Radiobutton(Widget):
     """ttk.Radiobutton class"""

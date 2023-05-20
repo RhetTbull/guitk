@@ -1,6 +1,7 @@
 """ Container classes for guitk """
 
 import tkinter as tk
+from typing import Hashable
 
 from guitk.constants import GUITK
 
@@ -9,13 +10,15 @@ from .frame import _Container, _VerticalContainer
 from .types import HAlign, VAlign, Window
 from .widget import Widget
 
+# TODO: remove manual bookkeeping of row and column counts
+
 
 class VStack(_VerticalContainer):
     """A container that stacks widgets vertically when added to a Layout"""
 
     def __init__(
         self,
-        key: str | None = None,
+        key: Hashable | None = None,
         height: int | None = None,
         padding: int | None = None,
         disabled: bool | None = False,
@@ -27,7 +30,7 @@ class VStack(_VerticalContainer):
         """A container that stacks widgets vertically when added to a Layout
 
         Args:
-            key (str, optional): The key to use for the VStack. Defaults to None.
+            key (Hashable, optional): The key to use for the VStack. Defaults to None.
             height (int, optional): The height of the VStack. Defaults to None.
             padding (int, optional): The padding around the VStack. Defaults to None.
             disabled (bool, optional): Whether the VStack is disabled. Defaults to False.
@@ -73,11 +76,29 @@ class VStack(_VerticalContainer):
 
     def append(self, widget: Widget):
         """Add a widget to the bottom of the VStack"""
-        self.row_count += 1
-        self._add_widget_row_col(widget, self.row_count, 0)
+        self._add_widget_row_col(widget, len(self), 0)
+
+    def insert(self, index: int, widget: Widget):
+        """Insert a widget at the given index in the HStack.
+
+        Args:
+            index (int): The index to insert the widget at.
+            widget (Widget): The widget to insert.
+
+        Note: The first argument is the index of the element before which to insert,
+        so a.insert(0, x) inserts at the front of the stack, and a.insert(len(a), x)
+        is equivalent to a.append(x).
+
+        If the index is out of range, the widget will be added to the end of the VStack.
+        """
+        self._insert_widget_row_col(widget, index, 0, True)
 
     def _add_widget_row_col(self, widget: Widget, row: int, col: int):
         super()._add_widget_row_col(widget, row, col)
+
+    def __len__(self):
+        """Length of the VStack (number of widgets contained)"""
+        return len(self.layout) if self.layout else 0
 
 
 class HStack(_Container):
@@ -85,6 +106,7 @@ class HStack(_Container):
 
     def __init__(
         self,
+        key: Hashable | None = None,
         disabled: bool | None = False,
         sticky: str | None = "nsew",
         valign: VAlign | None = None,
@@ -94,15 +116,17 @@ class HStack(_Container):
         """A container that stacks widgets horizontally when added to a Layout
 
         Args:
+            key (Hashable, optional): The key to use for the HStack. Defaults to None.
             disabled (bool, optional): Whether the HStack is disabled. Defaults to False.
             sticky (str, optional): The sticky value for the HStack. Defaults to "nsew".
             valign (VAlign, optional): The vertical alignment for the widgets in the HStack. Defaults to None.
             halign (HAlign, optional): The horizontal alignment for the widgets in the HStack. Defaults to None.
             expand (bool, optional): Whether the HStack should expand to fill the available space. Defaults to True.
         """
+        # TODO: copy height, width, padding, etc. from VStack
         super().__init__(
             frametype=GUITK.ELEMENT_FRAME,
-            key=None,
+            key=key,
             width=None,
             height=None,
             layout=None,
@@ -130,8 +154,27 @@ class HStack(_Container):
 
     def append(self, widget: Widget):
         """Add a widget to the end of the HStack"""
-        self.col_count += 1
-        self._add_widget_row_col(widget, 0, self.col_count)
+        self._add_widget_row_col(widget, 0, len(self))
+
+    def insert(self, index: int, widget: Widget):
+        """Insert a widget at the given index in the HStack.
+
+        Args:
+            index (int): The index to insert the widget at.
+            widget (Widget): The widget to insert.
+
+        Note: The first argument is the index of the element before which to insert,
+        so a.insert(0, x) inserts at the front of the stack, and a.insert(len(a), x)
+        is equivalent to a.append(x).
+
+        If the index is out of range, the widget will be added to the end of the HStack.
+        """
+        self._insert_widget_row_col(widget, 0, index)
 
     def _add_widget_row_col(self, widget: Widget, row: int, col: int):
         super()._add_widget_row_col(widget, row, col)
+
+    def __len__(self):
+        """Length of the HStack (number of widgets contained"""
+        # add 1 as col_count is the index of the last column
+        return len(self.layout[0]) if self.layout else 0

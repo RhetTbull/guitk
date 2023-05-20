@@ -20,11 +20,13 @@ class Demo(ui.Window):
     def on_hello(self):
         label = ui.Label("Hello")
         self.vs.append(label)
+        ui.debug(f"{len(self.vs)=}")
 
     @ui.on(key="Goodbye")
     def on_goodbye(self):
         label = ui.Label("Goodbye")
         self.hs.append(label)
+        ui.debug(f"{len(self.hs)=}")
 
 
 if __name__ == "__main__":

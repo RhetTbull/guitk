@@ -98,21 +98,32 @@ class _LayoutMixin:
     def _create_and_add_widget(self, widget, parent, window, row, col):
         """Create the widget and add it to layout"""
 
-        # create the widget
-        widget.key = widget.key or f"{widget.widget_type},{row},{col}"
-        widget._create_widget(parent, window, row, col)
+        if not widget._has_been_created:
+            # create the widget
+            widget.key = widget.key or f"{widget.widget_type},{row},{col}"
+            widget._create_widget(parent, window, row, col)
 
-        # add tooltip if needed
-        if tooltip := widget.tooltip or window.tooltip:
-            _tooltip = tooltip(widget.key) if callable(tooltip) else tooltip
-            widget._tooltip = Hovertip(widget.widget, _tooltip) if _tooltip else None
+            # add tooltip if needed
+            if tooltip := widget.tooltip or window.tooltip:
+                _tooltip = tooltip(widget.key) if callable(tooltip) else tooltip
+                widget._tooltip = (
+                    Hovertip(widget.widget, _tooltip) if _tooltip else None
+                )
+            else:
+                widget._tooltip = None
+
+            window._widgets.append(widget)
+            widget.parent = self
+            window._widget_by_key[widget.key] = widget
+
+            widget._has_been_created = True
         else:
-            widget._tooltip = None
+            # widget already created just need to re-grid it
+            widget._grid(
+                row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
+            )
 
-        window._widgets.append(widget)
-        widget.parent = self
-        window._widget_by_key[widget.key] = widget
-
+        # in either case, configure the widget
         self._configure_widget(widget, parent, window, row, col)
 
         # take focus if needed
@@ -286,7 +297,7 @@ class _Container(Widget, _LayoutMixin):
         )
 
         if self.layout:
-            self._layout(self.widget, self.window)
+            self._layout(self.frame, self.window)
 
         if self.width or self.height:
             self.widget.grid_propagate(False)
@@ -303,17 +314,50 @@ class _Container(Widget, _LayoutMixin):
         Args:
             widget: (Widget) the widget to add
         """
-        self._create_and_add_widget(widget, self.frame, self.window, row, col)
-        self.window._widgets.append(widget)
-        self.window._widget_by_key[widget.key] = widget
-
         # add widget to self.layout
+        self._ensure_layout_size(row, col)
+        self.layout[row][col] = widget
+        debug(self.layout)
+
+        # redraw the layout which will create the widget
+        self._layout(self.frame, self.window)
+
+    @debug_watch
+    def _insert_widget_row_col(
+        self, widget: Widget, row: int, col: int, vertical: bool = False
+    ):
+        """Insert a widget into the container after the container has been created
+            Intended for use at run-time only when widgets need to be added dynamically
+
+        Args:
+            widget: (Widget) the widget to add
+            row: (int) the row to insert the widget into
+            col: (int) the column to insert the widget into
+            vertical: (bool) if True, insert the widget vertically
+        """
+        # add widget to self.layout
+        debug(f"before insert: {self.layout}")
+        if vertical:
+            row = min(row, len(self.layout))
+            self._ensure_layout_size(row - 1, col)
+            self.layout.insert(row, [widget])
+        else:
+            # python list.insert() will insert at the end if index is greater than the length
+            # so copy that behavior here
+            self._ensure_layout_size(row, 0)
+            col = min(col, len(self.layout[row]))
+            self.layout[row].insert(col, widget)
+        debug(f"after insert: {self.layout}")
+
+        # redraw the layout which will create the widget
+        self._layout(self.frame, self.window)
+
+    def _ensure_layout_size(self, row: int, col: int):
+        """Ensure the layout is at least row x col in size"""
         while len(self.layout) <= row:
             self.layout.append([])
         while len(self.layout[row]) <= col:
             self.layout[row].append(None)
-        self.layout[row][col] = widget
-        debug(self.layout)
 
     @property
     def frame(self):
