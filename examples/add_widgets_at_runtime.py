@@ -13,6 +13,9 @@ class Demo(ui.Window):
             with ui.HStack() as self.hs:
                 ui.Button("Say Goodbye", key="Goodbye")
 
+    def setup(self):
+        print(self.vs.layout)
+
     @ui.on(key="Hello")
     def on_hello(self):
         label = ui.Label("Hello")
@@ -25,4 +28,5 @@ class Demo(ui.Window):
 
 
 if __name__ == "__main__":
+    ui.set_debug(True)
     Demo().run()

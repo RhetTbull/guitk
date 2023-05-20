@@ -295,6 +295,7 @@ class _Container(Widget, _LayoutMixin):
             self.widget.state(["disabled"])
         return self.widget
 
+    @debug_watch
     def _add_widget_row_col(self, widget: Widget, row: int, col: int):
         """Add a widget to the container after the container has been created
             Intended for use at run-time only when widgets need to be added dynamically
@@ -306,9 +307,17 @@ class _Container(Widget, _LayoutMixin):
         self.window._widgets.append(widget)
         self.window._widget_by_key[widget.key] = widget
 
+        # add widget to self.layout
+        while len(self.layout) <= row:
+            self.layout.append([])
+        while len(self.layout[row]) <= col:
+            self.layout[row].append(None)
+        self.layout[row][col] = widget
+        debug(self.layout)
+
     @property
     def frame(self):
-        """Return the Tk frame widget"""
+        """Return the Tk Frame widget"""
         return self.widget
 
     @property
