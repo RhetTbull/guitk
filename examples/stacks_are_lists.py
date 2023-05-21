@@ -46,6 +46,8 @@ class Demo(Window):
         with HStack():
             Entry(key="pop", default="0", width=3)
             Button("Pop")
+            Entry(key="del", default="0", width=3)
+            Button("Del")
 
     def setup(self):
         # place to store popped widgets
@@ -93,6 +95,13 @@ class Demo(Window):
         name = f"{stack} {widget.widget_type} {widget.key}"
         self.popped[key] = stack, widget
         self.vs_popped.append(Button(name, key=f"popped: {key}"))
+
+    @on(key="del")
+    @on(key="Del")
+    def on_del(self):
+        idx = int(self["pop"].value)
+        stack = self["stack"].value
+        del self[stack][idx]
 
     @on(event_type=EventType.ButtonPress)
     def on_popped(self, event: Event):

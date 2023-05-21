@@ -127,6 +127,14 @@ class VStack(_VerticalContainer):
         """Length of the VStack (number of widgets contained)"""
         return len(self.layout) if self.layout else 0
 
+    def __getitem__(self, index: int):
+        """Get the widget at the given index"""
+        return self.layout[index]
+
+    def __delitem__(self, index: int):
+        """Remove the widget at the given index"""
+        self.pop(index)
+
 
 class HStack(_Container):
     """A container that stacks widgets horizontally when added to a Layout"""
@@ -237,3 +245,11 @@ class HStack(_Container):
         """Length of the HStack (number of widgets contained"""
         # add 1 as col_count is the index of the last column
         return len(self.layout[0]) if self.layout else 0
+
+    def __getitem__(self, index: int):
+        """Get the widget at the given index"""
+        return self.layout[0][index]
+
+    def __delitem__(self, index: int):
+        """Remove the widget at the given index"""
+        self.pop(index)
