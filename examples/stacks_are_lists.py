@@ -7,7 +7,7 @@ from guitk import *
 class Demo(Window):
     def config(self):
         with VLayout():
-            with HStack():
+            with HStack(expand=True):
                 with VStack():
                     self.add_control_widgets()
                 VSeparator()
@@ -20,13 +20,19 @@ class Demo(Window):
                     Label("HStack").font(weight="bold", underline=True)
                     with HStack(key="HStack") as self.hs:
                         ...
+                with VStack(expand=True):
+                    Label("Popped").font(weight="bold", underline=True)
+                    with VStack() as self.vs_popped:
+                        ...
             HSeparator()
             with HStack():
                 Label("VStack:", key="vstack_count")
                 Label("HStack:", key="hstack_count")
+            HSeparator()
+            Output(echo=True, weightx=1, sticky="nsew")
 
     def add_control_widgets(self):
-        """Create the control widgets"""
+        """Create the control widgets; must be called inside the Layout or Container context"""
         RadioButton("VStack", "stack", key="stack", value="VStack", selected=True)
         RadioButton("HStack", "stack", value="HStack")
         Button("Add")
@@ -37,9 +43,13 @@ class Demo(Window):
             Entry(key="extend", default="2", width=3)
             Button("Extend")
         Button("Clear")
+        with HStack():
+            Entry(key="pop", default="0", width=3)
+            Button("Pop")
 
     def setup(self):
-        print(self.vs.layout)
+        # place to store popped widgets
+        self.popped = {}
         self.update_status_bar()
 
     @on(key="Add")
@@ -64,13 +74,38 @@ class Demo(Window):
         stack = self["stack"].value
         self[stack].extend(labels)
 
-    @debug_watch
     @on(key="Clear")
     def on_clear(self):
         print(self.vs.layout)
         stack = self["stack"].value
         self[stack].clear()
         print(self.vs.layout)
+
+    @on(key="pop")
+    @on(key="Pop")
+    def on_pop(self):
+        idx = int(self["pop"].value)
+        stack = self["stack"].value
+        widget = self[stack].pop(idx)
+
+        # add the popped widget to the ListBox and store it
+        key = f"id_{id(widget)}"
+        name = f"{stack} {widget.widget_type} {widget.key}"
+        self.popped[key] = stack, widget
+        self.vs_popped.append(Button(name, key=f"popped: {key}"))
+
+    @on(event_type=EventType.ButtonPress)
+    def on_popped(self, event: Event):
+        """Event handler for the popped widgets"""
+        if not str(event.key).startswith("popped:"):
+            return
+
+        # popped widget was clicked, so add it back to the stack
+        # and remove the button from the popped stack
+        widget_name = str(event.key)[8:]
+        stack, widget = self.popped[widget_name]
+        self[stack].append(widget)
+        event.widget.destroy()
 
     def handle_event(self, event: Event):
         self.update_status_bar()

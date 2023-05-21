@@ -360,6 +360,33 @@ class _Container(Widget, _LayoutMixin):
             while len(self.layout[row]) <= col:
                 self.layout[row].append(None)
 
+    def _pop_widget_row_col(self, row: int, col: int, vertical: bool = False) -> Widget:
+        """Remove a widget from the container after the container has been created and return it
+            Intended for use at run-time only when widgets need to be added dynamically
+
+        Args:
+            row: (int) the row to remove the widget from
+            col: (int) the column to remove the widget from
+            vertical: (bool) if True, remove the widget vertically
+
+        Returns:
+            Widget: the widget that was removed
+
+        Raises:
+            IndexError: if the row or column is out of range
+        """
+        try:
+            widget = self.layout[row].pop(col)
+            if vertical and not self.layout[row]:
+                self.layout.pop(row)
+        except IndexError as e:
+            raise IndexError(f"No widget at row={row}, col={col}") from e
+
+        widget.widget.grid_forget()
+        self._layout(self.frame, self.window)
+
+        return widget
+
     @property
     def frame(self):
         """Return the Tk Frame widget"""

@@ -104,7 +104,21 @@ class VStack(_VerticalContainer):
             for widget in row:
                 debug(f"destroying {widget} {widget.key=}")
                 widget.destroy()
-        self.layout = [[]]
+        self.layout = []
+
+    def pop(self, index: int = -1):
+        """Remove and return the widget at the given index in the HStack.
+
+        Args:
+            index (int): The index of the widget to remove.
+
+        Returns:
+            Widget: The widget that was removed.
+
+        Raises:
+            IndexError: If the index is out of range.
+        """
+        return self._pop_widget_row_col(index, 0, vertical=True)
 
     def _add_widget_row_col(self, widget: Widget, row: int, col: int):
         super()._add_widget_row_col(widget, row, col)
@@ -200,6 +214,24 @@ class HStack(_Container):
         for widget in self.layout[0]:
             widget.destroy()
         self.layout = [[]]
+
+    def pop(self, index: int = -1):
+        """Remove and return the widget at the given index in the HStack.
+
+        Args:
+            index (int): The index of the widget to remove.
+
+        Returns:
+            Widget: The widget that was removed.
+
+        Raises:
+            IndexError: If the index is out of range.
+
+        Note:
+            Although the widget is returned, it cannot be added to a new stack.
+            You can re-add it to the same stack though.
+        """
+        return self._pop_widget_row_col(0, index)
 
     def __len__(self):
         """Length of the HStack (number of widgets contained"""
