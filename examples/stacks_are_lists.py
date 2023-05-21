@@ -37,7 +37,7 @@ class Demo(Window):
         RadioButton("HStack", "stack", value="HStack")
         Button("Add")
         with HStack():
-            Entry(key="index", default="1", width=3)
+            Entry(key="index", default="1", width=3,)
             Button("Insert")
         with HStack():
             Entry(key="extend", default="2", width=3)
@@ -48,6 +48,9 @@ class Demo(Window):
             Button("Pop")
             Entry(key="del", default="0", width=3)
             Button("Del")
+        with HStack():
+            Entry(key="remove", default="", width=10)
+            Button("Remove")
 
     def setup(self):
         # place to store popped widgets
@@ -115,6 +118,13 @@ class Demo(Window):
         stack, widget = self.popped[widget_name]
         self[stack].append(widget)
         event.widget.destroy()
+
+    @on(key="remove")
+    @on(key="Remove")
+    def on_remove(self):
+        key = self["remove"].value
+        stack = self["stack"].value
+        self[stack].remove(key)
 
     def handle_event(self, event: Event):
         self.update_status_bar()

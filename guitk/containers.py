@@ -5,7 +5,7 @@ from typing import Hashable
 
 from guitk.constants import GUITK
 
-from ._debug import debug_borderwidth, debug_relief, debug_watch, debug
+from ._debug import debug, debug_borderwidth, debug_relief, debug_watch
 from .frame import _Container, _VerticalContainer
 from .types import HAlign, VAlign, Window
 from .widget import Widget
@@ -119,6 +119,23 @@ class VStack(_VerticalContainer):
             IndexError: If the index is out of range.
         """
         return self._pop_widget_row_col(index, 0, vertical=True)
+
+    def remove(self, key: Hashable):
+        """Remove the first widget with matching key from the VStack.
+
+        Args:
+            key (Hashable): The key of the widget to remove.
+
+        Raises:
+            ValueError: If the widget is not in the VStack.
+        """
+        for row in self.layout:
+            for widget in row:
+                if widget.key == key:
+                    widget.destroy()
+                    row.remove(widget)
+                    return
+        raise ValueError(f"Widget with key {key} not found in VStack")
 
     def _add_widget_row_col(self, widget: Widget, row: int, col: int):
         super()._add_widget_row_col(widget, row, col)
@@ -240,6 +257,22 @@ class HStack(_Container):
             You can re-add it to the same stack though.
         """
         return self._pop_widget_row_col(0, index)
+
+    def remove(self, key: Hashable = None):
+        """Remove the first widget with matching key from the HStack.
+
+        Args:
+            key (Hashable): The key of the widget to remove.
+
+        Raises:
+            ValueError: If the widget is not in the HStack.
+        """
+        for widget in self.layout[0]:
+            if widget.key == key:
+                widget.destroy()
+                self.layout[0].remove(widget)
+                return
+        raise ValueError(f"Widget with key {key} not found in HStack")
 
     def __len__(self):
         """Length of the HStack (number of widgets contained"""
