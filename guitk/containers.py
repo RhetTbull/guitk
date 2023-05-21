@@ -45,7 +45,7 @@ class _Stack(_Container):
                 Defaults to True.
 
         Note:
-            If width is specified, the Stack will not expand to fill the available space and the
+            If width or height is specified, the Stack will not expand to fill the available space and the
             expand parameter will be ignored.
         """
         super().__init__(
@@ -78,6 +78,10 @@ class _Stack(_Container):
         if self.expand:
             parent.grid_rowconfigure(row, weight=1)
             parent.grid_columnconfigure(col, weight=1)
+        if self.height:
+            parent.grid_columnconfigure(col, weight=1)
+        if self.width:
+            parent.grid_rowconfigure(row, weight=1)
 
     @property
     def layout(self) -> list[list[Widget]]:
@@ -239,6 +243,11 @@ class VStack(_Stack):
         )
         self.expand = expand if width is None else False
 
+    # def _create_widget(self, parent: tk.BaseWidget, window: Window, row: int, col: int):
+    #     super()._create_widget(parent, window, row, col)
+    #     if self.expand:
+    #         parent.grid_rowconfigure(row, weight=1)
+
 
 class HStack(_Stack):
     """A container that stacks widgets horizontally when added to a Layout"""
@@ -298,3 +307,8 @@ class HStack(_Stack):
         self._layout_lol = layout
         self._layout_list = [widget for row in layout for widget in row]
         debug(f"layout={layout} {self._layout_list=}")
+
+    # def _create_widget(self, parent: tk.BaseWidget, window: Window, row: int, col: int):
+    #     super()._create_widget(parent, window, row, col)
+    #     if self.expand:
+    #         parent.grid_columnconfigure(row, weight=1)
