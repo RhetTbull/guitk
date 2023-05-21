@@ -32,7 +32,7 @@ class ToDoWindow(ui.Window):
     def on_add(self, event: ui.Event):
         """Event handler for the add button"""
         key = f"todo_{self.todo_count}"
-        self.vs_todo._add_widget_row_col(ui.Entry(key=key, events=True))
+        self.vs_todo.append(ui.Entry(key=key, events=True))
         self[key].focus()
 
     @ui.on(event_type=ui.EventType.EntryReturn)
