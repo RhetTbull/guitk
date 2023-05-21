@@ -86,10 +86,10 @@ class Demo(Window):
 
     @on(key="Clear")
     def on_clear(self):
-        print(self.vs.layout)
+        print(self.vs._layout)
         stack = self["stack"].value
         self[stack].clear()
-        print(self.vs.layout)
+        print(self.vs._layout)
 
     @on(key="pop")
     @on(key="Pop")

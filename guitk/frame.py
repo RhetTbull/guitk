@@ -303,6 +303,7 @@ class _Container(Widget, _LayoutMixin):
             self._layout(self.frame, window)
 
         if self.width or self.height:
+            debug(f"{self.width=} {self.height=}")
             self.widget.grid_propagate(False)
 
         if self._disabled:

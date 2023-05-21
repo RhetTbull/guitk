@@ -14,7 +14,7 @@ class Demo(ui.Window):
                 ui.Button("Say Goodbye", key="Goodbye")
 
     def setup(self):
-        print(self.vs.layout)
+        print(self.vs._layout)
 
     @ui.on(key="Hello")
     def on_hello(self):

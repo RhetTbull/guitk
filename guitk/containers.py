@@ -6,20 +6,21 @@ from typing import Hashable
 from guitk.constants import GUITK
 
 from ._debug import debug, debug_borderwidth, debug_relief, debug_watch
-from .frame import _Container, _VerticalContainer
+from .frame import _Container
 from .types import HAlign, VAlign, Window
 from .widget import Widget
 
 # TODO: remove manual bookkeeping of row and column counts
 
 
-class VStack(_VerticalContainer):
-    """A container that stacks widgets vertically when added to a Layout"""
+class _Stack(_Container):
+    """A container that stacks widgets when added to a Layout"""
 
     def __init__(
         self,
         key: Hashable | None = None,
         height: int | None = None,
+        width: int | None = None,
         padding: int | None = None,
         disabled: bool | None = False,
         sticky: str | None = "nsew",
@@ -27,29 +28,30 @@ class VStack(_VerticalContainer):
         halign: HAlign | None = None,
         expand: bool = True,
     ):
-        """A container that stacks widgets vertically when added to a Layout
+        """Base container container that stacks widgets when added to a Layout
 
         Args:
-            key (Hashable, optional): The key to use for the VStack. Defaults to None.
-            height (int, optional): The height of the VStack. Defaults to None.
-            padding (int, optional): The padding around the VStack. Defaults to None.
+            key (Hashable, optional): The key to use for the Stack. Defaults to None.
+            height (int, optional): The height of the Stack. Defaults to None.
+            width (int, optional): The width of the Stack. Defaults to None.
+            padding (int, optional): The padding around the Stack. Defaults to None.
             disabled (bool, optional): Whether the VStack is disabled. Defaults to False.
-            sticky (str, optional): The sticky value for the VStack. Defaults to "nsew".
-            valign (VAlign, optional): The vertical alignment for the widgets in the VStack.
+            sticky (str, optional): The sticky value for the Stack. Defaults to "nsew".
+            valign (VAlign, optional): The vertical alignment for the widgets in the Stack.
                 Defaults to None.
-            halign (HAlign, optional): The horizontal alignment for the widgets in the VStack.
+            halign (HAlign, optional): The horizontal alignment for the widgets in the Stack.
                 Defaults to None.
-            expand (bool, optional): Whether the VStack should expand to fill the available space.
+            expand (bool, optional): Whether the Stack should expand to fill the available space.
                 Defaults to True.
 
         Note:
-            If height is specified, the VStack will not expand to fill the available space and the
+            If width is specified, the Stack will not expand to fill the available space and the
             expand parameter will be ignored.
         """
         super().__init__(
             frametype=GUITK.ELEMENT_FRAME,
             key=key,
-            width=None,
+            width=width,
             height=height,
             layout=None,
             style=None,
@@ -67,29 +69,49 @@ class VStack(_VerticalContainer):
             valign=valign,
             halign=halign,
         )
-        self.expand = expand if height is None else False
+        self.expand = expand if (width is None or height is None) else False
+        self._layout_list = []
+        self._layout_lol = [[]]
 
     def _create_widget(self, parent: tk.BaseWidget, window: Window, row: int, col: int):
         super()._create_widget(parent, window, row, col)
         if self.expand:
             parent.grid_rowconfigure(row, weight=1)
+            parent.grid_columnconfigure(col, weight=1)
+
+    @property
+    def layout(self) -> list[list[Widget]]:
+        """Return the layout of the Stack"""
+        self._layout_lol = (
+            [[widget] for widget in self._layout_list] if self._layout_list else [[]]
+        )
+        return self._layout_lol
+
+    @layout.setter
+    def layout(self, layout: list[list[Widget]]):
+        """Set the layout of the Stack"""
+        self._layout_lol = layout
+        self._layout_list = [widget for row in layout for widget in row]
+        debug(f"layout={layout} {self._layout_list=}")
 
     @property
     def widgets(self) -> list[Widget]:
-        """Return a list of the widgets in the VStack"""
-        return [widget for row in self.layout for widget in row]
+        """Return a list of the widgets in the Stack"""
+        return self._layout_list or []
 
     def append(self, widget: Widget):
-        """Add a widget to the bottom of the VStack"""
-        self._add_widget_row_col(widget, len(self), 0)
+        """Add a widget to the bottom of the Stack"""
+        # self._add_widget_row_col(widget, len(self), 0)
+        self._layout_list.append(widget)
+        self._layout(self.frame, self.window)
 
     def extend(self, widgets: list[Widget]):
-        """Add a list of widgets to the end of the VStack"""
+        """Add a list of widgets to the end of the Stack"""
         for widget in widgets:
             self.append(widget)
 
     def insert(self, index: int, widget: Widget):
-        """Insert a widget at the given index in the HStack.
+        """Insert a widget at the given index in the Stack.
 
         Args:
             index (int): The index to insert the widget at.
@@ -99,20 +121,22 @@ class VStack(_VerticalContainer):
         so a.insert(0, x) inserts at the front of the stack, and a.insert(len(a), x)
         is equivalent to a.append(x).
 
-        If the index is out of range, the widget will be added to the end of the VStack.
+        If the index is out of range, the widget will be added to the end of the Stack.
         """
-        self._insert_widget_row_col(widget, index, 0, True)
+        # self._insert_widget_row_col(widget, index, 0, True)
+        self._layout_list.insert(index, widget)
+        self._layout(self.frame, self.window)
 
     def clear(self):
-        """Remove all widgets from the VStack"""
-        for row in self.layout:
-            for widget in row:
-                debug(f"destroying {widget} {widget.key=}")
-                widget.destroy()
-        self.layout = []
+        """Remove all widgets from the Stack"""
+        for widget in self._layout_list:
+            debug(f"destroying {widget} {widget.key=}")
+            widget.destroy()
+        self._layout_list = []
+        self._layout(self.frame, self.window)
 
     def pop(self, index: int = -1):
-        """Remove and return the widget at the given index in the HStack.
+        """Remove and return the widget at the given index in the Stack.
 
         Args:
             index (int): The index of the widget to remove.
@@ -123,47 +147,107 @@ class VStack(_VerticalContainer):
         Raises:
             IndexError: If the index is out of range.
         """
-        return self._pop_widget_row_col(index, 0, vertical=True)
+        widget = self._layout_list.pop(index)
+        widget.widget.grid_forget()
+        self._layout(self.frame, self.window)
+        return widget
+        # return self._pop_widget_row_col(index, 0, vertical=True)
 
     def remove(self, key: Hashable):
-        """Remove the first widget with matching key from the VStack.
+        """Remove the first widget with matching key from the Stack.
 
         Args:
             key (Hashable): The key of the widget to remove.
 
         Raises:
-            ValueError: If the widget is not in the VStack.
+            ValueError: If the widget is not in the Stack.
         """
-        for row in self.layout:
-            for widget in row:
-                if widget.key == key:
-                    widget.destroy()
-                    row.remove(widget)
-                    return
-        raise ValueError(f"Widget with key {key} not found in VStack")
+        for idx, widget in enumerate(self._layout_list):
+            if widget.key == key:
+                self._layout_list.pop(idx)
+                widget.destroy()
+                self._layout(self.frame, self.window)
+                return
+        raise ValueError(f"Widget with key {key} not found in Stack")
 
     def _add_widget_row_col(self, widget: Widget, row: int, col: int):
         super()._add_widget_row_col(widget, row, col)
 
+    def _add_widget(self, widget: Widget):
+        """Add a widget to the frame's layout"""
+        debug(self, widget, self.layout)
+        debug(f"_add_widget: {self.layout=}, {self._layout_lol=}, {self._layout_list=}")
+        self._layout_list.append(widget)
+        debug(f"_add_widget: {self.layout=}, {self._layout_lol=}, {self._layout_list=}")
+
     def __len__(self):
-        """Length of the VStack (number of widgets contained)"""
-        return len(self.layout) if self.layout else 0
+        """Length of the Stack (number of widgets contained)"""
+        return len(self._layout_list) if self._layout_list else 0
 
     def __getitem__(self, index: int):
         """Get the widget at the given index"""
-        return self.layout[index]
+        return self._layout_list[index]
 
     def __delitem__(self, index: int):
         """Remove the widget at the given index"""
         self.pop(index)
 
 
-class HStack(_Container):
+class VStack(_Stack):
+    """A container that stacks widgets vertically when added to a Layout"""
+
+    def __init__(
+        self,
+        key: Hashable | None = None,
+        width: int | None = None,
+        padding: int | None = None,
+        disabled: bool | None = False,
+        sticky: str | None = "nsew",
+        valign: VAlign | None = None,
+        halign: HAlign | None = None,
+        expand: bool = True,
+    ):
+        """Base container container that stacks widgets vertically when added to a Layout
+
+        Args:
+            key (Hashable, optional): The key to use for the VStack. Defaults to None.
+            width (int, optional): The width of the VStack. Defaults to None.
+            padding (int, optional): The padding around the VStack. Defaults to None.
+            disabled (bool, optional): Whether the VStack is disabled. Defaults to False.
+            sticky (str, optional): The sticky value for the VStack. Defaults to "nsew".
+            valign (VAlign, optional): The vertical alignment for the widgets in the VStack.
+                Defaults to None.
+            halign (HAlign, optional): The horizontal alignment for the widgets in the VStack.
+                Defaults to None.
+            expand (bool, optional): Whether the VStack should expand to fill the available space.
+                Defaults to True.
+
+        Note:
+            If width is specified, the VStack will not expand to fill the available space and the
+            expand parameter will be ignored.
+        """
+        super().__init__(
+            key=key,
+            height=None,
+            width=width,
+            padding=padding,
+            disabled=disabled,
+            sticky=sticky,
+            valign=valign,
+            halign=halign,
+            expand=expand,
+        )
+        self.expand = expand if width is None else False
+
+
+class HStack(_Stack):
     """A container that stacks widgets horizontally when added to a Layout"""
 
     def __init__(
         self,
         key: Hashable | None = None,
+        height: int | None = None,
+        padding: int | None = None,
         disabled: bool | None = False,
         sticky: str | None = "nsew",
         valign: VAlign | None = None,
@@ -174,125 +258,43 @@ class HStack(_Container):
 
         Args:
             key (Hashable, optional): The key to use for the HStack. Defaults to None.
+            height (int, optional): The height of the HStack. Defaults to None.
+            padding (int, optional): The padding around the HStack. Defaults to None.
             disabled (bool, optional): Whether the HStack is disabled. Defaults to False.
             sticky (str, optional): The sticky value for the HStack. Defaults to "nsew".
-            valign (VAlign, optional): The vertical alignment for the widgets in the HStack. Defaults to None.
-            halign (HAlign, optional): The horizontal alignment for the widgets in the HStack. Defaults to None.
-            expand (bool, optional): Whether the HStack should expand to fill the available space. Defaults to True.
-        """
-        # TODO: copy height, width, padding, etc. from VStack
-        super().__init__(
-            frametype=GUITK.ELEMENT_FRAME,
-            key=key,
-            width=None,
-            height=None,
-            layout=None,
-            style=None,
-            borderwidth=debug_borderwidth() or None,
-            padding=0,
-            relief=debug_relief() or None,
-            disabled=disabled,
-            rowspan=None,
-            columnspan=None,
-            sticky=sticky,
-            tooltip=None,
-            autoframe=False,
-            padx=0,
-            pady=0,
-            valign=valign,
-            halign=halign,
-        )
-        self.expand = expand
-
-    def _create_widget(self, parent: tk.BaseWidget, window: Window, row: int, col: int):
-        super()._create_widget(parent, window, row, col)
-        if self.expand:
-            parent.grid_columnconfigure(col, weight=1)
-
-    @property
-    def widgets(self) -> list[Widget]:
-        """Return a list of the widgets in the HStack"""
-        return list(self.layout[0]) if self.layout else []
-
-    def append(self, widget: Widget):
-        """Add a widget to the end of the HStack"""
-        self._add_widget_row_col(widget, 0, len(self))
-
-    def extend(self, widgets: list[Widget]):
-        """Add a list of widgets to the end of the HStack"""
-        for widget in widgets:
-            self.append(widget)
-
-    def insert(self, index: int, widget: Widget):
-        """Insert a widget at the given index in the HStack.
-
-        Args:
-            index (int): The index to insert the widget at.
-            widget (Widget): The widget to insert.
-
-        Note: The first argument is the index of the element before which to insert,
-        so a.insert(0, x) inserts at the front of the stack, and a.insert(len(a), x)
-        is equivalent to a.append(x).
-
-        If the index is out of range, the widget will be added to the end of the HStack.
-        """
-        self._insert_widget_row_col(widget, 0, index)
-
-    @debug_watch
-    def _add_widget_row_col(self, widget: Widget, row: int, col: int):
-        super()._add_widget_row_col(widget, row, col)
-
-    def clear(self):
-        """Remove all widgets from the HStack"""
-        if not self.layout:
-            return
-        for widget in self.layout[0]:
-            widget.destroy()
-        self.layout = [[]]
-
-    def pop(self, index: int = -1):
-        """Remove and return the widget at the given index in the HStack.
-
-        Args:
-            index (int): The index of the widget to remove.
-
-        Returns:
-            Widget: The widget that was removed.
-
-        Raises:
-            IndexError: If the index is out of range.
+            valign (VAlign, optional): The vertical alignment for the widgets in the HStack.
+                Defaults to None.
+            halign (HAlign, optional): The horizontal alignment for the widgets in the HStack.
+                Defaults to None.
+            expand (bool, optional): Whether the HStack should expand to fill the available space.
+                Defaults to True.
 
         Note:
-            Although the widget is returned, it cannot be added to a new stack.
-            You can re-add it to the same stack though.
+            If height is specified, the HStack will not expand to fill the available space and the
+            expand parameter will be ignored.
         """
-        return self._pop_widget_row_col(0, index)
+        super().__init__(
+            key=key,
+            height=height,
+            width=None,
+            padding=padding,
+            disabled=disabled,
+            sticky=sticky,
+            valign=valign,
+            halign=halign,
+            expand=expand,
+        )
+        self.expand = expand if height is None else False
 
-    def remove(self, key: Hashable = None):
-        """Remove the first widget with matching key from the HStack.
+    @property
+    def layout(self) -> list[list[Widget]]:
+        """Return the layout of the HStack"""
+        self._layout_lol = [self._layout_list]
+        return self._layout_lol
 
-        Args:
-            key (Hashable): The key of the widget to remove.
-
-        Raises:
-            ValueError: If the widget is not in the HStack.
-        """
-        for widget in self.layout[0]:
-            if widget.key == key:
-                widget.destroy()
-                self.layout[0].remove(widget)
-                return
-        raise ValueError(f"Widget with key {key} not found in HStack")
-
-    def __len__(self):
-        """Length of the HStack (number of widgets contained"""
-        # add 1 as col_count is the index of the last column
-        return len(self.layout[0]) if self.layout else 0
-
-    def __getitem__(self, index: int):
-        """Get the widget at the given index"""
-        return self.layout[0][index]
-
-    def __delitem__(self, index: int):
-        """Remove the widget at the given index"""
-        self.pop(index)
+    @layout.setter
+    def layout(self, layout: list[list[Widget]]):
+        """Set the layout of the VStack"""
+        self._layout_lol = layout
+        self._layout_list = [widget for row in layout for widget in row]
+        debug(f"layout={layout} {self._layout_list=}")

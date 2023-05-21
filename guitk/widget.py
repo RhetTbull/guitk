@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Any, Callable, Hashable
 
 from guitk.tkroot import _TKRoot
 
-from ._debug import debug_watch
+from ._debug import debug, debug_watch
 from .events import Event, EventCommand
 from .layout import DummyParent, get_parent
 from .types import CommandType, HAlign, TooltipType, VAlign, ValueType
@@ -272,6 +272,7 @@ class Widget:
         # This rewrites the __init__ method of the subclass to add the widget to the parent layout
         super().__init_subclass__(*args, **kwargs)
 
+        @debug_watch
         def new_init(self, *args, init=subclass.__init__, **kwargs):
             init(self, *args, **kwargs)
             if subclass is type(self):
@@ -280,8 +281,9 @@ class Widget:
                 self.parent = get_parent()
                 if isinstance(self.parent, DummyParent):
                     raise RuntimeError(
-                        "Widget must created within a HLayout or Container"
+                        "Widget must created within a Layout or Container"
                     )
+                debug(f"{self.parent=} {self=}")
                 self.parent._add_widget(self)
 
         subclass.__init__ = new_init

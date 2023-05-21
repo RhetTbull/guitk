@@ -8,6 +8,7 @@ import threading
 from inspect import currentframe, getmro
 from typing import Any
 
+from ._debug import debug_watch
 from .types import HAlign, LayoutType, VAlign, Widget
 
 _current_parent = {}
@@ -87,6 +88,7 @@ class HLayout:
         self.window.col_count += 1
         self.window.add_widget(widget, 0, self.window.col_count)
 
+    @debug_watch
     def _add_widget(self, widget):
         self._layout.append(widget)
 
