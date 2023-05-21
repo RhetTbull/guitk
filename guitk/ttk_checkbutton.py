@@ -106,8 +106,6 @@ class Checkbutton(Widget):
         self.kwargs = kwargs
 
     def _create_widget(self, parent, window: Window, row, col):
-        self.window = window
-        self._parent = parent
         event = Event(self, window, self.key, EventType.Checkbutton)
 
         # build arg list for Checkbutton

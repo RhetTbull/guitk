@@ -97,9 +97,6 @@ class Label(Widget):
         self.kwargs = kwargs
 
     def _create_widget(self, parent, window: Window, row, col):
-        self.window = window
-        self._parent = parent
-
         # Arg list for ttk.Label
         kwargs_label = {
             k: v for k, v in self.kwargs.items() if k in _valid_ttk_label_attributes
@@ -191,9 +188,6 @@ class LinkLabel(Label):
         self.kwargs = kwargs
 
     def _create_widget(self, parent, window: "Window", row, col):
-        self.window = window
-        self._parent = parent
-
         self.widget = super()._create_widget(parent, window, row, col)
 
         event = Event(self, window, self.key, EventType.LinkLabel)

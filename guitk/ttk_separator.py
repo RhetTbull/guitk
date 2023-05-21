@@ -43,9 +43,6 @@ class HSeparator(Widget):
         self.sticky = "EW"
 
     def _create_widget(self, parent, window: "Window", row, col):
-        self.window = window
-        self._parent = parent
-
         self.widget = ttk.Separator(parent, orient=tk.HORIZONTAL)
         self._grid(
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
@@ -87,9 +84,6 @@ class VSeparator(Widget):
         self.sticky = "NS"
 
     def _create_widget(self, parent, window: "Window", row, col):
-        self.window = window
-        self._parent = parent
-
         self.widget = ttk.Separator(parent, orient=tk.VERTICAL)
         self._grid(
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan

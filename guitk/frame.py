@@ -5,6 +5,7 @@ from __future__ import annotations
 import contextlib
 import tkinter as tk
 from tkinter import ttk
+from typing import TYPE_CHECKING
 
 from guitk.constants import GUITK
 
@@ -13,7 +14,7 @@ from .layout import pop_parent, push_parent
 from .spacer import HSpacer, VSpacer
 from .tooltips import Hovertip
 from .ttk_label import Label
-from .types import HAlign, LayoutType, TooltipType, VAlign, Window
+from .types import HAlign, LayoutType, TooltipType, VAlign
 from .widget import Widget
 
 _valid_frame_attributes = {
@@ -26,6 +27,9 @@ _valid_frame_attributes = {
     "width",
 }
 
+if TYPE_CHECKING:
+    from .window import Window
+
 
 class _LayoutMixin:
     """Mixin class to provide layout; for internal use only"""
@@ -34,6 +38,7 @@ class _LayoutMixin:
     col_count = 0
     layout = []
 
+    @debug_watch
     def _layout(self, parent: tk.BaseWidget, window: Window):
         """Create widgets from layout"""
         # as this is a mixin, make sure class being mixed into has necessary attributes
@@ -90,7 +95,6 @@ class _LayoutMixin:
                 self._create_and_add_widget(
                     widget, parent, window, row_count, col_count
                 )
-                widget._row, widget._col = row_count, col_count
                 self.col_count = col_count
 
         debug(f"{self.row_count=}, {self.col_count=}")
@@ -99,6 +103,7 @@ class _LayoutMixin:
         """Create the widget and add it to layout"""
 
         if not widget._has_been_created:
+            widget._set_parent_window(parent, window)
             # create the widget
             widget.key = widget.key or f"{widget.widget_type},{row},{col}"
             widget._create_widget(parent, window, row, col)
@@ -118,18 +123,15 @@ class _LayoutMixin:
 
             widget._has_been_created = True
         else:
-            # widget already created just need to re-grid it
+            # grid the widget
             widget._grid(
                 row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
             )
 
-        # in either case, configure the widget
+        widget._set_row_col(row, col)
         self._configure_widget(widget, parent, window, row, col)
 
-        # take focus if needed
-        if widget._focus:
-            widget.widget.focus()
-
+    @debug_watch
     def _configure_widget(
         self, widget: Widget, parent: tk.BaseWidget, window: Window, row: int, col: int
     ):
@@ -167,6 +169,10 @@ class _LayoutMixin:
         padx = widget.padx if widget.padx is not None else window.padx
         pady = widget.pady if widget.pady is not None else window.pady
         widget.widget.grid_configure(padx=padx, pady=pady)
+
+        # take focus if needed
+        if widget._focus:
+            widget.widget.focus()
 
 
 class _Container(Widget, _LayoutMixin):
@@ -243,9 +249,6 @@ class _Container(Widget, _LayoutMixin):
         self.halign = halign
 
     def _create_widget(self, parent, window: Window, row, col):
-        self.window = window
-        self._parent = parent
-
         kwargs = {
             k: v
             for k, v in self.kwargs.items()
@@ -297,7 +300,7 @@ class _Container(Widget, _LayoutMixin):
         )
 
         if self.layout:
-            self._layout(self.frame, self.window)
+            self._layout(self.frame, window)
 
         if self.width or self.height:
             self.widget.grid_propagate(False)

@@ -102,9 +102,6 @@ class Entry(Widget):
         self.kwargs = kwargs
 
     def _create_widget(self, parent, window: Window, row, col):
-        self.window = window
-        self._parent = parent
-
         # build arg list for ttk.Entry
         kwargs_entry = {
             k: v for k, v in self.kwargs.items() if k in _valid_ttk_entry_attributes
@@ -249,9 +246,6 @@ class LabelEntry(Entry):
         self.kwargs = kwargs
 
     def _create_widget(self, parent, window: "Window", row, col):
-        self.window = window
-        self._parent = parent
-
         # build arg list for Entry
         kwargs_entry = {
             k: v for k, v in self.kwargs.items() if k in _valid_ttk_entry_attributes

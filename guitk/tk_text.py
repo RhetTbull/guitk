@@ -135,9 +135,6 @@ class Text(Widget):
         self.kwargs = kwargs
 
     def _create_widget(self, parent, window: "Window", row, col):
-        self.window = window
-        self._parent = parent
-
         kwargs_text = {
             k: v for k, v in self.kwargs.items() if k in _valid_tk_text_attributes
         }

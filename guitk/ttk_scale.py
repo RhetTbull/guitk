@@ -153,9 +153,7 @@ class Scale(Widget):
 
     def _create_widget(self, parent, window: "Window", row, col):
         self.window = window
-        self._parent = parent
         event = Event(self, window, self.key, EventType.ScaleUpdate)
-
         # build arg list for ttk.Scale
         kwargs = {
             k: v for k, v in self.kwargs.items() if k in _valid_ttk_scale_attributes

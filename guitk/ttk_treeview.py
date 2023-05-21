@@ -113,9 +113,6 @@ class Treeview(Widget):
         self.kwargs = kwargs
 
     def _create_widget(self, parent, window: Window, row, col):
-        self.window = window
-        self._parent = parent
-
         # build arg list for Treeview()
         kwargs_treeview = {
             k: v

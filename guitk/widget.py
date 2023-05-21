@@ -3,13 +3,18 @@
 from __future__ import annotations
 
 import tkinter as tk
-from typing import Any, Callable, Hashable
+from typing import TYPE_CHECKING, Any, Callable, Hashable
 
 from guitk.tkroot import _TKRoot
 
+from ._debug import debug_watch
 from .events import Event, EventCommand
 from .layout import DummyParent, get_parent
-from .types import CommandType, TooltipType, ValueType, VAlign, HAlign
+from .types import CommandType, HAlign, TooltipType, VAlign, ValueType
+
+if TYPE_CHECKING:
+    from .frame import _Container
+    from .window import Window
 
 
 class Widget:
@@ -74,9 +79,10 @@ class Widget:
         self.widget: tk.BaseWidget | None = None
         self._value = value_type() if value_type is not None else tk.StringVar()
 
-        # set by _create_widget in inherited classes
-        self.parent = None
+        # set by _create_widget in inherited classes or the __init_subclass__ method
+        self._parent = None
         self.window = None
+        self.parent = None
 
         # used by style()
         self._style_kwargs = {}
@@ -162,6 +168,7 @@ class Widget:
             Label("Hello").style(foreground="blue").font(size=20)
         """
         self._style_kwargs |= kwargs
+        self._configure()
         return self
 
     def font(
@@ -199,6 +206,7 @@ class Widget:
         locals_.pop("self")
         if font_kwargs := {k: v for k, v in locals_.items() if v is not None}:
             self._style_kwargs["font"] = tk.font.Font(**font_kwargs)
+        self._configure()
         return self
 
     # def valign(self, valign: VAlign | None = None) -> Widget:
@@ -238,6 +246,25 @@ class Widget:
         self.parent._add_widget_row_col(widget, row=self._row, col=self._col)
         self.destroy()
         return widget
+
+    def _set_parent_window(self, tk_parent: tk.BaseWidget, window: Window):
+        """Called during widget creation to set the widget attributes"""
+        self.window = window
+        self._parent = tk_parent
+
+    def _set_row_col(self, row: int, col: int):
+        """Called during widget creation or configuration to set the widget attributes"""
+        self._row = row
+        self._col = col
+
+    def _configure(self):
+        """Configure the widget after it has been created.
+        This allows font(), style() to be used before or after creation.
+        """
+        if self._has_been_created:
+            self.parent._configure_widget(
+                self, self._parent, self.window, self._row, self._col
+            )
 
     def __init_subclass__(subclass, *args, **kwargs):
         """Ensure that all widgets are added to the parent layout"""

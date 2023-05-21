@@ -103,9 +103,6 @@ class Combobox(Widget):
         self.default = default
 
     def _create_widget(self, parent, window: Window, row, col):
-        self.window = window
-        self._parent = parent
-
         # build arg list for Combobox
         kwargs = {
             k: v for k, v in self.kwargs.items() if k in _valid_ttk_combobox_attributes

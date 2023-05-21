@@ -104,9 +104,6 @@ class Notebook(_Container):
         self._tab_count = 0
 
     def _create_widget(self, parent, window: "Window", row, col):
-        self.window = window
-        self._parent = parent
-
         # Arg list for ttk.Label
         kwargs_notebook = {
             k: v for k, v in self.kwargs.items() if k in _valid_ttk_notebook_attributes

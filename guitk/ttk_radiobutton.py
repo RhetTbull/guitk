@@ -108,9 +108,6 @@ class Radiobutton(Widget):
         self.kwargs = kwargs
 
     def _create_widget(self, parent, window: "Window", row, col):
-        self.window = window
-        self._parent = parent
-
         # assign control variable or create it if necessary
         if self.group not in self.window._radiobuttons:
             # determine type of control variable based on value

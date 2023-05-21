@@ -116,9 +116,6 @@ class Panedwindow(_Container):
         self.tooltip = tooltip
 
     def _create_widget(self, parent, window: "Window", row, col):
-        self.window = window
-        self._parent = parent
-
         # Arg list for ttk.Label
         kwargs_panedwindow = {
             k: v

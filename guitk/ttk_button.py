@@ -118,8 +118,6 @@ class Button(Widget):
         self.widget["text"] = text
 
     def _create_widget(self, parent: Any, window: Window, row: int, col: int):
-        self.window = window
-        self._parent = parent
         event = Event(self, window, self.key, EventType.ButtonPress)
 
         # build arg list for Button()
@@ -225,8 +223,6 @@ class BrowseFileButton(Button):
         self.kwargs = kwargs
 
     def _create_widget(self, parent, window: "Window", row, col):
-        self.window = window
-        self._parent = parent
         kwargs_button = {
             k: v for k, v in self.kwargs.items() if k in _valid_ttk_button_attributes
         }
@@ -324,9 +320,6 @@ class BrowseDirectoryButton(Button):
         self.kwargs = kwargs
 
     def _create_widget(self, parent, window: "Window", row, col):
-        self.window = window
-        self._parent = parent
-
         kwargs_button = {
             k: v for k, v in self.kwargs.items() if k in _valid_ttk_button_attributes
         }

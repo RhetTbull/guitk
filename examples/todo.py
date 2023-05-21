@@ -1,7 +1,5 @@
 """Simple ToDo list application using guitk"""
 
-from tkinter import ttk
-
 import guitk as ui
 
 
@@ -20,13 +18,6 @@ class ToDoWindow(ui.Window):
         # this is where we would load the todo list from a file
         # to restore state from a previous session
         self.todo_count = 0
-
-        # create a style for the checkbutton
-        self.done_style = "Done.TCheckbutton"
-        self._done_style = ttk.Style()
-        self._done_style.configure(self.done_style, foreground="gray")
-
-        # bind double-click to the checkbutton
 
     @ui.on(key="add")
     def on_add(self, event: ui.Event):
@@ -56,10 +47,10 @@ class ToDoWindow(ui.Window):
         """Event handler for the CheckButton widget"""
         if event.widget.value:
             # checkbox is checked, so mark as done
-            event.widget.widget.configure(style=self.done_style)
+            event.widget.font(overstrike=True)
         else:
             # checkbox is unchecked, so mark as not done
-            event.widget.widget.configure(style="")
+            event.widget.font(overstrike=False)
 
 
 if __name__ == "__main__":

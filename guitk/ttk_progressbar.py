@@ -114,9 +114,6 @@ class Progressbar(Widget):
         self._value.set(float(value))
 
     def _create_widget(self, parent, window: "Window", row, col):
-        self.window = window
-        self._parent = parent
-
         # Arg list for ttk.ProgressBar
         kwargs_progressbar = {
             k: v
