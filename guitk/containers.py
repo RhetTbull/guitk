@@ -74,6 +74,11 @@ class VStack(_VerticalContainer):
         if self.expand:
             parent.grid_rowconfigure(row, weight=1)
 
+    @property
+    def widgets(self) -> list[Widget]:
+        """Return a list of the widgets in the VStack"""
+        return [widget for row in self.layout for widget in row]
+
     def append(self, widget: Widget):
         """Add a widget to the bottom of the VStack"""
         self._add_widget_row_col(widget, len(self), 0)
@@ -203,6 +208,11 @@ class HStack(_Container):
         super()._create_widget(parent, window, row, col)
         if self.expand:
             parent.grid_columnconfigure(col, weight=1)
+
+    @property
+    def widgets(self) -> list[Widget]:
+        """Return a list of the widgets in the HStack"""
+        return list(self.layout[0]) if self.layout else []
 
     def append(self, widget: Widget):
         """Add a widget to the end of the HStack"""
