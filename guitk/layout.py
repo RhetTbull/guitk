@@ -9,7 +9,7 @@ from inspect import currentframe, getmro
 from typing import Any
 
 from ._debug import debug_watch
-from .types import HAlign, LayoutType, VAlign, Widget
+from .types import HAlign, LayoutType, PadType, VAlign, Widget
 
 _current_parent = {}
 

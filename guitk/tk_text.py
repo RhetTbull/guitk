@@ -8,7 +8,7 @@ from typing import Hashable, TypeVar
 from guitk.redirect import StdErrRedirect, StdOutRedirect
 
 from .events import Event, EventCommand, EventType
-from .types import CommandType, TooltipType
+from .types import CommandType, PadType, TooltipType
 from .utils import scrolled_widget_factory
 from .widget import Widget
 
@@ -70,8 +70,8 @@ class Text(Widget):
         disabled: bool = False,
         columnspan: int | None = None,
         rowspan: int | None = None,
-        padx: int | None = None,
-        pady: int | None = None,
+        padx: PadType | None = None,
+        pady: PadType | None = None,
         events: bool = False,
         sticky: str | None = None,
         tooltip: TooltipType = None,
@@ -94,8 +94,8 @@ class Text(Widget):
             disabled (bool, optional): If True, widget is disabled. Defaults to False.
             columnspan (int | None, optional): Number of columns to span. Defaults to None.
             rowspan (int | None, optional): Number of rows to span. Defaults to None.
-            padx (int | None, optional): X padding. Defaults to None.
-            pady (int | None, optional): Y padding. Defaults to None.
+            padx (PadType | None, optional): X padding. Defaults to None.
+            pady (PadType | None, optional): Y padding. Defaults to None.
             events (bool, optional): Enable events for this widget. Defaults to False.
             sticky (str | None, optional): Sticky direction for widget layout. Defaults to None.
             tooltip (TooltipType | None, optional): Tooltip text or callback to generate tooltip text. Defaults to None.
@@ -200,8 +200,8 @@ class Output(Text):
         disabled: bool = False,
         columnspan: int | None = None,
         rowspan: int | None = None,
-        padx: int | None = None,
-        pady: int | None = None,
+        padx: PadType | None = None,
+        pady: PadType | None = None,
         events: bool = False,
         sticky: str | None = None,
         tooltip: TooltipType = None,
@@ -226,8 +226,8 @@ class Output(Text):
             disabled (bool, optional): If True, widget is disabled. Defaults to False.
             columnspan (int | None, optional): Number of columns to span. Defaults to None.
             rowspan (int | None, optional): Number of rows to span. Defaults to None.
-            padx (int | None, optional): X padding. Defaults to None.
-            pady (int | None, optional): Y padding. Defaults to None.
+            padx (PadType | None, optional): X padding. Defaults to None.
+            pady (PadType | None, optional): Y padding. Defaults to None.
             events (bool, optional): Enable events for this widget. Defaults to False.
             sticky (str | None, optional): Sticky direction for widget layout. Defaults to None.
             tooltip (TooltipType | None, optional): Tooltip text or callback to generate tooltip text. Defaults to None.

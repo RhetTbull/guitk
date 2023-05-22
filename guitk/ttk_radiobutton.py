@@ -7,7 +7,7 @@ import tkinter.ttk as ttk
 from typing import Any, Hashable, TypeVar, Union
 
 from .events import Event, EventCommand, EventType
-from .types import CommandType, TooltipType
+from .types import CommandType, PadType, TooltipType
 from .widget import Widget
 
 __all__ = ["Radiobutton", "RadioButton"]
@@ -46,8 +46,8 @@ class Radiobutton(Widget):
         disabled: bool = False,
         columnspan: int | None = None,
         rowspan: int | None = None,
-        padx: int | None = None,
-        pady: int | None = None,
+        padx: PadType | None = None,
+        pady: PadType | None = None,
         events: bool = True,
         sticky: str | None = None,
         tooltip: TooltipType = None,

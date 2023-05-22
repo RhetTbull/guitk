@@ -8,7 +8,6 @@ import sys
 import time
 from functools import wraps
 
-
 _global_debug = False
 
 __all__ = [

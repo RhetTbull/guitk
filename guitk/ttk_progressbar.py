@@ -6,7 +6,7 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from typing import Hashable, TypeVar
 
-from .types import TooltipType
+from .types import PadType, TooltipType
 from .widget import Widget
 
 __all__ = [
@@ -49,8 +49,8 @@ class Progressbar(Widget):
         disabled: bool = False,
         columnspan: int | None = None,
         rowspan: int | None = None,
-        padx: int | None = None,
-        pady: int | None = None,
+        padx: PadType | None = None,
+        pady: PadType | None = None,
         sticky: str | None = None,
         tooltip: TooltipType = None,
         events: bool = True,

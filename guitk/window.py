@@ -17,7 +17,7 @@ from .frame import _LayoutMixin
 from .layout import push_parent
 from .menu import Command, Menu
 from .ttk_label import Label
-from .types import SizeType, TooltipType
+from .types import PadType, SizeType, TooltipType
 from .widget import Widget
 
 
@@ -37,8 +37,8 @@ class Window(_LayoutMixin, _WindowBaseClass):
         self,
         parent: tk.Tk | None = None,
         title: str | None = None,
-        padx: int | None = None,
-        pady: int | None = None,
+        padx: PadType | None = None,
+        pady: PadType | None = None,
         topmost: bool | None = None,
         autoframe: bool = False,
         theme: str | None = None,

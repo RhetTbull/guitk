@@ -7,7 +7,7 @@ import tkinter.ttk as ttk
 from typing import Hashable
 
 from .events import Event, EventCommand, EventType
-from .types import CommandType, TooltipType, Window
+from .types import CommandType, PadType, TooltipType, Window
 from .utils import scrolled_widget_factory
 from .widget import Widget
 
@@ -40,8 +40,8 @@ class Treeview(Widget):
         disabled: bool = False,
         columnspan: int | None = None,
         rowspan: int | None = None,
-        padx: int | None = None,
-        pady: int | None = None,
+        padx: PadType | None = None,
+        pady: PadType | None = None,
         events: bool = True,
         sticky: str | None = None,
         tooltip: TooltipType = None,
@@ -218,8 +218,8 @@ class Listbox(Treeview):
         disabled: bool = False,
         columnspan: int | None = None,
         rowspan: int | None = None,
-        padx: int | None = None,
-        pady: int | None = None,
+        padx: PadType | None = None,
+        pady: PadType | None = None,
         events: bool = True,
         sticky: str | None = None,
         tooltip: TooltipType = None,

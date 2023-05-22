@@ -10,7 +10,7 @@ from guitk.tkroot import _TKRoot
 from ._debug import debug, debug_watch
 from .events import Event, EventCommand
 from .layout import DummyParent, get_parent
-from .types import CommandType, HAlign, TooltipType, VAlign, ValueType
+from .types import CommandType, HAlign, PadType, TooltipType, VAlign, ValueType
 
 if TYPE_CHECKING:
     from .frame import _Container
@@ -26,8 +26,8 @@ class Widget:
         disabled: bool = False,
         rowspan: int | None = None,
         columnspan: int | None = None,
-        padx: int | None = None,
-        pady: int | None = None,
+        padx: PadType | None = None,
+        pady: PadType | None = None,
         events: bool = True,
         sticky: str | None = None,
         tooltip: TooltipType = None,
@@ -45,8 +45,8 @@ class Widget:
             disabled (bool, optional): If True, widget is disabled. Defaults to False.
             columnspan (int | None, optional): Number of columns to span. Defaults to None.
             rowspan (int | None, optional): Number of rows to span. Defaults to None.
-            padx (int | None, optional): X padding. Defaults to None.
-            pady (int | None, optional): Y padding. Defaults to None.
+            padx (PadType | None, optional): X padding. Defaults to None.
+            pady (PadType | None, optional): Y padding. Defaults to None.
             events (bool, optional): Enable events for this widget. Defaults to False.
             sticky (str | None, optional): Sticky direction for widget layout. Defaults to None.
             tooltip (TooltipType | None, optional): Tooltip text or callback to generate tooltip text. Defaults to None.

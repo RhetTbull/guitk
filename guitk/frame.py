@@ -14,7 +14,7 @@ from .layout import pop_parent, push_parent
 from .spacer import HSpacer, VSpacer
 from .tooltips import Hovertip
 from .ttk_label import Label
-from .types import HAlign, LayoutType, PaddingType, TooltipType, VAlign
+from .types import HAlign, LayoutType, PaddingType, PadType, TooltipType, VAlign
 from .widget import Widget
 
 _valid_frame_attributes = {
@@ -188,7 +188,7 @@ class _Container(Widget, _LayoutMixin):
         width: int | None = None,
         style: str | None = None,
         borderwidth: int | None = None,
-        padding: PaddingType | None  = None,
+        padding: PaddingType | None = None,
         relief: str = None,
         disabled: bool | None = False,
         rowspan: int | None = None,
@@ -198,8 +198,8 @@ class _Container(Widget, _LayoutMixin):
         sticky: str | None = None,
         tooltip: TooltipType | None = None,
         autoframe: bool | None = True,
-        padx: int | None = None,
-        pady: int | None = None,
+        padx: PadType | None = None,
+        pady: PadType | None = None,
         weightx: int | None = None,
         weighty: int | None = None,
         valign: VAlign | None = None,
@@ -439,7 +439,7 @@ class Frame(_Container):
         height: int | None = None,
         style: str | None = None,
         borderwidth: int | None = None,
-        padding: PaddingType | None  = None,
+        padding: PaddingType | None = None,
         relief: str = None,
         disabled: bool | None = False,
         rowspan: int | None = None,
@@ -489,7 +489,7 @@ class LabelFrame(_Container):
         height: int | None = None,
         style: str | None = None,
         borderwidth: int | None = None,
-        padding: PaddingType | None  = None,
+        padding: PaddingType | None = None,
         relief: str = None,
         disabled: bool | None = False,
         rowspan: int | None = None,

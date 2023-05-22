@@ -6,7 +6,7 @@ import tkinter as tk
 
 from ._debug import debug_borderwidth, debug_relief
 from .ttk_label import Label
-from .types import Window
+from .types import PadType, Window
 
 __all__ = ["HSpacer", "VSpacer"]
 

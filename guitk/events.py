@@ -10,7 +10,7 @@ EventCommand = namedtuple("EventCommand", ["widget", "key", "event_type", "comma
 
 from enum import Enum
 
-from .types import Widget, Window
+from .types import PadType, Widget, Window
 
 
 class Event:

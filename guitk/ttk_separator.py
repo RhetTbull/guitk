@@ -5,7 +5,7 @@ from __future__ import annotations
 import tkinter as tk
 import tkinter.ttk as ttk
 
-from .types import Window
+from .types import PadType, Window
 from .widget import Widget
 
 __all__ = ["HSeparator", "VSeparator"]
@@ -21,16 +21,16 @@ class HSeparator(Widget):
     def __init__(
         self,
         columnspan: int | None = None,
-        padx: int | None = None,
-        pady: int | None = None,
+        padx: PadType | None = None,
+        pady: PadType | None = None,
         weightx: int | None = 1,
     ):
         """Initialize a horizontal HSeparator widget.
 
         Args:
             rowspan (int | None, optional): Number of rows to span. Defaults to None.
-            padx (int | None, optional): X padding. Defaults to None.
-            pady (int | None, optional): Y padding. Defaults to None.
+            padx (PadType | None, optional): X padding. Defaults to None.
+            pady (PadType | None, optional): Y padding. Defaults to None.
             weightx (int | None, optional): Weight of this widget in the horizontal direction. Defaults to 1.
         """
         super().__init__(
@@ -62,16 +62,16 @@ class VSeparator(Widget):
     def __init__(
         self,
         rowspan: int | None = None,
-        padx: int | None = None,
-        pady: int | None = None,
+        padx: PadType | None = None,
+        pady: PadType | None = None,
         weighty: int | None = 1,
     ):
         """Initialize a horizontal HSeparator widget.
 
         Args:
             rowspan (int | None, optional): Number of rows to span. Defaults to None.
-            padx (int | None, optional): X padding. Defaults to None.
-            pady (int | None, optional): Y padding. Defaults to None.
+            padx (PadType | None, optional): X padding. Defaults to None.
+            pady (PadType | None, optional): Y padding. Defaults to None.
             weightx (int | None, optional): Weight of this widget in the horizontal direction. Defaults to 1.
         """
         super().__init__(

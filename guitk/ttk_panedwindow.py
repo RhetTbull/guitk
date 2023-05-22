@@ -9,7 +9,7 @@ from guitk.constants import GUITK
 
 from .events import EventCommand, EventType
 from .frame import Frame, LabelFrame, _Container, _VerticalContainer
-from .types import CommandType, TooltipType
+from .types import CommandType, PadType, TooltipType
 
 __all__ = [
     "Panedwindow",
@@ -51,8 +51,8 @@ class Panedwindow(_Container):
         disabled: bool = False,
         columnspan: int | None = None,
         rowspan: int | None = None,
-        padx: int | None = None,
-        pady: int | None = None,
+        padx: PadType | None = None,
+        pady: PadType | None = None,
         sticky: str | None = None,
         tooltip: TooltipType = None,
         command: CommandType | None = None,
@@ -69,8 +69,8 @@ class Panedwindow(_Container):
             disabled (bool, optional): If True, widget is disabled. Defaults to False.
             columnspan (int | None, optional): Number of columns to span. Defaults to None.
             rowspan (int | None, optional): Number of rows to span. Defaults to None.
-            padx (int | None, optional): X padding. Defaults to None.
-            pady (int | None, optional): Y padding. Defaults to None.
+            padx (PadType | None, optional): X padding. Defaults to None.
+            pady (PadType | None, optional): Y padding. Defaults to None.
             sticky (str | None, optional): Sticky direction for widget layout. Defaults to None.
             tooltip (TooltipType | None, optional): Tooltip text or callback to generate tooltip text. Defaults to None.
             command (CommandType | None, optional): Command to execute when clicked. Defaults to None.

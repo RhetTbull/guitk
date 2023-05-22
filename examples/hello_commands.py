@@ -7,7 +7,7 @@ import guitk as gui
 class HelloWorld(gui.Window):
     def config(self):
         self.title = "Hello, World"
-        
+
         # Define the window's contents
         with gui.VLayout():
             gui.Label("What's your name?")
