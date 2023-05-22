@@ -15,6 +15,7 @@ VAlign = Literal["top", "bottom", "center"]
 HAlign = Literal["left", "right", "center"]
 DecoratedType = TypeVar("DecoratedType")
 SizeType = tuple[int, int] | str | None
+PaddingType = tuple[int, int, int, int] | tuple[int, int] | int | str
 
 
 class _WindowBaseClass:

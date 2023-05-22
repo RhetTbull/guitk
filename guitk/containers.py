@@ -8,7 +8,7 @@ from guitk.constants import GUITK
 from ._debug import debug, debug_borderwidth, debug_relief, debug_watch
 from .frame import _Container
 from .spacer import HSpacer, VSpacer
-from .types import HAlign, VAlign, Window
+from .types import HAlign, PaddingType, VAlign, Window
 from .widget import Widget
 
 # TODO: remove manual bookkeeping of row and column counts
@@ -22,7 +22,7 @@ class _Stack(_Container):
         key: Hashable | None = None,
         height: int | None = None,
         width: int | None = None,
-        padding: int | None = None,
+        padding: PaddingType | None  = None,
         disabled: bool | None = False,
         sticky: str | None = "nsew",
         valign: VAlign | None = None,
@@ -218,7 +218,7 @@ class VStack(_Stack):
         self,
         key: Hashable | None = None,
         width: int | None = None,
-        padding: int | None = None,
+        padding: PaddingType | None  = None,
         disabled: bool | None = False,
         sticky: str | None = "nsew",
         valign: VAlign | None = None,
@@ -268,7 +268,7 @@ class HStack(_Stack):
         self,
         key: Hashable | None = None,
         height: int | None = None,
-        padding: int | None = None,
+        padding: PaddingType | None  = None,
         disabled: bool | None = False,
         sticky: str | None = "nsew",
         valign: VAlign | None = None,
@@ -338,7 +338,7 @@ class VGrid(_Stack):
         rows: int,
         key: Hashable | None = None,
         width: int | None = None,
-        padding: int | None = None,
+        padding: PaddingType | None  = None,
         disabled: bool | None = False,
         sticky: str | None = "nsew",
         valign: VAlign | None = None,
@@ -407,7 +407,7 @@ class HGrid(_Stack):
         cols: int,
         key: Hashable | None = None,
         width: int | None = None,
-        padding: int | None = None,
+        padding: PaddingType | None  = None,
         disabled: bool | None = False,
         sticky: str | None = "nsew",
         valign: VAlign | None = None,
