@@ -37,6 +37,7 @@ class _LayoutMixin:
     row_count = 0
     col_count = 0
     layout = []
+    distribute = False
 
     @debug_watch
     def _layout(self, parent: tk.BaseWidget, window: Window):
@@ -493,6 +494,8 @@ class LabelFrame(_Container):
         sticky: str | None = None,
         tooltip: TooltipType | None = None,
         autoframe: bool = True,
+        weightx: int | None = None,
+        weighty: int | None = None,
         valign: VAlign | None = None,
         halign: HAlign | None = None,
         **kwargs,
@@ -518,4 +521,6 @@ class LabelFrame(_Container):
             kwargs=kwargs,
             valign=valign,
             halign=halign,
+            weightx=weightx,
+            weighty=weighty,
         )

@@ -7,6 +7,7 @@ from guitk.constants import GUITK
 
 from ._debug import debug, debug_borderwidth, debug_relief, debug_watch
 from .frame import _Container
+from .spacer import HSpacer, VSpacer
 from .types import HAlign, VAlign, Window
 from .widget import Widget
 
@@ -27,6 +28,7 @@ class _Stack(_Container):
         valign: VAlign | None = None,
         halign: HAlign | None = None,
         expand: bool = True,
+        distribute: bool = False,
     ):
         """Base container container that stacks widgets when added to a Layout
 
@@ -43,6 +45,7 @@ class _Stack(_Container):
                 Defaults to None.
             expand (bool, optional): Whether the Stack should expand to fill the available space.
                 Defaults to True.
+            distribute (bool, optional): Whether the Stack should distribute widgets evenly.
 
         Note:
             If width or height is specified, the Stack will not expand to fill the available space and the
@@ -70,6 +73,7 @@ class _Stack(_Container):
             halign=halign,
         )
         self.expand = expand if (width is None or height is None) else False
+        self.distribute = distribute
         self._layout_list = []
         self._layout_lol = [[]]
 
@@ -86,9 +90,18 @@ class _Stack(_Container):
     @property
     def layout(self) -> list[list[Widget]]:
         """Return the layout of the Stack"""
-        self._layout_lol = (
-            [[widget] for widget in self._layout_list] if self._layout_list else [[]]
-        )
+        if self.distribute:
+            self._layout_lol = []
+            for widget in self._layout_list:
+                self._layout_lol.append([VSpacer()])
+                self._layout_lol.append([widget])
+            self._layout_lol.append([VSpacer()])
+        else:
+            self._layout_lol = (
+                [[widget] for widget in self._layout_list]
+                if self._layout_list
+                else [[]]
+            )
         return self._layout_lol
 
     @layout.setter
@@ -96,7 +109,6 @@ class _Stack(_Container):
         """Set the layout of the Stack"""
         self._layout_lol = layout
         self._layout_list = [widget for row in layout for widget in row]
-        debug(f"layout={layout} {self._layout_list=}")
 
     @property
     def widgets(self) -> list[Widget]:
@@ -107,7 +119,7 @@ class _Stack(_Container):
         """Add a widget to the bottom of the Stack"""
         # self._add_widget_row_col(widget, len(self), 0)
         self._layout_list.append(widget)
-        self._layout(self.frame, self.window)
+        self.redraw()
 
     def extend(self, widgets: list[Widget]):
         """Add a list of widgets to the end of the Stack"""
@@ -129,15 +141,14 @@ class _Stack(_Container):
         """
         # self._insert_widget_row_col(widget, index, 0, True)
         self._layout_list.insert(index, widget)
-        self._layout(self.frame, self.window)
+        self.redraw()
 
     def clear(self):
         """Remove all widgets from the Stack"""
         for widget in self._layout_list:
-            debug(f"destroying {widget} {widget.key=}")
             widget.destroy()
         self._layout_list = []
-        self._layout(self.frame, self.window)
+        self.redraw()
 
     def pop(self, index: int = -1):
         """Remove and return the widget at the given index in the Stack.
@@ -153,7 +164,7 @@ class _Stack(_Container):
         """
         widget = self._layout_list.pop(index)
         widget.widget.grid_forget()
-        self._layout(self.frame, self.window)
+        self.redraw()
         return widget
         # return self._pop_widget_row_col(index, 0, vertical=True)
 
@@ -170,19 +181,22 @@ class _Stack(_Container):
             if widget.key == key:
                 self._layout_list.pop(idx)
                 widget.destroy()
-                self._layout(self.frame, self.window)
+                self.redraw()
                 return
         raise ValueError(f"Widget with key {key} not found in Stack")
+
+    def redraw(self):
+        """Redraw the Stack"""
+        debug(f"redraw {self.key}")
+        debug(f"{self._layout_list=} {self.layout=}")
+        self._layout(self.frame, self.window)
 
     def _add_widget_row_col(self, widget: Widget, row: int, col: int):
         super()._add_widget_row_col(widget, row, col)
 
     def _add_widget(self, widget: Widget):
         """Add a widget to the frame's layout"""
-        debug(self, widget, self.layout)
-        debug(f"_add_widget: {self.layout=}, {self._layout_lol=}, {self._layout_list=}")
         self._layout_list.append(widget)
-        debug(f"_add_widget: {self.layout=}, {self._layout_lol=}, {self._layout_list=}")
 
     def __len__(self):
         """Length of the Stack (number of widgets contained)"""
@@ -210,6 +224,7 @@ class VStack(_Stack):
         valign: VAlign | None = None,
         halign: HAlign | None = None,
         expand: bool = True,
+        distribute: bool = False,
     ):
         """Base container container that stacks widgets vertically when added to a Layout
 
@@ -225,6 +240,7 @@ class VStack(_Stack):
                 Defaults to None.
             expand (bool, optional): Whether the VStack should expand to fill the available space.
                 Defaults to True.
+            distribute (bool, optional): Whether the VStack should distribute widgets evenly.
 
         Note:
             If width is specified, the VStack will not expand to fill the available space and the
@@ -240,13 +256,9 @@ class VStack(_Stack):
             valign=valign,
             halign=halign,
             expand=expand,
+            distribute=distribute,
         )
         self.expand = expand if width is None else False
-
-    # def _create_widget(self, parent: tk.BaseWidget, window: Window, row: int, col: int):
-    #     super()._create_widget(parent, window, row, col)
-    #     if self.expand:
-    #         parent.grid_rowconfigure(row, weight=1)
 
 
 class HStack(_Stack):
@@ -262,6 +274,7 @@ class HStack(_Stack):
         valign: VAlign | None = None,
         halign: HAlign | None = None,
         expand: bool = True,
+        distribute: bool = False,
     ):
         """A container that stacks widgets horizontally when added to a Layout
 
@@ -277,6 +290,7 @@ class HStack(_Stack):
                 Defaults to None.
             expand (bool, optional): Whether the HStack should expand to fill the available space.
                 Defaults to True.
+            distribute (bool, optional): Whether the HStack should distribute widgets evenly.
 
         Note:
             If height is specified, the HStack will not expand to fill the available space and the
@@ -292,13 +306,21 @@ class HStack(_Stack):
             valign=valign,
             halign=halign,
             expand=expand,
+            distribute=distribute,
         )
         self.expand = expand if height is None else False
 
     @property
     def layout(self) -> list[list[Widget]]:
         """Return the layout of the HStack"""
-        self._layout_lol = [self._layout_list]
+        if self.distribute:
+            self._layout_lol = [[]]
+            for widget in self._layout_list:
+                self._layout_lol[0].append(HSpacer())
+                self._layout_lol[0].append(widget)
+            self._layout_lol[0].append(HSpacer())
+        else:
+            self._layout_lol = [self._layout_list]
         return self._layout_lol
 
     @layout.setter
@@ -306,9 +328,3 @@ class HStack(_Stack):
         """Set the layout of the VStack"""
         self._layout_lol = layout
         self._layout_list = [widget for row in layout for widget in row]
-        debug(f"layout={layout} {self._layout_list=}")
-
-    # def _create_widget(self, parent: tk.BaseWidget, window: Window, row: int, col: int):
-    #     super()._create_widget(parent, window, row, col)
-    #     if self.expand:
-    #         parent.grid_columnconfigure(row, weight=1)
