@@ -120,6 +120,7 @@ class Widget:
         )
 
         if self.padx is not None or self.pady is not None:
+            debug(f"{self=} {self.padx=} {self.pady=}")
             self.widget.grid_configure(padx=self.padx, pady=self.pady)
 
     def bind_event(self, event_name: str, command: Callable[[], Any] | None = None):

@@ -8,10 +8,8 @@ from guitk.constants import GUITK
 from ._debug import debug, debug_borderwidth, debug_relief, debug_watch
 from .frame import _Container
 from .spacer import HSpacer, VSpacer
-from .types import HAlign, PaddingType, PadType, VAlign, Window
+from .types import HAlign, PaddingType, VAlign, Window, PadType
 from .widget import Widget
-
-# TODO: remove manual bookkeeping of row and column counts
 
 
 class _Stack(_Container):
@@ -29,6 +27,8 @@ class _Stack(_Container):
         halign: HAlign | None = None,
         expand: bool = True,
         distribute: bool = False,
+        vspacing: PadType | None = None,
+        hspacing: PadType | None = None,
     ):
         """Base container container that stacks widgets when added to a Layout
 
@@ -36,7 +36,7 @@ class _Stack(_Container):
             key (Hashable, optional): The key to use for the Stack. Defaults to None.
             height (int, optional): The height of the Stack. Defaults to None.
             width (int, optional): The width of the Stack. Defaults to None.
-            padding (int, optional): The padding around the Stack. Defaults to None.
+            padding (PaddingType, optional): The padding around the Stack. Defaults to None.
             disabled (bool, optional): Whether the VStack is disabled. Defaults to False.
             sticky (str, optional): The sticky value for the Stack. Defaults to "nsew".
             valign (VAlign, optional): The vertical alignment for the widgets in the Stack.
@@ -46,6 +46,8 @@ class _Stack(_Container):
             expand (bool, optional): Whether the Stack should expand to fill the available space.
                 Defaults to True.
             distribute (bool, optional): Whether the Stack should distribute widgets evenly.
+            vspacing (int, optional): Vertical spacing between widgets. Defaults to None.
+            hspacing (int, optional): Horizontal spacing between widgets. Defaults to None.
 
         Note:
             If width or height is specified, the Stack will not expand to fill the available space and the
@@ -71,6 +73,8 @@ class _Stack(_Container):
             pady=0,
             valign=valign,
             halign=halign,
+            vspacing=vspacing,
+            hspacing=hspacing,
         )
         self.expand = expand if (width is None or height is None) else False
         self.distribute = distribute
@@ -225,13 +229,15 @@ class VStack(_Stack):
         halign: HAlign | None = None,
         expand: bool = True,
         distribute: bool = False,
+        vspacing: PadType | None = None,
+        hspacing: PadType | None = None,
     ):
         """Base container container that stacks widgets vertically when added to a Layout
 
         Args:
             key (Hashable, optional): The key to use for the VStack. Defaults to None.
             width (int, optional): The width of the VStack. Defaults to None.
-            padding (int, optional): The padding around the VStack. Defaults to None.
+            padding (PaddingType, optional): The padding around the VStack. Defaults to None.
             disabled (bool, optional): Whether the VStack is disabled. Defaults to False.
             sticky (str, optional): The sticky value for the VStack. Defaults to "nsew".
             valign (VAlign, optional): The vertical alignment for the widgets in the VStack.
@@ -241,6 +247,8 @@ class VStack(_Stack):
             expand (bool, optional): Whether the VStack should expand to fill the available space.
                 Defaults to True.
             distribute (bool, optional): Whether the VStack should distribute widgets evenly.
+            vspacing (int, optional): Vertical spacing between widgets. Defaults to None.
+            hspacing (int, optional): Horizontal spacing between widgets. Defaults to None.
 
         Note:
             If width is specified, the VStack will not expand to fill the available space and the
@@ -257,6 +265,8 @@ class VStack(_Stack):
             halign=halign,
             expand=expand,
             distribute=distribute,
+            vspacing=vspacing,
+            hspacing=hspacing,
         )
         self.expand = expand if width is None else False
 
@@ -275,13 +285,15 @@ class HStack(_Stack):
         halign: HAlign | None = None,
         expand: bool = True,
         distribute: bool = False,
+        vspacing: PadType | None = None,
+        hspacing: PadType | None = None,
     ):
         """A container that stacks widgets horizontally when added to a Layout
 
         Args:
             key (Hashable, optional): The key to use for the HStack. Defaults to None.
             height (int, optional): The height of the HStack. Defaults to None.
-            padding (int, optional): The padding around the HStack. Defaults to None.
+            padding (PaddingType, optional): The padding around the HStack. Defaults to None.
             disabled (bool, optional): Whether the HStack is disabled. Defaults to False.
             sticky (str, optional): The sticky value for the HStack. Defaults to "nsew".
             valign (VAlign, optional): The vertical alignment for the widgets in the HStack.
@@ -291,6 +303,8 @@ class HStack(_Stack):
             expand (bool, optional): Whether the HStack should expand to fill the available space.
                 Defaults to True.
             distribute (bool, optional): Whether the HStack should distribute widgets evenly.
+            vspacing (int, optional): Vertical spacing between widgets. Defaults to None.
+            hspacing (int, optional): Horizontal spacing between widgets. Defaults to None.
 
         Note:
             If height is specified, the HStack will not expand to fill the available space and the
@@ -307,6 +321,8 @@ class HStack(_Stack):
             halign=halign,
             expand=expand,
             distribute=distribute,
+            vspacing=vspacing,
+            hspacing=hspacing,
         )
         self.expand = expand if height is None else False
 
@@ -352,7 +368,7 @@ class VGrid(_Stack):
                 number of widgets added to the grid.
             key (Hashable, optional): The key to use for the VStack. Defaults to None.
             width (int, optional): The width of the VStack. Defaults to None.
-            padding (int, optional): The padding around the VStack. Defaults to None.
+            padding (PaddingType, optional): The padding around the VStack. Defaults to None.
             disabled (bool, optional): Whether the VStack is disabled. Defaults to False.
             sticky (str, optional): The sticky value for the VStack. Defaults to "nsew".
             valign (VAlign, optional): The vertical alignment for the widgets in the VStack.
@@ -421,7 +437,7 @@ class HGrid(_Stack):
                 number of widgets added to the grid.
             key (Hashable, optional): The key to use for the VStack. Defaults to None.
             width (int, optional): The width of the VStack. Defaults to None.
-            padding (int, optional): The padding around the VStack. Defaults to None.
+            padding (PaddingType, optional): The padding around the VStack. Defaults to None.
             disabled (bool, optional): Whether the VStack is disabled. Defaults to False.
             sticky (str, optional): The sticky value for the VStack. Defaults to "nsew".
             valign (VAlign, optional): The vertical alignment for the widgets in the VStack.

@@ -34,10 +34,12 @@ if TYPE_CHECKING:
 class _LayoutMixin:
     """Mixin class to provide layout; for internal use only"""
 
-    row_count = 0
-    col_count = 0
+    row_count: int = 0
+    col_count: int = 0
     layout = []
-    distribute = False
+    distribute: bool = False
+    vspacing: PadType | None = None
+    hspacing: PadType | None = None
 
     @debug_watch
     def _layout(self, parent: tk.BaseWidget, window: Window):
@@ -167,6 +169,11 @@ class _LayoutMixin:
                 widget.widget.grid_rowconfigure(0, weight=widget.weighty)
 
         # configure padding
+        # if container has vspacing/hspacing and widget does not, use container's values
+        if self.vspacing is not None and widget.pady is None:
+            widget.pady = self.vspacing
+        if self.hspacing is not None and widget.padx is None:
+            widget.padx = self.hspacing
         padx = widget.padx if widget.padx is not None else window.padx
         pady = widget.pady if widget.pady is not None else window.pady
         widget.widget.grid_configure(padx=padx, pady=pady)
@@ -204,6 +211,8 @@ class _Container(Widget, _LayoutMixin):
         weighty: int | None = None,
         valign: VAlign | None = None,
         halign: HAlign | None = None,
+        vspacing: PadType | None = None,
+        hspacing: PadType | None = None,
         **kwargs,
     ):
         # padx and pady passed to Widget not Frame
@@ -248,6 +257,8 @@ class _Container(Widget, _LayoutMixin):
         self.kwargs = kwargs
         self.valign = valign
         self.halign = halign
+        self.vspacing = vspacing
+        self.hspacing = hspacing
 
     def _create_widget(self, parent, window: Window, row, col):
         kwargs = {
