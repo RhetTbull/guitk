@@ -46,8 +46,8 @@ class _Stack(_Container):
             expand (bool, optional): Whether the Stack should expand to fill the available space.
                 Defaults to True.
             distribute (bool, optional): Whether the Stack should distribute widgets evenly.
-            vspacing (int, optional): Vertical spacing between widgets. Defaults to None.
-            hspacing (int, optional): Horizontal spacing between widgets. Defaults to None.
+            vspacing (PadType, optional): Vertical spacing between widgets. Defaults to None.
+            hspacing (PadType, optional): Horizontal spacing between widgets. Defaults to None.
 
         Note:
             If width or height is specified, the Stack will not expand to fill the available space and the
@@ -247,8 +247,8 @@ class VStack(_Stack):
             expand (bool, optional): Whether the VStack should expand to fill the available space.
                 Defaults to True.
             distribute (bool, optional): Whether the VStack should distribute widgets evenly.
-            vspacing (int, optional): Vertical spacing between widgets. Defaults to None.
-            hspacing (int, optional): Horizontal spacing between widgets. Defaults to None.
+            vspacing (PadType, optional): Vertical spacing between widgets. Defaults to None.
+            hspacing (PadType, optional): Horizontal spacing between widgets. Defaults to None.
 
         Note:
             If width is specified, the VStack will not expand to fill the available space and the
@@ -303,8 +303,8 @@ class HStack(_Stack):
             expand (bool, optional): Whether the HStack should expand to fill the available space.
                 Defaults to True.
             distribute (bool, optional): Whether the HStack should distribute widgets evenly.
-            vspacing (int, optional): Vertical spacing between widgets. Defaults to None.
-            hspacing (int, optional): Horizontal spacing between widgets. Defaults to None.
+            vspacing (PadType, optional): Vertical spacing between widgets. Defaults to None.
+            hspacing (PadType, optional): Horizontal spacing between widgets. Defaults to None.
 
         Note:
             If height is specified, the HStack will not expand to fill the available space and the
@@ -360,6 +360,8 @@ class VGrid(_Stack):
         valign: VAlign | None = None,
         halign: HAlign | None = None,
         expand: bool = True,
+        vspacing: PadType | None = None,
+        hspacing: PadType | None = None,
     ):
         """Container that stacks widgets in a vertical grid when added to a Layout
 
@@ -377,6 +379,8 @@ class VGrid(_Stack):
                 Defaults to None.
             expand (bool, optional): Whether the VStack should expand to fill the available space.
                 Defaults to True.
+            vspacing (PadType, optional): Vertical spacing between widgets. Defaults to None.
+            hspacing (PadType, optional): Horizontal spacing between widgets. Defaults to None.
 
         Note:
             If width is specified, the VStack will not expand to fill the available space and the
@@ -393,6 +397,8 @@ class VGrid(_Stack):
             halign=halign,
             expand=expand,
             distribute=False,
+            vspacing=vspacing,
+            hspacing=hspacing,
         )
         self.expand = expand if width is None else False
         self.rows = rows
@@ -429,6 +435,8 @@ class HGrid(_Stack):
         valign: VAlign | None = None,
         halign: HAlign | None = None,
         expand: bool = True,
+        vspacing: PadType | None = None,
+        hspacing: PadType | None = None,
     ):
         """Container that stacks widgets in a horizontal grid when added to a Layout
 
@@ -446,6 +454,8 @@ class HGrid(_Stack):
                 Defaults to None.
             expand (bool, optional): Whether the VStack should expand to fill the available space.
                 Defaults to True.
+            vspacing (PadType, optional): Vertical spacing between widgets. Defaults to None.
+            hspacing (PadType, optional): Horizontal spacing between widgets. Defaults to None.
 
         Note:
             If width is specified, the VStack will not expand to fill the available space and the
@@ -462,6 +472,8 @@ class HGrid(_Stack):
             halign=halign,
             expand=expand,
             distribute=False,
+            vspacing=vspacing,
+            hspacing=hspacing,
         )
         self.expand = expand if width is None else False
         self.cols = cols

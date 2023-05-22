@@ -7,11 +7,11 @@ class Demo(Window):
     def config(self):
         self.title = "Grid Demo"
         with VLayout():
-            with VGrid(3) as self.vgrid:
+            with VGrid(3, vspacing=0, hspacing=(0, 20)) as self.vgrid:
                 for i in range(11):
                     Button(f"VGrid {i}")
             HSeparator()
-            with HGrid(3) as self.hgrid:
+            with HGrid(3, vspacing=5, hspacing=(0, 5)) as self.hgrid:
                 for i in range(11):
                     Button(f"HGrid {i}")
             HSeparator()
