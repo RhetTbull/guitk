@@ -1,4 +1,4 @@
-"""HLayout widget to enable SwiftUI style layout"""
+"""_LayoutMixin, _Container, and Frame classes"""
 
 from __future__ import annotations
 
@@ -449,6 +449,8 @@ class Frame(_Container):
         autoframe: bool = True,
         valign: VAlign | None = None,
         halign: HAlign | None = None,
+        weightx: int | None = None,
+        weighty: int | None = None,
         **kwargs,
     ):
         super().__init__(
@@ -470,6 +472,8 @@ class Frame(_Container):
             kwargs=kwargs,
             valign=valign,
             halign=halign,
+            weightx=weightx,
+            weighty=weighty,
         )
 
 

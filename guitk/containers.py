@@ -328,3 +328,143 @@ class HStack(_Stack):
         """Set the layout of the VStack"""
         self._layout_lol = layout
         self._layout_list = [widget for row in layout for widget in row]
+
+
+class VGrid(_Stack):
+    """A container that arranges widgets in a vertical grid when added to a Layout"""
+
+    def __init__(
+        self,
+        rows: int,
+        key: Hashable | None = None,
+        width: int | None = None,
+        padding: int | None = None,
+        disabled: bool | None = False,
+        sticky: str | None = "nsew",
+        valign: VAlign | None = None,
+        halign: HAlign | None = None,
+        expand: bool = True,
+    ):
+        """Container that stacks widgets in a vertical grid when added to a Layout
+
+        Args:
+            rows (int): The number of rows in the grid. The number of columns is determined by the
+                number of widgets added to the grid.
+            key (Hashable, optional): The key to use for the VStack. Defaults to None.
+            width (int, optional): The width of the VStack. Defaults to None.
+            padding (int, optional): The padding around the VStack. Defaults to None.
+            disabled (bool, optional): Whether the VStack is disabled. Defaults to False.
+            sticky (str, optional): The sticky value for the VStack. Defaults to "nsew".
+            valign (VAlign, optional): The vertical alignment for the widgets in the VStack.
+                Defaults to None.
+            halign (HAlign, optional): The horizontal alignment for the widgets in the VStack.
+                Defaults to None.
+            expand (bool, optional): Whether the VStack should expand to fill the available space.
+                Defaults to True.
+
+        Note:
+            If width is specified, the VStack will not expand to fill the available space and the
+            expand parameter will be ignored.
+        """
+        super().__init__(
+            key=key,
+            height=None,
+            width=width,
+            padding=padding,
+            disabled=disabled,
+            sticky=sticky,
+            valign=valign,
+            halign=halign,
+            expand=expand,
+            distribute=False,
+        )
+        self.expand = expand if width is None else False
+        self.rows = rows
+
+    @property
+    def layout(self) -> list[list[Widget]]:
+        """Return the layout of the Stack"""
+        if self.distribute:
+            raise NotImplementedError("distribute note yet implemented for VGrid")
+        else:
+            # grid the widgets in the order they were added
+            self._layout_lol = [
+                self._layout_list[i :: self.rows] for i in range(self.rows)
+            ]
+        return self._layout_lol
+
+    @layout.setter
+    def layout(self, layout: list[list[Widget]]):
+        """Set the layout of the Stack"""
+        ...
+
+
+class HGrid(_Stack):
+    """A container that arranges widgets in a horizontal grid when added to a Layout"""
+
+    def __init__(
+        self,
+        cols: int,
+        key: Hashable | None = None,
+        width: int | None = None,
+        padding: int | None = None,
+        disabled: bool | None = False,
+        sticky: str | None = "nsew",
+        valign: VAlign | None = None,
+        halign: HAlign | None = None,
+        expand: bool = True,
+    ):
+        """Container that stacks widgets in a horizontal grid when added to a Layout
+
+        Args:
+            cols (int): The number of columns in the grid. The number of rows is determined by the
+                number of widgets added to the grid.
+            key (Hashable, optional): The key to use for the VStack. Defaults to None.
+            width (int, optional): The width of the VStack. Defaults to None.
+            padding (int, optional): The padding around the VStack. Defaults to None.
+            disabled (bool, optional): Whether the VStack is disabled. Defaults to False.
+            sticky (str, optional): The sticky value for the VStack. Defaults to "nsew".
+            valign (VAlign, optional): The vertical alignment for the widgets in the VStack.
+                Defaults to None.
+            halign (HAlign, optional): The horizontal alignment for the widgets in the VStack.
+                Defaults to None.
+            expand (bool, optional): Whether the VStack should expand to fill the available space.
+                Defaults to True.
+
+        Note:
+            If width is specified, the VStack will not expand to fill the available space and the
+            expand parameter will be ignored.
+        """
+        super().__init__(
+            key=key,
+            height=None,
+            width=width,
+            padding=padding,
+            disabled=disabled,
+            sticky=sticky,
+            valign=valign,
+            halign=halign,
+            expand=expand,
+            distribute=False,
+        )
+        self.expand = expand if width is None else False
+        self.cols = cols
+
+    @property
+    def layout(self) -> list[list[Widget]]:
+        """Return the layout of the Stack"""
+        if self.distribute:
+            raise NotImplementedError("distribute note yet implemented for VGrid")
+        else:
+            # grid the widgets in the order they were added
+            # chunk items into lists self.cols long
+            self._layout_lol = [
+                self._layout_list[i : i + self.cols]
+                for i in range(0, len(self._layout_list), self.cols)
+            ]
+        return self._layout_lol
+
+    @layout.setter
+    def layout(self, layout: list[list[Widget]]):
+        """Set the layout of the Stack"""
+        ...

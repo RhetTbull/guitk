@@ -10,7 +10,7 @@
 
 from ._debug import debug, debug_watch, is_debug, set_debug
 from ._on import on
-from .containers import HStack, VStack
+from .containers import HGrid, HStack, VGrid, VStack
 from .debugwindow import DebugWindow
 from .events import Event, EventCommand, EventType
 from .frame import Frame, LabelFrame
@@ -64,6 +64,7 @@ __all__ = [
     "EventCommand",
     "EventType",
     "Frame",
+    "HGrid",
     "HLayout",
     "HSeparator",
     "HSpacer",
@@ -94,6 +95,7 @@ __all__ = [
     "Text",
     "TreeView",
     "Treeview",
+    "VGrid",
     "VLayout",
     "VSeparator",
     "VSpacer",
