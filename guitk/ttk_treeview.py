@@ -4,12 +4,15 @@
 from __future__ import annotations
 
 import tkinter.ttk as ttk
-from typing import Hashable
+from typing import TYPE_CHECKING, Hashable
 
 from .events import Event, EventCommand, EventType
-from .types import CommandType, PadType, TooltipType, Window
+from .types import CommandType, PadType, TooltipType
 from .utils import scrolled_widget_factory
 from .widget import Widget
+
+if TYPE_CHECKING:
+    from .window import Window
 
 __all__ = ["ListBox", "Listbox", "TreeView", "Treeview"]
 

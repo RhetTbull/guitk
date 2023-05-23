@@ -1,5 +1,7 @@
 """ Debug Window that can be used to display debug information """
 
+from __future__ import annotations
+
 from .containers import HStack
 from .layout import VLayout
 from .tk_text import Output

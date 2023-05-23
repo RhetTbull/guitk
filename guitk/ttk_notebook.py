@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import tkinter.ttk as ttk
-from typing import Hashable, TypeVar
+from typing import TYPE_CHECKING, Hashable, TypeVar
 
 from guitk.constants import GUITK
 
@@ -12,6 +12,11 @@ from .frame import Frame, _Container, _LayoutMixin, _VerticalContainer
 from .layout import get_parent, push_parent
 from .types import CommandType, PadType, TooltipType
 from .widget import Widget
+
+if TYPE_CHECKING:
+    from .window import Window
+
+# TODO: Add remove() to Notebook and Tab
 
 __all__ = ["Notebook", "NoteBook", "Tab", "VerticalTab"]
 

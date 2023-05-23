@@ -7,7 +7,7 @@ import inspect
 import time
 import tkinter as tk
 from tkinter import ttk
-from typing import Any
+from typing import TYPE_CHECKING, Any, Hashable
 
 from guitk.tkroot import _TKRoot
 
@@ -129,7 +129,7 @@ class Window(_LayoutMixin, _WindowBaseClass):
         if self.modal:
             windowingsystem = self.root.call("tk", "windowingsystem")
             if windowingsystem == "aqua":
-                try:
+                with contextlib.suppress(Exception):
                     self.root.call(
                         "::tk::unsupported::MacWindowStyle",
                         "style",
@@ -137,9 +137,6 @@ class Window(_LayoutMixin, _WindowBaseClass):
                         "moveableModal",
                         "",
                     )
-                except:
-                    pass
-
             if self._parent is not None and self._parent.winfo_viewable():
                 self.window.transient(self._parent)
             self.window.wait_visibility()
@@ -282,8 +279,8 @@ class Window(_LayoutMixin, _WindowBaseClass):
             self.root.after_cancel(after_id)
             self._timer_events.pop(timer_id)
             self._timer_events_cancelled[timer_id] = after_id
-        except KeyError:
-            raise ValueError(f"Timer event {timer_id} not found")
+        except KeyError as e:
+            raise ValueError(f"Timer event {timer_id} not found") from e
         except Exception as e:
             raise e
 
@@ -300,6 +297,14 @@ class Window(_LayoutMixin, _WindowBaseClass):
         self._widgets.append(widget)
         self._widget_by_key[widget.key] = widget
         self._grid_configure_widgets()
+
+    def remove_widget(self, key_or_widget: Hashable | Widget):
+        """Remove widget from window and destroy it."""
+        for idx, widget in enumerate(self._widgets):
+            if widget == key_or_widget or widget.key == key_or_widget:
+                widget = self._widgets[idx]
+                widget.parent.remove(widget)
+        raise ValueError(f"Widget {key_or_widget} not found in Window")
 
     def run(self):
         self._tk.run_mainloop()
@@ -319,9 +324,14 @@ class Window(_LayoutMixin, _WindowBaseClass):
         """Return child windows"""
         return self._tk.get_children(self)
 
-    def _add_widget(self, widget: Any):
+    def _add_widget(self, widget: Widget):
         """Dummy method to allow widgets to be added with VLayout()/HLayout()"""
         pass
+
+    def _forget_widget(self, widget: Widget):
+        """Remove widget from the window's bookkeeping but don't destroy it"""
+        self._widget_by_key.pop(widget.key, None)
+        self._widgets.remove(widget)
 
     def _add_menus(self, menu: Menu, menu_items, path=None):
         path = f"MENU:{menu._label}" if path is None else path

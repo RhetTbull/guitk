@@ -3,13 +3,18 @@
 from __future__ import annotations
 
 import tkinter.ttk as ttk
-from typing import Hashable, Literal, TypeVar
+from typing import TYPE_CHECKING, Hashable, Literal, TypeVar
 
 from guitk.constants import GUITK
 
 from .events import EventCommand, EventType
 from .frame import Frame, LabelFrame, _Container, _VerticalContainer
 from .types import CommandType, PadType, TooltipType
+
+if TYPE_CHECKING:
+    from .window import Window
+
+# TODO: Add remove() to PanedWindow and Pane
 
 __all__ = [
     "Panedwindow",

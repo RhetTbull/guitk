@@ -1,15 +1,20 @@
 """ Container classes for guitk """
 
+from __future__ import annotations
+
 import tkinter as tk
-from typing import Hashable
+from typing import TYPE_CHECKING, Hashable
 
 from guitk.constants import GUITK
 
 from ._debug import debug, debug_borderwidth, debug_relief, debug_watch
 from .frame import _Container
 from .spacer import HSpacer, VSpacer
-from .types import HAlign, PaddingType, VAlign, Window, PadType
+from .types import HAlign, PaddingType, PadType, VAlign
 from .widget import Widget
+
+if TYPE_CHECKING:
+    from .window import Window
 
 
 class _Stack(_Container):
@@ -149,7 +154,10 @@ class _Stack(_Container):
 
     def clear(self):
         """Remove all widgets from the Stack"""
-        for widget in self._layout_list:
+        # copy the list so we can iterate over it while removing widgets
+        # which will change the list
+        for widget in self._layout_list.copy():
+            debug(f"{self} destroying {widget=}")
             widget.destroy()
         self._layout_list = []
         self.redraw()
@@ -169,25 +177,32 @@ class _Stack(_Container):
         widget = self._layout_list.pop(index)
         widget.widget.grid_forget()
         self.redraw()
+        print(f"popped {widget.key} {widget.widget}")
         return widget
-        # return self._pop_widget_row_col(index, 0, vertical=True)
 
-    def remove(self, key: Hashable):
-        """Remove the first widget with matching key from the Stack.
+    @debug_watch
+    def remove(self, key_or_widget: Hashable | Widget):
+        """Remove widget from the container and destroy it.
 
         Args:
-            key (Hashable): The key of the widget to remove.
+            key_or_widget (Hashable | Widget): The key of the widget to remove or the widget object. If a key is given,
+                the first widget with that key will be removed.
 
         Raises:
             ValueError: If the widget is not in the Stack.
         """
         for idx, widget in enumerate(self._layout_list):
-            if widget.key == key:
-                self._layout_list.pop(idx)
-                widget.destroy()
+            if widget == key_or_widget or widget.key == key_or_widget:
+                debug(
+                    f"removing {key_or_widget} from {self} {widget.key} {widget.widget}"
+                )
+                widget = self._layout_list.pop(idx)
+                self.window._forget_widget(widget)
+                widget.widget.grid_forget()
+                widget.widget.destroy()
                 self.redraw()
                 return
-        raise ValueError(f"Widget with key {key} not found in Stack")
+        raise ValueError(f"Widget {key_or_widget} not found in Stack")
 
     def redraw(self):
         """Redraw the Stack"""

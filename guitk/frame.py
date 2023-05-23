@@ -5,12 +5,12 @@ from __future__ import annotations
 import contextlib
 import tkinter as tk
 from tkinter import ttk
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Hashable
 
 from guitk.constants import GUITK
 
 from ._debug import debug, debug_borderwidth, debug_relief, debug_watch
-from .layout import pop_parent, push_parent
+from .layout import HLayout, VLayout, pop_parent, push_parent
 from .spacer import HSpacer, VSpacer
 from .tooltips import Hovertip
 from .ttk_label import Label
@@ -63,6 +63,11 @@ class _LayoutMixin:
             halign = self.halign.lower() if self.halign else halign
 
         debug(f"valign={valign}, halign={halign}")
+
+        if isinstance(self.layout, (HLayout, VLayout)):
+            # layout may have been created outside of a Window
+            # so ensure the layout has a reference to the Window
+            self.layout.window = window
 
         layout = list(self.layout)
 
@@ -189,7 +194,7 @@ class _Container(Widget, _LayoutMixin):
     def __init__(
         self,
         frametype: GUITK = GUITK.ELEMENT_FRAME,
-        key: str | None = None,
+        key: Hashable | None = None,
         layout: LayoutType | None = None,
         height: int | None = None,
         width: int | None = None,
@@ -259,6 +264,26 @@ class _Container(Widget, _LayoutMixin):
         self.halign = halign
         self.vspacing = vspacing
         self.hspacing = hspacing
+
+    def remove(self, key_or_widget: Hashable | Widget):
+        """ "Remove widget from layout and destroy it.
+
+        Args:
+            key_or_widget (Hashable | Widget): The key or widget to remove. If a key is given,
+                the first widget with that key will be removed.
+
+        Raises:
+            ValueError: If the widget is not found in the layout.
+        """
+        for row in self.layout:
+            for idx, widget in enumerate(row):
+                if widget == key_or_widget or widget.key == key_or_widget:
+                    widget = row.pop(idx)
+                    self.window._forget_widget(widget)
+                    widget.widget.grid_forget()
+                    widget.widget.destroy()
+                    return
+        raise ValueError(f"Widget not found: {key_or_widget}")
 
     def _create_widget(self, parent, window: Window, row, col):
         kwargs = {
@@ -445,7 +470,7 @@ class Frame(_Container):
     def __init__(
         self,
         layout: LayoutType | None = None,
-        key: str | None = None,
+        key: Hashable | None = None,
         width: int | None = None,
         height: int | None = None,
         style: str | None = None,
@@ -495,7 +520,7 @@ class LabelFrame(_Container):
         self,
         text: str | None = None,
         layout: LayoutType | None = None,
-        key: str | None = None,
+        key: Hashable | None = None,
         width: int | None = None,
         height: int | None = None,
         style: str | None = None,

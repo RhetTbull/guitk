@@ -61,6 +61,8 @@ agrees to be bound by the terms and conditions of this License
 Agreement.
 """
 
+from __future__ import annotations
+
 import tkinter as tk
 from tkinter import ttk
 

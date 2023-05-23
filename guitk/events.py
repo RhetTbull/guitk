@@ -4,19 +4,23 @@ from __future__ import annotations
 
 import tkinter
 from collections import namedtuple
-from typing import Hashable, TypeVar
+from typing import TYPE_CHECKING, Hashable
 
 EventCommand = namedtuple("EventCommand", ["widget", "key", "event_type", "command"])
 
 from enum import Enum
 
-from .types import PadType, Widget, Window
+if TYPE_CHECKING:
+    from .widget import Widget
+    from .window import Window
 
 
 class Event:
     """Event that occurred and values for widgets in the window"""
 
-    def __init__(self, widget: object, window: Window, key, event_type):
+    def __init__(
+        self, widget: Widget, window: Window, key: Hashable, event_type: EventType
+    ):
         self.id: int = id(window)
         self.widget: Widget = widget
         self.key: Hashable = key

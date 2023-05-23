@@ -6,7 +6,7 @@ from functools import wraps
 from typing import Callable, Hashable
 
 from .events import EventType
-from .types import CommandType, DecoratedType, PadType
+from .types import CommandType, DecoratedType
 
 
 def on(

@@ -1,13 +1,18 @@
 """ttk Button widgets"""
 
+from __future__ import annotations
+
 import pathlib
 import tkinter.ttk as ttk
 from tkinter import filedialog
-from typing import Any, Hashable
+from typing import TYPE_CHECKING, Any, Hashable
 
 from .events import Event, EventCommand, EventType
-from .types import CommandType, PadType, TooltipType, Window
+from .types import CommandType, PadType, TooltipType
 from .widget import Widget
+
+if TYPE_CHECKING:
+    from .window import Window
 
 __all__ = ["Button", "BrowseFileButton", "BrowseDirectoryButton"]
 

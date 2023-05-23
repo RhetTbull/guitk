@@ -109,6 +109,7 @@ class Widget:
     def _grid(self, row, column, rowspan, columnspan):
         sticky = self.sticky or tk.W
 
+        print(self, self.widget, row, column, rowspan, columnspan, sticky)
         self.widget.grid(
             row=row,
             column=column,
@@ -211,7 +212,7 @@ class Widget:
         return self
 
     # def valign(self, valign: VAlign | None = None) -> Widget:
-    #     """Set valig nthe widget
+    #     """Set valign the widget
 
     #     Args:
     #         valign (VAlign | None): Vertical alignment
@@ -221,18 +222,17 @@ class Widget:
 
     #     return self
 
+    @debug_watch
     def destroy(self) -> None:
         """Remove the widget from the layout and destroy it.
 
         Note:
             You should call this destroy() method and not the tkinter destroy() method
-            so that the widget is removed from the necessary bookkeeping is done in the
-            Window class.
+            so that the widget is removed from its parent and necessary bookkeeping is done
+            in the Window class.
         """
-        self.widget.grid_forget()
-        self.widget.destroy()
-        self.widget = None
-        self.window._widget_by_key.pop(self.key, None)
+        debug(self, self.parent)
+        self.parent.remove(self)
 
     def replace(self, widget: Widget) -> Widget:
         """Replace widget with another widget.

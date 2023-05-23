@@ -1,11 +1,16 @@
 """ttk Combobox widget"""
 
+from __future__ import annotations
+
 import tkinter.ttk as ttk
-from typing import Hashable
+from typing import TYPE_CHECKING, Hashable
 
 from .events import Event, EventCommand, EventType
-from .types import CommandType, PadType, TooltipType, Window
+from .types import CommandType, PadType, TooltipType
 from .widget import Widget
+
+if TYPE_CHECKING:
+    from .window import Window
 
 __all__ = ["Combobox", "ComboBox"]
 

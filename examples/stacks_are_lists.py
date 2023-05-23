@@ -20,12 +20,13 @@ class Demo(Window):
                     Label("HStack").font(weight="bold", underline=True)
                     with HStack(key="HStack") as self.hs:
                         ...
+                VSeparator()
                 with VStack(expand=True):
                     Label("Popped").font(weight="bold", underline=True)
                     with VStack() as self.vs_popped:
                         ...
             HSeparator()
-            with HStack():
+            with HStack(expand=False):
                 Label("VStack:", key="vstack_count")
                 Label("HStack:", key="hstack_count")
             HSeparator()
@@ -86,10 +87,8 @@ class Demo(Window):
 
     @on(key="Clear")
     def on_clear(self):
-        print(self.vs._layout)
         stack = self["stack"].value
         self[stack].clear()
-        print(self.vs._layout)
 
     @on(key="pop")
     @on(key="Pop")
@@ -121,6 +120,7 @@ class Demo(Window):
         # and remove the button from the popped stack
         widget_name = str(event.key)[8:]
         stack, widget = self.popped[widget_name]
+        print(widget_name, stack, widget, widget.widget)
         self[stack].append(widget)
         event.widget.destroy()
 

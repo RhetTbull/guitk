@@ -3,10 +3,13 @@
 from __future__ import annotations
 
 import tkinter as tk
+from typing import TYPE_CHECKING
 
 from ._debug import debug_borderwidth, debug_relief
 from .ttk_label import Label
-from .types import PadType, Window
+
+if TYPE_CHECKING:
+    from .window import Window
 
 __all__ = ["HSpacer", "VSpacer"]
 

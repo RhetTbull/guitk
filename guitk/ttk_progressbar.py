@@ -4,10 +4,14 @@ from __future__ import annotations
 
 import tkinter as tk
 import tkinter.ttk as ttk
-from typing import Hashable, TypeVar
+from typing import TYPE_CHECKING, Hashable, TypeVar
 
 from .types import PadType, TooltipType
 from .widget import Widget
+
+if TYPE_CHECKING:
+    from .window import Window
+
 
 __all__ = [
     "Progressbar",

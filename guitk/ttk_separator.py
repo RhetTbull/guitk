@@ -4,9 +4,13 @@ from __future__ import annotations
 
 import tkinter as tk
 import tkinter.ttk as ttk
+from typing import TYPE_CHECKING
 
-from .types import PadType, Window
+from .types import PadType
 from .widget import Widget
+
+if TYPE_CHECKING:
+    from .window import Window
 
 __all__ = ["HSeparator", "VSeparator"]
 

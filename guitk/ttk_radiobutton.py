@@ -4,11 +4,14 @@ from __future__ import annotations
 
 import tkinter as tk
 import tkinter.ttk as ttk
-from typing import Any, Hashable, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Hashable, TypeVar, Union
 
 from .events import Event, EventCommand, EventType
 from .types import CommandType, PadType, TooltipType
 from .widget import Widget
+
+if TYPE_CHECKING:
+    from .window import Window
 
 __all__ = ["Radiobutton", "RadioButton"]
 

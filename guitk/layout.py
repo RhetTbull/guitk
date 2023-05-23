@@ -6,10 +6,13 @@ from __future__ import annotations
 import contextlib
 import threading
 from inspect import currentframe, getmro
-from typing import Any
+from typing import TYPE_CHECKING, Any, Hashable
 
 from ._debug import debug_watch
-from .types import HAlign, LayoutType, PadType, VAlign, Widget
+from .types import HAlign, LayoutType, VAlign
+
+if TYPE_CHECKING:
+    from .widget import Widget
 
 _current_parent = {}
 
@@ -60,7 +63,7 @@ class HLayout:
         valign: VAlign | None = None,
         halign: HAlign | None = None,
     ):
-        self._layout = layout or []
+        self._layout_list = layout or []
         self.index = 0
         self.valign = valign
         self.halign = halign
@@ -83,14 +86,38 @@ class HLayout:
         if not self.window:
             # HLayout is not being used in a Window, can't add widget
             raise RuntimeError(
-                "HLayout must have been created in a Window to add widgets"
+                "Layout must have been created in a Window to add widgets"
             )
         self.window.col_count += 1
         self.window.add_widget(widget, 0, self.window.col_count)
 
-    @debug_watch
+    def remove(self, key_or_widget: Hashable | Widget):
+        """Remove widget from layout" and destroy it.
+
+        Args:
+            key_or_widget (Hashable | Widget): The key or widget to remove. If a key is given,
+                the first widget with that key will be removed.
+
+        Raises:
+            RuntimeError: If called and the layout was not created in a Window.
+            ValueError: If the widget is not found in the layout.
+        """
+        if not self.window:
+            raise RuntimeError(
+                "Layout must have been created in a Window to remove widgets"
+            )
+        for idx, widget in enumerate(self._layout_list):
+            if widget == key_or_widget or widget.key == key_or_widget:
+                widget = self._layout_list.pop(idx)
+                self.window._forget_widget(widget)
+                widget.widget.grid_forget()
+                widget.widget.destroy()
+                self.redraw()
+                return
+        raise ValueError(f"Widget {key_or_widget} not found in Stack")
+
     def _add_widget(self, widget):
-        self._layout.append(widget)
+        self._layout_list.append(widget)
 
     @property
     def layout(self) -> LayoutType:
@@ -98,9 +125,9 @@ class HLayout:
         # if layout manually created, it will be a list of lists
         # otherwise it's a row of widgets, so wrap it in a list
         return (
-            self._layout
-            if self._layout and isinstance(self._layout[0], (list, tuple))
-            else [self._layout]
+            self._layout_list
+            if self._layout_list and isinstance(self._layout_list[0], (list, tuple))
+            else [self._layout_list]
         )
 
     def __enter__(self):
@@ -128,7 +155,7 @@ class VLayout(HLayout):
 
     @property
     def layout(self):
-        return [[w] for w in self._layout]
+        return [[w] for w in self._layout_list]
 
     def add_widget(self, widget: Widget):
         """Add a widget to the bottom of the VLayout"""
