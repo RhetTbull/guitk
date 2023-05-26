@@ -1,6 +1,6 @@
 """Demo of HSpacer and VSpacer widgets"""
 
-from guitk import HLayout, HSpacer, Label, VSpacer, VStack, Window
+from guitk import HLayout, HSpacer, Label, VSpacer, VStack, Window, set_debug
 
 
 class SpacerDemo(Window):
@@ -11,15 +11,25 @@ class SpacerDemo(Window):
             with VStack():
                 Label("Top left")
                 VSpacer()
+                Label("Center left")
+                VSpacer()
                 Label("Bottom left")
             HSpacer()
-            Label("Center")
-            HSpacer()
-            with VStack():
-                Label("Top right", sticky="e")
+            with VStack(halign="center"):
+                Label("Top Center")
                 VSpacer()
-                Label("Bottom right", sticky="e")
+                Label("Center", anchor="center")
+                VSpacer()
+                Label("Bottom center", anchor="center")
+            HSpacer()
+            with VStack(halign="right"):
+                Label("Top right")
+                VSpacer()
+                Label("Center right")
+                VSpacer()
+                Label("Bottom right")
 
 
 if __name__ == "__main__":
+    # set_debug(True)
     SpacerDemo().run()
