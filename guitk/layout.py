@@ -8,7 +8,7 @@ import threading
 from inspect import currentframe, getmro
 from typing import TYPE_CHECKING, Any, Hashable
 
-from ._debug import debug_watch
+from ._debug import debug, debug_watch
 from .types import HAlign, LayoutType, VAlign
 
 if TYPE_CHECKING:
@@ -114,9 +114,44 @@ class HLayout:
                 widget.widget.destroy()
                 self.redraw()
                 return
-        raise ValueError(f"Widget {key_or_widget} not found in Stack")
+        raise ValueError(f"Widget {key_or_widget} not found in Layout")
 
     def _add_widget(self, widget):
+        """Add a widget to the end of the Layout"""
+
+        # sticky = ""
+        # weightx = None
+        # weighty = None
+        # anchor = ""
+        # if self.valign in {"top", "center"}:
+        #     sticky += "n"
+        # if self.valign in {"bottom", "center"}:
+        #     sticky += "s"
+        # if self.halign in {"right", "center"}:
+        #     sticky += "e"
+        # if self.halign in {"left", "center"}:
+        #     sticky += "w"
+        # if self.halign == "center" or self.valign == "center":
+        #     anchor = "center"
+
+        # if "n" or  "s" in sticky:
+        #     weighty = 1
+        # if "e" or "w" in sticky:
+        #     weightx = 1
+
+        # if not widget.sticky:
+        #     debug(f"setting sticky for {widget} to", sticky)
+        #     widget.sticky = sticky
+        # if not widget.weightx and "Separator" not in widget.__class__.__name__:
+        #     debug(f"setting weightx for {widget} to", weightx)
+        #     widget.weightx = weightx
+        # if not widget.weighty and "Separator" not in widget.__class__.__name__:
+        #     debug(f"setting weighty for {widget} to", weighty)
+        #     widget.weighty = weighty
+        # if anchor and not widget.anchor and "Separator" not in widget.__class__.__name__:
+        #     debug(f"setting anchor for {widget} to", anchor)
+        #     widget.anchor = anchor
+
         self._layout_list.append(widget)
 
     @property

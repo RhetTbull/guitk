@@ -109,7 +109,7 @@ class Widget:
     def _grid(self, row, column, rowspan, columnspan):
         sticky = self.sticky or tk.W
 
-        print(self, self.widget, row, column, rowspan, columnspan, sticky)
+        debug("_grid", self, self.widget, row, column, rowspan, columnspan, sticky)
         self.widget.grid(
             row=row,
             column=column,

@@ -6,21 +6,26 @@ import guitk as ui
 class Demo(ui.Window):
     def config(self):
         self.title = "Remove Widgets"
-        self.size = (600, 400)
-        with ui.HLayout():
+        self.size = (1000, 400)
+        with ui.HLayout() as self.layout:
             with ui.VStack():
                 ui.Button("Widget.destroy")
                 ui.Button("VStack.remove(key)")
                 ui.Button("VStack.remove(widget)")
+                ui.Button("HLayout.remove(key)")
+                ui.Button("HLayout.remove(widget)")
                 ui.Button("Window.remove_widget(key)")
                 ui.Button("Window.remove_widget(widget)")
-            ui.VSeparator
+            ui.VSeparator()
             with ui.VStack() as self.widget_stack:
                 ui.Label("Widget.destroy", key="widget_destroy")
                 ui.Label("VStack.remove(key)", key="vstack_remove_key")
                 ui.Label("VStack.remove(widget)", key="vstack_remove_widget")
                 ui.Label("Window.remove_widget(key)", key="window_remove_key")
                 ui.Label("Window.remove_widget(widget)", key="window_remove_widget")
+            ui.VSeparator()
+            ui.Label("HLayout.remove(key)", key="layout_remove_key", sticky="n")
+            ui.Label("HLayout.remove(widget)", key="layout_remove_widget")
 
     @ui.on(key="Widget.destroy")
     def widget_destroy(self):
@@ -40,6 +45,17 @@ class Demo(ui.Window):
                 self.widget_stack.remove(widget)
                 break
 
+    @ui.on(key="HLayout.remove(key)")
+    def layout_remove_key(self):
+        self.layout.remove("layout_remove_key")
+
+    @ui.on(key="HLayout.remove(widget)")
+    def layout_remove_widget(self):
+        for widget in self.widgets:
+            if widget.key == "layout_remove_widget":
+                self.layout.remove(widget)
+                break
+
     @ui.on(key="Window.remove_widget(key)")
     def window_remove_key(self):
         self.remove_widget("window_remove_key")
@@ -51,5 +67,7 @@ class Demo(ui.Window):
                 self.remove_widget(widget)
                 break
 
+
 if __name__ == "__main__":
+    # ui.set_debug(True)
     Demo().run()

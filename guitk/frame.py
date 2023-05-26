@@ -14,6 +14,7 @@ from .layout import HLayout, VLayout, pop_parent, push_parent
 from .spacer import HSpacer, VSpacer
 from .tooltips import Hovertip
 from .ttk_label import Label
+from .ttk_separator import HSeparator, VSeparator
 from .types import HAlign, LayoutType, PaddingType, PadType, TooltipType, VAlign
 from .widget import Widget
 
@@ -29,6 +30,16 @@ _valid_frame_attributes = {
 
 if TYPE_CHECKING:
     from .window import Window
+
+
+def rows_columns(layout: LayoutType) -> tuple[int, int]:
+    """Return the number of rows and columns in a layout"""
+    rows = 0
+    cols = 0
+    for row in layout:
+        rows += 1
+        cols = max(cols, len(row))
+    return rows, cols
 
 
 class _LayoutMixin:
@@ -70,42 +81,133 @@ class _LayoutMixin:
             self.layout.window = window
 
         layout = list(self.layout)
+        rows, columns = rows_columns(layout)
+        debug(f"{layout=} {rows=}, {columns=}")
 
-        if valign in {"bottom", "center"}:
-            layout.insert(0, [VSpacer()])
-        if valign == "center":
-            layout.append([VSpacer()])
+        if rows > 1 and columns > 1:
+            raise ValueError(
+                f"Layout must be a single row or column, not {rows}x{columns}"
+            )
 
-        if halign in {"right", "center"}:
-            for row in layout:
-                row.insert(0, HSpacer())
-        if halign == "center":
-            for row in layout:
-                row.append(HSpacer())
-
-        debug(f"{layout=}")
+        layout = self._add_spacers(layout, valign, halign)
+        rows, columns = rows_columns(layout)
+        debug(f"_add_spacers(): {layout=} {rows=}, {columns=}")
 
         for row_count, row in enumerate(layout):
-            if self.autoframe and (
-                len(row) != 1
-                or row[0].widget_type not in {"ttk.Frame", "tk.Frame", "LabelFrame"}
-            ):
-                row_ = [
-                    _Container(layout=[row], autoframe=False, sticky="nsew", weightx=1)
-                ]
-            else:
-                row_ = row
+            # if self.autoframe and (
+            #     len(row) != 1
+            #     or row[0].widget_type not in {"ttk.Frame", "tk.Frame", "LabelFrame"}
+            # ):
+            #     row_ = [
+            #         _Container(layout=[row], autoframe=False, sticky="nsew", weightx=1)
+            #     ]
+            # else:
+            #     row_ = row
+            row_ = row
             self.row_count = row_count
             for col_count, widget in enumerate(row_):
                 if widget is None:
                     # add blank label to maintain column spacing
-                    widget = Label("", disabled=True, events=False)
+                    # widget = Label("", disabled=True, events=False)
+                    continue
+                self._stickyfy(widget, valign, halign)
+                debug(
+                    f"{widget=}, {row_count=}, {col_count=}, {widget.sticky=} {widget.weightx=} {widget.weighty=}"
+                )
                 self._create_and_add_widget(
                     widget, parent, window, row_count, col_count
                 )
                 self.col_count = col_count
 
         debug(f"{self.row_count=}, {self.col_count=}")
+
+    def _add_spacers(
+        self, layout: LayoutType, valign: VAlign, halign: HAlign
+    ) -> LayoutType:
+        """Add spacers to layout"""
+
+        rows, columns = rows_columns(layout)
+        orientation = "vertical" if rows > 1 else "horizontal"
+        new_layout = []
+        for row in layout:
+            new_row = row.copy()
+            widget_idx = -1
+            if halign in {"right", "center"}:
+                if widget := new_row[0]:
+                    # not None
+                    if not widget.weightx:
+                        new_row.insert(0, HSpacer())
+                    else:
+                        widget.columnspan = (
+                            widget.columnspan + 1 if widget.columnspan else 2
+                        )
+                        new_row.append(None)
+                        widget_idx = 0
+            if halign == "center":
+                if widget := new_row[widget_idx]:
+                    if not widget.weightx:
+                        new_row.append(HSpacer())
+                    else:
+                        widget.columnspan = widget.columnspan + 1
+                        new_row.append(None)
+
+            new_layout.append(new_row)
+
+        if orientation == "horizontal":
+            if valign in {"bottom", "center"}:
+                # there's only one row so add spacers above/below as needed
+                spacer_row = []
+                for idx, widget in enumerate(new_layout[0]):
+                    if not widget.weighty:
+                        spacer_row.append(VSpacer())
+                    else:
+                        spacer_row.append(widget)
+                        rowspan = 1 if valign == "bottom" else 2
+                        widget.rowspan = (
+                            widget.rowspan + rowspan if widget.rowspan else rowspan + 1
+                        )
+                        new_layout[0][idx] = None
+                new_layout.insert(0, spacer_row)
+            if valign in {"center"}:
+                spacer_row = []
+                for widget in new_layout[-1]:
+                    if widget is None or widget.weighty is not None:
+                        spacer_row.append(None)
+                    else:
+                        spacer_row.append(VSpacer())
+                new_layout.append(spacer_row)
+        else:
+            rows, columns = rows_columns(new_layout)
+            if valign in {"bottom", "center"}:
+                new_layout.insert(
+                    0,
+                    [VSpacer(columnspan=columns), *[None for _ in range(columns - 1)]],
+                )
+            if valign in {"center"}:
+                new_layout.append(
+                    [
+                        VSpacer(columnspan=columns),
+                        *[None for _ in range(columns - 1)],
+                    ]
+                )
+
+        return new_layout
+
+    def _stickyfy(self, widget: Widget, valign: str, halign: str):
+        """Add correct stickiness to widget to achieve alignment"""
+        sticky = ""
+        weightx = 0
+        weighty = 0
+        if valign in {"top"}:
+            sticky += "n"
+        if valign in {"bottom"}:
+            sticky += "s"
+        if halign in {"right"}:
+            sticky += "e"
+        if halign in {"left"}:
+            sticky += "w"
+        if not widget.sticky:
+            widget.sticky = sticky
 
     def _create_and_add_widget(self, widget, parent, window, row, col):
         """Create the widget and add it to layout"""
@@ -260,8 +362,8 @@ class _Container(Widget, _LayoutMixin):
         self.text = text
         self.labelanchor = labelanchor or "nw"
         self.kwargs = kwargs
-        self.valign = valign
-        self.halign = halign
+        self.valign = valign.lower() if valign else None
+        self.halign = halign.lower() if halign else None
         self.vspacing = vspacing
         self.hspacing = hspacing
 
@@ -357,6 +459,18 @@ class _Container(Widget, _LayoutMixin):
         # add widget to self.layout
         self._ensure_layout_size(row, col)
         self.layout[row][col] = widget
+
+        # sticky = ""
+        # if self.valign in {"top", "center"}:
+        #     sticky += "n"
+        # elif self.valign in {"bottom", "center"}:
+        #     sticky += "s"
+        # if self.halign in {"left", "center"}:
+        #     sticky += "w"
+        # elif self.halign in {"right", "center"}:
+        #     sticky += "e"
+        # if not widget.sticky:
+        #     widget.sticky = sticky
 
         # redraw the layout which will create the widget
         self._layout(self.frame, self.window)

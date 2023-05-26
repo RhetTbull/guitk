@@ -17,7 +17,7 @@ __all__ = ["HSpacer", "VSpacer"]
 class HSpacer(Label):
     """HSpacer widget that expands to fill the horizontal space in the layout"""
 
-    def __init__(self):
+    def __init__(self, rowspan=1):
         super().__init__(
             "",
             padding=0,
@@ -26,17 +26,19 @@ class HSpacer(Label):
             autoframe=False,
             borderwidth=debug_borderwidth() or None,
             relief=debug_relief() or None,
+            weightx=1,
+            rowspan=rowspan,
         )
 
     def _create_widget(self, parent: tk.BaseWidget, window: Window, row: int, col: int):
         super()._create_widget(parent, window, row, col)
-        parent.grid_columnconfigure(col, weight=1)
+        # parent.grid_columnconfigure(col, weight=1)
 
 
 class VSpacer(Label):
     """ "HSpacer widget that expands to fill the vertical space in the layout"""
 
-    def __init__(self):
+    def __init__(self, columnspan=1):
         super().__init__(
             "",
             padding=0,
@@ -45,8 +47,10 @@ class VSpacer(Label):
             autoframe=False,
             borderwidth=debug_borderwidth() or None,
             relief=debug_relief() or None,
+            weighty=1,
+            columnspan=columnspan,
         )
 
     def _create_widget(self, parent: tk.BaseWidget, window: Window, row: int, col: int):
         super()._create_widget(parent, window, row, col)
-        parent.grid_rowconfigure(row, weight=1)
+        # parent.grid_rowconfigure(row, weight=1)
