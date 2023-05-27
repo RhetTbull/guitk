@@ -84,11 +84,6 @@ class _LayoutMixin:
         rows, columns = rows_columns(layout)
         debug(f"{layout=} {rows=}, {columns=}")
 
-        if rows > 1 and columns > 1:
-            raise ValueError(
-                f"Layout must be a single row or column, not {rows}x{columns}"
-            )
-
         layout = self._add_spacers(layout, valign, halign)
         rows, columns = rows_columns(layout)
         debug(f"_add_spacers(): {layout=} {rows=}, {columns=}")
