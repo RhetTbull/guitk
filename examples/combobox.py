@@ -6,6 +6,7 @@ from guitk import Combobox, Label, VLayout, VSpacer, Window
 class ComboboxWindow(Window):
     def config(self):
         self.title = "Combobox Demo"
+        self.size = (400, 200)
         with VLayout():
             Combobox(key="COMBOBOX1", values=["Foo", "Bar", "XYZZY"], autosize=True)
             Combobox(
@@ -17,9 +18,6 @@ class ComboboxWindow(Window):
             )
             VSpacer()
             Label("", key="STATUS", sticky="EW")
-
-    def setup(self):
-        self.window.geometry("400x200")
 
     def handle_event(self, event):
         if event.key in ["COMBOBOX1", "COMBOBOX2"]:

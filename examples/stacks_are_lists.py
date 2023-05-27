@@ -1,4 +1,4 @@
-"""Demo showing how to use stacks as lists"""
+"""Demo showing how to use stacks as lists to add or remove widgets from a stack"""
 
 
 from guitk import *
@@ -147,5 +147,5 @@ class Demo(Window):
 
 
 if __name__ == "__main__":
-    set_debug(True)
+    # set_debug(True)
     Demo().run()

@@ -1,10 +1,10 @@
 """Hello World example using guitk """
 
-from guitk import Button, Entry, Event, EventType, HStack, Label, VLayout, Window
+import guitk as ui
 
 
 # subclass guitk.Window as the starting point for your app's main window
-class HelloWorld(Window):
+class HelloWorld(ui.Window):
     # every Window class needs a config() method that
     # defines the title and the layout (and optionally menu and other other settings)
     def config(self):
@@ -14,23 +14,21 @@ class HelloWorld(Window):
         # Title for the window
         self.title = "Hello, World"
 
+        # optionally set size as a tuple of (width, height)
+        self.size = (320, 240)
+
         # Define the window's contents
         # guitk.Label corresponds to a tkinter.ttk.Label, etc.
         # optionally provide a unique key to each element to easily reference the element later
         # use a HLayout or VLayout class to define the layout of the window
-        with VLayout():
-            from guitk import VSpacer
-
-            Label("What's your name?", sticky="ew", anchor="center", weightx=1)
-            Entry(key="ENTRY_NAME", events=True, focus=True, sticky="ew", weightx=1)
-            Label("", width=40, key="OUTPUT", columnspan=2)
-            with HStack():
-                # align these two buttons in a row
-                Button("Ok")
-                Button("Quit")
-
-        # optionally set size as a tuple of (width, height)
-        self.size = (320, 240)
+        with ui.VLayout():
+            ui.Label("What's your name?", sticky="ew", anchor="center", weightx=1)
+            ui.Entry(key="ENTRY_NAME", events=True, focus=True, sticky="ew", weightx=1)
+            ui.Label("", width=40, key="OUTPUT", columnspan=2)
+            with ui.HStack():
+                # align these two buttons in a horizontal row
+                ui.Button("Ok")
+                ui.Button("Quit")
 
     def setup(self):
         # your setup() method is called by the Window class after config() just before the Window is displayed
@@ -47,7 +45,7 @@ class HelloWorld(Window):
     # Interact with the Window using an event Loop
     # every guitk.Window will call self.handle_event() to handle GUI events
     # event is a guitk.Event object
-    def handle_event(self, event: Event):
+    def handle_event(self, event: ui.Event):
         name = self["ENTRY_NAME"].value
 
         if event.key == "Quit":
@@ -55,7 +53,7 @@ class HelloWorld(Window):
             # value passed to quit will be returned by HelloWorld.run()
             self.quit(name)
 
-        if event.key == "Ok" or event.event_type == EventType.EntryReturn:
+        if event.key == "Ok" or event.event_type == ui.EventType.EntryReturn:
             # User pressed the OK button or the Return key inside the Entry box
             # set the output Label to the value of the Entry box
             # individual widgets can be accessed by their key; the window object acts as a dictionary of widgets

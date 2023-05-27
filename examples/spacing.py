@@ -1,5 +1,15 @@
 """Demo container spacing."""
 
+# Horizontal and vertical spacing can be specified for HStack and VStack using
+# the `hspacing` and `vspacing` keyword arguments. The value of these arguments
+# can be either an integer or a tuple of two integers. If an integer is
+# specified, it is used as the spacing between all widgets. If a tuple is
+# specified, the first integer is left or top spacing and the second integer is
+# right or bottom spacing.
+# A widget can override the default Stack spacing by specifying its own `padx`
+# and `pady` values. The `padx` and `pady` values can also be a single integer
+# or a tuple of two integers.
+
 from guitk import *
 
 

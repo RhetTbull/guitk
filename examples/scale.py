@@ -9,18 +9,19 @@ class ScaleDemo(Window):
     def config(self):
         default = 5.0
         self.title = "Scale Demo"
-        with HLayout():
-            with VStack(valign=tk.BOTTOM):
+        self.size = 300, 200
+        with HLayout(valign="center"):
+            with VStack(valign="bottom"):
                 Scale(
                     0,
                     100,
                     value=default,
                     orient=tk.HORIZONTAL,
-                    target_key="SCALE_LABEL1",
+                    target_key="SCALE_LABEL1", # key to the target widget whose value will be updated
                     precision=0,
                 )
                 Label(text=f"{default:.1f}", key="SCALE_LABEL1")
-            with VStack(valign=tk.BOTTOM):
+            with VStack(valign="bottom"):
                 Scale(
                     0,
                     100,

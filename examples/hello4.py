@@ -2,20 +2,7 @@
 
 import tkinter as tk
 
-from guitk import (
-    Button,
-    Checkbutton,
-    Entry,
-    Event,
-    HStack,
-    Label,
-    LabelFrame,
-    Output,
-    Text,
-    VLayout,
-    VStack,
-    Window,
-)
+from guitk import *
 
 
 class HelloWorld(Window):
@@ -27,12 +14,13 @@ class HelloWorld(Window):
         # use guitk.Frame to group sub-layouts into columns
         with VLayout():
             Label("What's your name?")
-            Entry(key="ENTRY_NAME")
+            # some widgets like Entry do not send events by default
+            # so use events=True to enable them
+            Entry(key="ENTRY_NAME", events=True, focus=True)
             Label("", width=40, key="OUTPUT")
             with LabelFrame("Label Frame", labelanchor=tk.N):
                 with HStack():
                     with VStack():
-                        ...
                         Output(width=20, height=10)
                         Label("Output", key="LABEL_OUTPUT", sticky=tk.N)
                     with VStack(valign="center"):
@@ -42,7 +30,7 @@ class HelloWorld(Window):
                 Button("Ok")
                 Button("Quit")
 
-        # you can define custom padding around widgets with padx, pady
+        # you can define custom default padding around widgets with padx, pady
         # see https://tkdocs.com/tutorial/grid.html#padding
         self.padx = 3
         self.pady = 3
@@ -52,7 +40,7 @@ class HelloWorld(Window):
         if event.key == "Quit":
             self.quit()
 
-        if event.key == "Ok":
+        if event.key == "Ok" or event.event_type == EventType.EntryReturn:
             # set the output Label to the value of the Entry box
             # the Window class acts like a dictionary for looking up guitk element objects by key
             name = self["ENTRY_NAME"].value
@@ -77,5 +65,4 @@ class HelloWorld(Window):
 
 
 if __name__ == "__main__":
-    # add some padding around GUI elements to make it prettier
     HelloWorld().run()

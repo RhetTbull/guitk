@@ -30,5 +30,4 @@ class Demo(ui.Window):
 
 
 if __name__ == "__main__":
-    ui.set_debug(True)
     Demo().run()

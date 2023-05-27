@@ -1,23 +1,20 @@
-""" Demonstrates use of guitk.TreeView widget with callbacks"""
+""" Demonstrates use of ui.TreeView widget with callbacks"""
 
 import pathlib
 
-import guitk
+import guitk as ui
 
 
-class ShowMeATree(guitk.Window):
+class ShowMeATree(ui.Window):
     def config(self):
         self.title = "Tree View"
-        self.layout = [
-            [
-                guitk.Treeview(
-                    key="TREE",
-                    headings=["Filename", "Size"],
-                    show="headings",
-                    vscrollbar=True,
-                )
-            ]
-        ]
+        with ui.HLayout():
+            ui.Treeview(
+                key="TREE",
+                headings=["Filename", "Size"],
+                show="headings",
+                vscrollbar=True,
+            )
 
     def list_files(self, path, tree):
         files = pathlib.Path(path).iterdir()

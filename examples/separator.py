@@ -10,7 +10,6 @@ class SeparatorDemo(Window):
             Label("Hello")
             VSeparator()
             Label("World")
-
             with VStack(width=200, valign="center"):
                 Label("Hello", sticky="EW", weightx=1, anchor="center")
                 HSeparator()

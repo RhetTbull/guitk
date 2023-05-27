@@ -1,4 +1,4 @@
-"""Example for Notebook, showing how to use add, insert """
+"""Example for Notebook, showing how to use add, insert tab """
 
 from guitk import (
     Button,
@@ -16,13 +16,13 @@ from guitk import (
 
 class NotebookWindow(Window):
     def config(self):
+        self.title = "Notebook"
         # tabs can be added to the Notebook later, here tabs are added in setup() after the notebook is created
         with VLayout():
             Notebook(key="NOTEBOOK", sticky="nsew")
             with HStack():
                 Button("Add", key="ADD")
                 Button("Insert", key="INSERT")
-        self.title = "Notebook"
         self.tab_count = 0
 
     def setup(self):
