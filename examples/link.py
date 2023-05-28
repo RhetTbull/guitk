@@ -13,7 +13,7 @@ class ClickMe(Window):
             LinkLabel("Click me!", width=20, anchor="center", key="CLICK_ME").font(
                 family="Helvetica", size=24, underline=True
             ).style(foreground="blue")
-    
+
         self.padx = 20
         self.pady = 20
 

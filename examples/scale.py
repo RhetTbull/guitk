@@ -17,7 +17,7 @@ class ScaleDemo(Window):
                     100,
                     value=default,
                     orient=tk.HORIZONTAL,
-                    target_key="SCALE_LABEL1", # key to the target widget whose value will be updated
+                    target_key="SCALE_LABEL1",  # key to the target widget whose value will be updated
                     precision=0,
                 )
                 Label(text=f"{default:.1f}", key="SCALE_LABEL1")

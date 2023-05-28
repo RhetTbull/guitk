@@ -20,7 +20,9 @@ def get_docstring(file: pathlib.Path) -> str:
 def get_examples(examples_dir: pathlib.Path):
     """Get examples from the examples directory"""
     example_files = pathlib.Path(examples_dir).glob("*.py")
-    example_files = sorted([f for f in example_files if f.name != pathlib.Path(__file__).name])
+    example_files = sorted(
+        [f for f in example_files if f.name != pathlib.Path(__file__).name]
+    )
     return {
         file.stem: {"path": file, "docstring": get_docstring(file)}
         for file in example_files
