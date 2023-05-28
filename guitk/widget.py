@@ -231,7 +231,7 @@ class Widget:
             so that the widget is removed from its parent and necessary bookkeeping is done
             in the Window class.
         """
-        debug(self, self.parent)
+        debug("destroy", self, self.parent)
         self.parent.remove(self)
 
     def replace(self, widget: Widget) -> Widget:
@@ -244,8 +244,8 @@ class Widget:
         Returns: Widget instance
         """
         self.widget.grid_forget()
-        self.parent._add_widget_row_col(widget, row=self._row, col=self._col)
         self.destroy()
+        self.parent._insert_widget_row_col(widget, row=self._row, col=self._col)
         return widget
 
     def _set_parent_window(self, tk_parent: tk.BaseWidget, window: Window):

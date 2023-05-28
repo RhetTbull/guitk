@@ -444,32 +444,6 @@ class _Container(Widget, _LayoutMixin):
             self.widget.state(["disabled"])
         return self.widget
 
-    def _add_widget_row_col(self, widget: Widget, row: int, col: int):
-        """Add a widget to the container after the container has been created
-            Intended for use at run-time only when widgets need to be added dynamically
-
-        Args:
-            widget: (Widget) the widget to add
-        """
-        # add widget to self.layout
-        self._ensure_layout_size(row, col)
-        self.layout[row][col] = widget
-
-        # sticky = ""
-        # if self.valign in {"top", "center"}:
-        #     sticky += "n"
-        # elif self.valign in {"bottom", "center"}:
-        #     sticky += "s"
-        # if self.halign in {"left", "center"}:
-        #     sticky += "w"
-        # elif self.halign in {"right", "center"}:
-        #     sticky += "e"
-        # if not widget.sticky:
-        #     widget.sticky = sticky
-
-        # redraw the layout which will create the widget
-        self._layout(self.frame, self.window)
-
     def _insert_widget_row_col(
         self, widget: Widget, row: int, col: int, vertical: bool = False
     ):

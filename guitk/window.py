@@ -11,6 +11,7 @@ from typing import TYPE_CHECKING, Any, Hashable
 
 from guitk.tkroot import _TKRoot
 
+from ._debug import debug, debug_watch
 from .constants import DEFAULT_PADX, DEFAULT_PADY
 from .events import Event, EventCommand, EventType
 from .frame import _LayoutMixin
@@ -298,17 +299,36 @@ class Window(_LayoutMixin, _WindowBaseClass):
         self._widget_by_key[widget.key] = widget
         self._grid_configure_widgets()
 
-    def remove_widget(self, key_or_widget: Hashable | Widget):
+    @debug_watch
+    def remove(self, key_or_widget: Hashable | Widget):
         """Remove widget from window and destroy it."""
         for idx, widget in enumerate(self._widgets):
+            debug(f"{idx=} {widget=} {key_or_widget=}")
             if widget == key_or_widget or widget.key == key_or_widget:
                 widget = self._widgets[idx]
-                widget.parent.remove(widget)
+                if widget.parent == self:
+                    self._remove(widget)
+                else:
+                    widget.parent.remove(widget)
+                return
         raise ValueError(f"Widget {key_or_widget} not found in Window")
+
+    def _remove(self, widget: Widget):
+        """Remove widget from window and destroy it."""
+        widget.widget.grid_forget()
+        widget.widget.destroy()
+        self._widget_by_key.pop(widget.key, None)
+        self._widgets.remove(widget)
+        self.redraw()
 
     def run(self):
         self._tk.run_mainloop()
         return self._return_value
+
+    def redraw(self):
+        """Redraw the window"""
+        self._layout(self._mainframe, self)
+        self.window.update_idletasks()
 
     @property
     def root(self):

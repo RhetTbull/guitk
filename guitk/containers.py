@@ -35,7 +35,11 @@ class _Stack(_Container):
         vspacing: PadType | None = None,
         hspacing: PadType | None = None,
     ):
-        """Base container container that stacks widgets when added to a Layout
+        """Base container container that stacks widgets when added to a Layout.
+
+        The base container stacks widgets in a single vertical column. Subclasses
+        can override the layout property to change the layout to horizontal or
+        grid layouts.
 
         Args:
             key (Hashable, optional): The key to use for the Stack. Defaults to None.
@@ -126,7 +130,6 @@ class _Stack(_Container):
 
     def append(self, widget: Widget):
         """Add a widget to the bottom of the Stack"""
-        # self._add_widget_row_col(widget, len(self), 0)
         self._layout_list.append(widget)
         self.redraw()
 
@@ -148,7 +151,6 @@ class _Stack(_Container):
 
         If the index is out of range, the widget will be added to the end of the Stack.
         """
-        # self._insert_widget_row_col(widget, index, 0, True)
         self._layout_list.insert(index, widget)
         self.redraw()
 
@@ -210,12 +212,37 @@ class _Stack(_Container):
         debug(f"{self._layout_list=} {self.layout=}")
         self._layout(self.frame, self.window)
 
-    def _add_widget_row_col(self, widget: Widget, row: int, col: int):
-        super()._add_widget_row_col(widget, row, col)
-
     def _add_widget(self, widget: Widget):
         """Add a widget to the frame's layout"""
         self._layout_list.append(widget)
+
+    @debug_watch
+    def _insert_widget_row_col(
+        self, widget: Widget, row: int, col: int, is_vertical: bool = True
+    ):
+        """Insert a widget into the container after the container has been created
+            Intended for use at run-time only when widgets need to be added dynamically
+
+        Args:
+            widget: (Widget) the widget to add
+            row: (int) the row to insert the widget into
+            col: (int) the column to insert the widget into
+
+        Note: widgets are placed in a grid with row, col coordinates by the _LayoutMixin class.
+        All containers store widgets internally as a list so we need to convert the row, col
+        coordinates to a list index.
+        """
+
+        if is_vertical:
+            # convert row, col to list index
+            index = row
+        else:
+            index = col
+
+        self._layout_list.insert(index, widget)
+
+        # redraw the layout which will create the widget
+        self._layout(self.frame, self.window)
 
     def __len__(self):
         """Length of the Stack (number of widgets contained)"""
@@ -360,6 +387,24 @@ class HStack(_Stack):
         self._layout_lol = layout
         self._layout_list = [widget for row in layout for widget in row]
 
+    @debug_watch
+    def _insert_widget_row_col(
+        self, widget: Widget, row: int, col: int, is_vertical: bool = True
+    ):
+        """Insert a widget into the container after the container has been created
+            Intended for use at run-time only when widgets need to be added dynamically
+
+        Args:
+            widget: (Widget) the widget to add
+            row: (int) the row to insert the widget into
+            col: (int) the column to insert the widget into
+
+        Note: widgets are placed in a grid with row, col coordinates by the _LayoutMixin class.
+        All containers store widgets internally as a list so we need to convert the row, col
+        coordinates to a list index.
+        """
+        super()._insert_widget_row_col(widget, row, col, is_vertical=False)
+
 
 class VGrid(_Stack):
     """A container that arranges widgets in a vertical grid when added to a Layout"""
@@ -436,6 +481,34 @@ class VGrid(_Stack):
         ...
 
 
+    @debug_watch
+    def _insert_widget_row_col(
+        self, widget: Widget, row: int, col: int, is_vertical: bool = True
+    ):
+        """Insert a widget into the container after the container has been created
+            Intended for use at run-time only when widgets need to be added dynamically
+
+        Args:
+            widget: (Widget) the widget to add
+            row: (int) the row to insert the widget into
+            col: (int) the column to insert the widget into
+
+        Note: widgets are placed in a grid with row, col coordinates by the _LayoutMixin class.
+        All containers store widgets internally as a list so we need to convert the row, col
+        coordinates to a list index.
+        """
+        index = self._row_col_to_index(row, col)
+        self._layout_list.insert(index, widget)
+        
+        # redraw the layout which will create the widget
+        self._layout(self.frame, self.window)
+
+    def _row_col_to_index(self, row: int, col: int):
+        """Convert row, col coordinates to a list index"""
+        # the VGrid layout converts a list into a list of lists of length self.rows
+        # convert row, col to back to a list index
+        return row + col * self.rows
+
 class HGrid(_Stack):
     """A container that arranges widgets in a horizontal grid when added to a Layout"""
 
@@ -497,7 +570,7 @@ class HGrid(_Stack):
     def layout(self) -> list[list[Widget]]:
         """Return the layout of the Stack"""
         if self.distribute:
-            raise NotImplementedError("distribute note yet implemented for VGrid")
+            raise NotImplementedError("distribute not yet implemented for HGrid")
         else:
             # grid the widgets in the order they were added
             # chunk items into lists self.cols long
@@ -511,3 +584,32 @@ class HGrid(_Stack):
     def layout(self, layout: list[list[Widget]]):
         """Set the layout of the Stack"""
         ...
+
+    @debug_watch
+    def _insert_widget_row_col(
+        self, widget: Widget, row: int, col: int, is_vertical: bool = True
+    ):
+        """Insert a widget into the container after the container has been created
+            Intended for use at run-time only when widgets need to be added dynamically
+
+        Args:
+            widget: (Widget) the widget to add
+            row: (int) the row to insert the widget into
+            col: (int) the column to insert the widget into
+
+        Note: widgets are placed in a grid with row, col coordinates by the _LayoutMixin class.
+        All containers store widgets internally as a list so we need to convert the row, col
+        coordinates to a list index.
+        """
+        index = self._row_col_to_index(row, col)
+        self._layout_list.insert(index, widget)
+        
+        # redraw the layout which will create the widget
+        self._layout(self.frame, self.window)
+
+    def _row_col_to_index(self, row: int, col: int):
+        """Convert row, col coordinates to a list index"""
+        # the HGrid layout converts a list into a list of lists where each list is length self.cols
+        # convert row, col to back to a list index
+        return row * self.cols + col
+
