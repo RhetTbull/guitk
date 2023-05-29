@@ -1,6 +1,6 @@
 """ Demonstrates use of LinkLabel widget """
 
-from guitk import HLayout, LinkLabel, Window
+from guitk import Label, LinkLabel, VLayout, Window, on
 
 
 class ClickMe(Window):
@@ -9,13 +9,18 @@ class ClickMe(Window):
 
         # you can pass tkinter.ttk options to the widgets
         # e.g. width and anchor
-        with HLayout():
-            LinkLabel("Click me!", width=20, anchor="center", key="CLICK_ME").font(
+        with VLayout(halign="center"):
+            LinkLabel("Click me!", key="click_me").font(
                 family="Helvetica", size=24, underline=True
             ).style(foreground="blue")
+            Label("", key="status")
 
         self.padx = 20
         self.pady = 20
+
+    @on(key="click_me")
+    def click_me(self):
+        self["status"].value = "You clicked me!"
 
     def handle_event(self, event):
         print(event)

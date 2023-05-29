@@ -46,8 +46,7 @@ class TestRunner(ui.Window):
     @ui.on(key="run")
     def run_test(self):
         """Run the test"""
-        test = self.class_()
-        test.show(parent=self)
+        self.class_(parent=self.window)
 
     @ui.on(key="Pass")
     def pass_test(self):
