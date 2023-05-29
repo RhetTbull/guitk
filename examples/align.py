@@ -20,7 +20,7 @@ _valign = None
 _halign = None
 
 
-class TestWindow(Window):
+class Align(Window):
     def config(self):
         self.size = 400, 400
         self.title = "Test Layout Alignment"
@@ -134,4 +134,4 @@ class HStackWindow(Window):
 
 if __name__ == "__main__":
     # set_debug(True)
-    TestWindow().run()
+    Align().run()

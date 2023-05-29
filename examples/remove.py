@@ -3,7 +3,7 @@
 import guitk as ui
 
 
-class Demo(ui.Window):
+class Remove(ui.Window):
     def config(self):
         self.title = "Remove Widgets"
         self.size = (1000, 400)
@@ -70,4 +70,4 @@ class Demo(ui.Window):
 
 if __name__ == "__main__":
     ui.set_debug(True)
-    Demo().run()
+    Remove().run()

@@ -3,7 +3,7 @@
 import guitk as ui
 
 
-class ReplaceDemo(ui.Window):
+class Replace(ui.Window):
     def config(self):
         self.size = 600, 600
         self.title = "Replace Demo"
@@ -41,4 +41,4 @@ class ReplaceDemo(ui.Window):
 
 if __name__ == "__main__":
     ui.set_debug(True)
-    ReplaceDemo().run()
+    Replace().run()
