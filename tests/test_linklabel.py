@@ -4,7 +4,7 @@
 from .runner import TestRunner
 
 
-def test_remove():
+def test_linklabel():
     runner = TestRunner(
         path="./examples/link.py",
         class_="ClickMe",

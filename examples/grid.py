@@ -3,7 +3,7 @@
 from guitk import *
 
 
-class Demo(Window):
+class Grid(Window):
     def config(self):
         self.title = "Grid Demo"
         with VLayout():
@@ -18,6 +18,8 @@ class Demo(Window):
             with HStack(expand=False):
                 Button("Add")
                 Button("Remove")
+            HSeparator()
+            Label("", key="status")
 
     @on("Add")
     def on_add(self):
@@ -34,6 +36,11 @@ class Demo(Window):
         if len(self.hgrid):
             self.hgrid.pop()
 
+    @on(event_type=EventType.ButtonPress)
+    def on_button_press(self, event):
+        """Update status label"""
+        self.get("status").value = f"Button {event.widget.value} pressed"
+
 
 if __name__ == "__main__":
-    Demo().run()
+    Grid().run()
