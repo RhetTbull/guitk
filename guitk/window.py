@@ -299,7 +299,6 @@ class Window(_LayoutMixin, _WindowBaseClass):
         self._widget_by_key[widget.key] = widget
         self._grid_configure_widgets()
 
-    @debug_watch
     def remove(self, key_or_widget: Hashable | Widget):
         """Remove widget from window and destroy it."""
         for idx, widget in enumerate(self._widgets):
@@ -319,16 +318,28 @@ class Window(_LayoutMixin, _WindowBaseClass):
         widget.widget.destroy()
         self._widget_by_key.pop(widget.key, None)
         self._widgets.remove(widget)
-        self.redraw()
+        self.window.update_idletasks()
+
+    def _insert_widget_row_col(self, widget: Widget, row: int, col: int):
+        """Insert a widget into the window's mainframe after the container has been created
+            Intended for use at run-time only when widgets need to be added dynamically
+
+        Args:
+            widget: (Widget) the widget to add
+            row: (int) the row to insert the widget into
+            col: (int) the column to insert the widget into
+
+        Note:
+            This method is included in Window so that Widget.replace() works properly for
+            widgets added directly to a layout. It does not expand the layout like the similar
+            method in _Container.
+        """
+        # TODO: fix this so it actually inserts instead of replaces
+        self.add_widget(widget, row, col)
 
     def run(self):
         self._tk.run_mainloop()
         return self._return_value
-
-    def redraw(self):
-        """Redraw the window"""
-        self._layout(self._mainframe, self)
-        self.window.update_idletasks()
 
     @property
     def root(self):

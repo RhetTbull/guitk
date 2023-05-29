@@ -208,9 +208,8 @@ class _Stack(_Container):
 
     def redraw(self):
         """Redraw the Stack"""
-        debug(f"redraw {self.key}")
-        debug(f"{self._layout_list=} {self.layout=}")
         self._layout(self.frame, self.window)
+        self.window.window.update_idletasks()
 
     def _add_widget(self, widget: Widget):
         """Add a widget to the frame's layout"""
@@ -480,7 +479,6 @@ class VGrid(_Stack):
         """Set the layout of the Stack"""
         ...
 
-
     @debug_watch
     def _insert_widget_row_col(
         self, widget: Widget, row: int, col: int, is_vertical: bool = True
@@ -499,7 +497,7 @@ class VGrid(_Stack):
         """
         index = self._row_col_to_index(row, col)
         self._layout_list.insert(index, widget)
-        
+
         # redraw the layout which will create the widget
         self._layout(self.frame, self.window)
 
@@ -508,6 +506,7 @@ class VGrid(_Stack):
         # the VGrid layout converts a list into a list of lists of length self.rows
         # convert row, col to back to a list index
         return row + col * self.rows
+
 
 class HGrid(_Stack):
     """A container that arranges widgets in a horizontal grid when added to a Layout"""
@@ -603,7 +602,7 @@ class HGrid(_Stack):
         """
         index = self._row_col_to_index(row, col)
         self._layout_list.insert(index, widget)
-        
+
         # redraw the layout which will create the widget
         self._layout(self.frame, self.window)
 
@@ -612,4 +611,3 @@ class HGrid(_Stack):
         # the HGrid layout converts a list into a list of lists where each list is length self.cols
         # convert row, col to back to a list index
         return row * self.cols + col
-
