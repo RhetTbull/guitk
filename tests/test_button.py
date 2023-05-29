@@ -26,5 +26,5 @@ class TestButton(ui.Window):
 
 
 def test_button():
-    runner = TestRunner(class_=TestButton, description="Test Button()")
+    runner = TestRunner(class_=TestButton, description="Test Button widget")
     assert not runner.run()
