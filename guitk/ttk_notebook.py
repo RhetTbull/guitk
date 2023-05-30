@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 
 # TODO: Add remove() to Notebook and Tab
 
-__all__ = ["Notebook", "NoteBook", "Tab", "VerticalTab"]
+__all__ = ["Notebook", "NoteBook", "HTab", "VTab"]
 
 _valid_standard_attributes = {
     "width",
@@ -42,7 +42,7 @@ class Notebook(_Container):
     def __init__(
         self,
         key: Hashable | None = None,
-        tabs: list[Tab] | None = None,
+        tabs: list[HTab] | None = None,
         disabled: bool = False,
         columnspan: int | None = None,
         rowspan: int | None = None,
@@ -157,13 +157,13 @@ class Notebook(_Container):
         """Return the name of the currently selected tab"""
         return self.notebook.tab(self.notebook.select(), "text")
 
-    def add(self, tab: Tab):
+    def add(self, tab: HTab):
         """Add a Tab to the Notebook as new tab"""
         tab_ = tab._create_widget(self.widget, self.window, 0, 0)
         tab.kwargs["text"] = tab.name
         self.notebook.add(tab_, **tab.kwargs)
 
-    def insert(self, pos, tab: Tab):
+    def insert(self, pos, tab: HTab):
         """Insert a layout to the Notebook as new tab at position pos"""
         tab_ = tab._create_widget(self.widget, self.window, 0, 0)
         tab.kwargs["text"] = tab.name
@@ -181,7 +181,7 @@ class NoteBook(Notebook):
     pass
 
 
-class Tab(_Container):
+class HTab(_Container):
     """Tab for Notebook widget that arranges its widgets horizontally"""
 
     def __init__(self, name=None, sticky: str | None = "nsew", **kwargs):
@@ -210,11 +210,11 @@ class Tab(_Container):
         self.kwargs = kwargs
 
 
-class VerticalTab(Tab, _VerticalContainer):
+class VTab(HTab, _VerticalContainer):
     """Tab for Notebook widget that arranges its widgets vertically"""
 
     def __init__(self, name=None, sticky: str | None = "nsew", **kwargs):
-        """Initialize a VerticalTab"""
+        """Initialize a vertical Tab"""
 
         super().__init__(
             frametype=GUITK.ELEMENT_FRAME,

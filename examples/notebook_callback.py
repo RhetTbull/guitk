@@ -11,9 +11,9 @@ class NotebookWindow(ui.Window):
 
         with ui.HLayout():
             with ui.Notebook(key="NOTEBOOK"):
-                with ui.Tab("Tab 1"):
+                with ui.HTab("Tab 1"):
                     ui.Label("Hello World")
-                with ui.Tab("Tab 2"):
+                with ui.HTab("Tab 2"):
                     ui.Label("Tab 2")
 
     @ui.on(event_type=ui.EventType.NotebookTabChanged)

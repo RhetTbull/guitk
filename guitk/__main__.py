@@ -46,7 +46,7 @@ class Demo(Window):
                 Label("This is a demo of GUITk widgets and layouts")
             HSeparator()
             with Notebook(sticky="nsew", weightx=1):
-                with VerticalTab("Tab 1"):
+                with VTab("Tab 1"):
                     with HStack():
                         LabelEntry("File:", key="file")
                         BrowseFileButton(target_key="file")
@@ -124,7 +124,7 @@ class Demo(Window):
                             tooltip="Treeview; click on headings to sort",
                             vscrollbar=True,
                         ),
-                with Tab("Tab 2"):
+                with HTab("Tab 2"):
                     ...
             with HStack():
                 Output(key="output", sticky="nsew", weightx=1, weighty=1)
@@ -156,6 +156,9 @@ class Demo(Window):
         # list_files() will tag python files with tag 'pyfile'
         tree.bind_tag("pyfile", "tree_python_file", sequence="<Return>")
         tree.bind_tag("pyfile", "tree_python_file", sequence="<Double-1>")
+
+        # will store timer id for the timer
+        self.timer_id = None
 
         print("Done with setup")
 

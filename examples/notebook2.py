@@ -5,11 +5,11 @@ from guitk import (
     Event,
     EventType,
     HStack,
+    HTab,
     Label,
     Notebook,
-    Tab,
-    VerticalTab,
     VLayout,
+    VTab,
     Window,
 )
 
@@ -28,12 +28,12 @@ class NotebookWindow(Window):
     def setup(self):
         # add a couple tabs to the notebook
         self.tab_count += 1
-        with VerticalTab(f"Tab {self.tab_count}") as tab1:
+        with VTab(f"Tab {self.tab_count}") as tab1:
             Label(f"Tab {self.tab_count}")
             Label("Hello World", anchor="center")
 
         self.tab_count += 1
-        with Tab(f"Tab {self.tab_count}") as tab2:
+        with HTab(f"Tab {self.tab_count}") as tab2:
             Label("Tab 2")
 
         self["NOTEBOOK"].add(tab1)
@@ -42,14 +42,14 @@ class NotebookWindow(Window):
     def handle_event(self, event: Event):
         if event.key == "ADD":
             self.tab_count += 1
-            with Tab(f"Tab {self.tab_count}") as tab:
+            with HTab(f"Tab {self.tab_count}") as tab:
                 Label(f"Tab {self.tab_count}")
 
             self["NOTEBOOK"].add(tab)
 
         if event.key == "INSERT":
             self.tab_count += 1
-            with Tab(f"Tab {self.tab_count}") as tab:
+            with HTab(f"Tab {self.tab_count}") as tab:
                 Label(f"Tab {self.tab_count}")
             self["NOTEBOOK"].insert(0, tab)
 

@@ -24,7 +24,7 @@ from .ttk_checkbutton import Checkbutton, CheckButton
 from .ttk_combobox import Combobox, ComboBox
 from .ttk_entry import Entry, LabelEntry
 from .ttk_label import Label, LinkLabel, Linklabel
-from .ttk_notebook import Notebook, NoteBook, Tab, VerticalTab
+from .ttk_notebook import HTab, Notebook, NoteBook, VTab
 from .ttk_panedwindow import (
     LabelPane,
     Pane,
@@ -91,7 +91,7 @@ __all__ = [
     "RadioButton",
     "Radiobutton",
     "Scale",
-    "Tab",
+    "HTab",
     "Text",
     "TreeView",
     "Treeview",
@@ -102,7 +102,7 @@ __all__ = [
     "VStack",
     "VerticalLabelPane",
     "VerticalPane",
-    "VerticalTab",
+    "VTab",
     "Widget",
     "Window",
     "debug",
