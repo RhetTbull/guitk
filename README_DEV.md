@@ -18,6 +18,10 @@ These are here to help me remember how to do things.
 - `./build_readme.sh` to update the README.md uses Markdown Preprocessor
 - `poetry build`
 
+## Docs
+
+- `mkdocs build`
+
 ## Updating README.md
 
 Do not directly edit README.md, instead edit README.mdpp and process with MarkdownPP using `build_readme.sh` to update README.md
