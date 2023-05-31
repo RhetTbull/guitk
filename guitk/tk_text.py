@@ -10,7 +10,7 @@ from guitk.redirect import StdErrRedirect, StdOutRedirect
 from .events import Event, EventCommand, EventType
 from .types import CommandType, PadType, TooltipType
 from .utils import scrolled_widget_factory
-from .widget import Widget
+from .basewidget import BaseWidget
 
 __all__ = ["Text", "Output"]
 
@@ -58,7 +58,7 @@ _valid_tk_text_attributes = {
 Window = TypeVar("Window")
 
 
-class Text(Widget):
+class Text(BaseWidget):
     """A tk Text box"""
 
     def __init__(

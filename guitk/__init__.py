@@ -10,6 +10,7 @@
 
 from ._debug import debug, debug_watch, is_debug, set_debug
 from ._on import on
+from .basewidget import BaseWidget
 from .containers import HGrid, HStack, VGrid, VStack
 from .debugwindow import DebugWindow
 from .events import Event, EventCommand, EventType
@@ -43,13 +44,13 @@ from .ttk_radiobutton import Radiobutton, RadioButton
 from .ttk_scale import Scale
 from .ttk_separator import HSeparator, VSeparator
 from .ttk_treeview import Listbox, ListBox, Treeview, TreeView
-from .widget import Widget
 from .window import Window
 
 __version__ = "0.3.0"
 __author__ = "Rhet Turnbull"
 
 __all__ = [
+    "BaseWidget",
     "BrowseDirectoryButton",
     "BrowseFileButton",
     "Button",
@@ -69,6 +70,7 @@ __all__ = [
     "HSeparator",
     "HSpacer",
     "HStack",
+    "HTab",
     "Label",
     "LabelEntry",
     "LabelFrame",
@@ -91,7 +93,6 @@ __all__ = [
     "RadioButton",
     "Radiobutton",
     "Scale",
-    "HTab",
     "Text",
     "TreeView",
     "Treeview",
@@ -100,10 +101,9 @@ __all__ = [
     "VSeparator",
     "VSpacer",
     "VStack",
+    "VTab",
     "VerticalLabelPane",
     "VerticalPane",
-    "VTab",
-    "Widget",
     "Window",
     "debug",
     "debug_watch",

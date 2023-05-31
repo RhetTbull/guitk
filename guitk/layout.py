@@ -12,7 +12,7 @@ from ._debug import debug, debug_watch
 from .types import HAlign, LayoutType, VAlign
 
 if TYPE_CHECKING:
-    from .widget import Widget
+    from .basewidget import BaseWidget
 
 _current_parent = {}
 
@@ -81,7 +81,7 @@ class HLayout:
                 self.window = caller_instance
                 self.window.layout = self
 
-    def append(self, widget: Widget):
+    def append(self, widget: BaseWidget):
         """Add a widget to the end of the HLayout"""
         if not self.window:
             # HLayout is not being used in a Window, can't add widget
@@ -91,7 +91,7 @@ class HLayout:
         self.window.col_count += 1
         self.window.add_widget(widget, 0, self.window.col_count)
 
-    def remove(self, key_or_widget: Hashable | Widget):
+    def remove(self, key_or_widget: Hashable | BaseWidget):
         """Remove widget from layout" and destroy it.
 
         Args:
@@ -158,7 +158,7 @@ class VLayout(HLayout):
     def layout(self):
         return [[w] for w in self._layout_list]
 
-    def append(self, widget: Widget):
+    def append(self, widget: BaseWidget):
         """Add a widget to the bottom of the VLayout"""
         if not self.window:
             # HLayout is not being used in a Window, can't add widget

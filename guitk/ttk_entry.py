@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING, Hashable
 from .events import Event, EventCommand, EventType
 from .types import CommandType, PadType, TooltipType
 from .utils import scrolled_widget_factory
-from .widget import Widget
+from .basewidget import BaseWidget
 
 if TYPE_CHECKING:
     from .window import Window
@@ -37,7 +37,7 @@ _valid_ttk_entry_attributes = {
 } | _valid_standard_attributes
 
 
-class Entry(Widget):
+class Entry(BaseWidget):
     """ttk.Entry text entry / input box"""
 
     def __init__(

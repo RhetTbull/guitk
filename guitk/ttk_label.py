@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING, Hashable
 
 from .events import Event, EventCommand, EventType
 from .types import CommandType, PadType, TooltipType, Window
-from .widget import Widget
+from .basewidget import BaseWidget
 
 if TYPE_CHECKING:
     from .window import Window
@@ -42,7 +42,7 @@ _valid_ttk_label_attributes = {
 } | _valid_standard_attributes
 
 
-class Label(Widget):
+class Label(BaseWidget):
     """ttk.Label widget"""
 
     def __init__(

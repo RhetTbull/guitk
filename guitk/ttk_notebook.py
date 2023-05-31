@@ -11,7 +11,7 @@ from .events import Event, EventCommand, EventType
 from .frame import Frame, _Container, _LayoutMixin, _VerticalContainer
 from .layout import get_parent, push_parent
 from .types import CommandType, PadType, TooltipType
-from .widget import Widget
+from .basewidget import BaseWidget
 
 if TYPE_CHECKING:
     from .window import Window

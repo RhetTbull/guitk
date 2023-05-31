@@ -11,7 +11,7 @@ EventCommand = namedtuple("EventCommand", ["widget", "key", "event_type", "comma
 from enum import Enum
 
 if TYPE_CHECKING:
-    from .widget import Widget
+    from .basewidget import BaseWidget
     from .window import Window
 
 
@@ -19,10 +19,10 @@ class Event:
     """Event that occurred and values for widgets in the window"""
 
     def __init__(
-        self, widget: Widget, window: Window, key: Hashable, event_type: EventType
+        self, widget: BaseWidget, window: Window, key: Hashable, event_type: EventType
     ):
         self.id: int = id(window)
-        self.widget: Widget = widget
+        self.widget: BaseWidget = widget
         self.key: Hashable = key
         self.event_type: EventType = event_type
         self.event: tkinter.Event | None = (

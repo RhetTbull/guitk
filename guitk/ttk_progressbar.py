@@ -7,7 +7,7 @@ import tkinter.ttk as ttk
 from typing import TYPE_CHECKING, Hashable, TypeVar
 
 from .types import PadType, TooltipType
-from .widget import Widget
+from .basewidget import BaseWidget
 
 if TYPE_CHECKING:
     from .window import Window
@@ -39,7 +39,7 @@ PROGRESS_DETERMINATE = "determinate"
 PROGRESS_INDETERMINATE = "indeterminate"
 
 
-class Progressbar(Widget):
+class Progressbar(BaseWidget):
     """ttk.Progressbar"""
 
     def __init__(

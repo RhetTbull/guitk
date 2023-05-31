@@ -19,7 +19,7 @@ from .layout import push_parent
 from .menu import Command, Menu
 from .ttk_label import Label
 from .types import PadType, SizeType, TooltipType
-from .widget import Widget
+from .basewidget import BaseWidget
 
 
 class _WindowBaseClass:
@@ -292,14 +292,14 @@ class Window(_LayoutMixin, _WindowBaseClass):
                 for key, event_type in getattr(method, "_guitk_event_handlers"):
                     self.bind_command(key=key, event_type=event_type, command=method)
 
-    def add_widget(self, widget: Widget, row: int, col: int):
+    def add_widget(self, widget: BaseWidget, row: int, col: int):
         """Add a widget to the window's mainframe"""
         widget._create_widget(self._mainframe, self, row, col)
         self._widgets.append(widget)
         self._widget_by_key[widget.key] = widget
         self._grid_configure_widgets()
 
-    def remove(self, key_or_widget: Hashable | Widget):
+    def remove(self, key_or_widget: Hashable | BaseWidget):
         """Remove widget from window and destroy it."""
         for idx, widget in enumerate(self._widgets):
             debug(f"{idx=} {widget=} {key_or_widget=}")
@@ -312,7 +312,7 @@ class Window(_LayoutMixin, _WindowBaseClass):
                 return
         raise ValueError(f"Widget {key_or_widget} not found in Window")
 
-    def _remove(self, widget: Widget):
+    def _remove(self, widget: BaseWidget):
         """Remove widget from window and destroy it."""
         widget.widget.grid_forget()
         widget.widget.destroy()
@@ -320,7 +320,7 @@ class Window(_LayoutMixin, _WindowBaseClass):
         self._widgets.remove(widget)
         self.window.update_idletasks()
 
-    def _insert_widget_row_col(self, widget: Widget, row: int, col: int):
+    def _insert_widget_row_col(self, widget: BaseWidget, row: int, col: int):
         """Insert a widget into the window's mainframe after the container has been created
             Intended for use at run-time only when widgets need to be added dynamically
 
@@ -347,7 +347,7 @@ class Window(_LayoutMixin, _WindowBaseClass):
         return self._tk.root
 
     @property
-    def widgets(self) -> list[Widget]:
+    def widgets(self) -> list[BaseWidget]:
         """ "Return list of all widgets belonging to the window"""
         return self._widgets
 
@@ -362,11 +362,11 @@ class Window(_LayoutMixin, _WindowBaseClass):
         except KeyError as e:
             raise KeyError(f"Widget with key {key} not found") from e
 
-    def _add_widget(self, widget: Widget):
+    def _add_widget(self, widget: BaseWidget):
         """Dummy method to allow widgets to be added with VLayout()/HLayout()"""
         pass
 
-    def _forget_widget(self, widget: Widget):
+    def _forget_widget(self, widget: BaseWidget):
         """Remove widget from the window's bookkeeping but don't destroy it"""
         self._widget_by_key.pop(widget.key, None)
         self._widgets.remove(widget)
@@ -445,7 +445,7 @@ class Window(_LayoutMixin, _WindowBaseClass):
         """Handle events for this window"""
 
         # only handle events if widget has events=True; Window objects always get events
-        if isinstance(event.widget, (Widget, Window)) and not event.widget.events:
+        if isinstance(event.widget, (BaseWidget, Window)) and not event.widget.events:
             return
 
         # filter events for this window
@@ -479,7 +479,7 @@ class Window(_LayoutMixin, _WindowBaseClass):
                 else:
                     command.command()
 
-    def __getitem__(self, key) -> "Widget":
+    def __getitem__(self, key) -> "BaseWidget":
         try:
             return self._widget_by_key[key]
         except KeyError as e:

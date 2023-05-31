@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Any, Hashable, TypeVar, Union
 
 from .events import Event, EventCommand, EventType
 from .types import CommandType, PadType, TooltipType
-from .widget import Widget
+from .basewidget import BaseWidget
 
 if TYPE_CHECKING:
     from .window import Window
@@ -37,7 +37,7 @@ Window = TypeVar("Window")
 # only way now is the key but you really only need one key for the group to get the value
 
 
-class Radiobutton(Widget):
+class Radiobutton(BaseWidget):
     """ttk.Radiobutton class"""
 
     def __init__(

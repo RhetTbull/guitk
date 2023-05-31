@@ -7,7 +7,7 @@ import tkinter.ttk as ttk
 from typing import TYPE_CHECKING
 
 from .types import PadType
-from .widget import Widget
+from .basewidget import BaseWidget
 
 if TYPE_CHECKING:
     from .window import Window
@@ -19,7 +19,7 @@ _valid_ttk_separator_attributes = {
 }
 
 
-class HSeparator(Widget):
+class HSeparator(BaseWidget):
     """ttk.Separator widget with horizontal orientation"""
 
     def __init__(
@@ -60,7 +60,7 @@ class HSeparator(Widget):
         return self.widget
 
 
-class VSeparator(Widget):
+class VSeparator(BaseWidget):
     """ttk.Separator widget with vertical orientation"""
 
     def __init__(

@@ -16,7 +16,7 @@ from .tooltips import Hovertip
 from .ttk_label import Label
 from .ttk_separator import HSeparator, VSeparator
 from .types import HAlign, LayoutType, PaddingType, PadType, TooltipType, VAlign
-from .widget import Widget
+from .basewidget import BaseWidget
 
 _valid_frame_attributes = {
     "cursor",
@@ -188,7 +188,7 @@ class _LayoutMixin:
 
         return new_layout
 
-    def _stickyfy(self, widget: Widget, valign: str, halign: str):
+    def _stickyfy(self, widget: BaseWidget, valign: str, halign: str):
         """Add correct stickiness to widget to achieve alignment"""
         sticky = ""
         weightx = 0
@@ -238,7 +238,7 @@ class _LayoutMixin:
 
     @debug_watch
     def _configure_widget(
-        self, widget: Widget, parent: tk.BaseWidget, window: Window, row: int, col: int
+        self, widget: BaseWidget, parent: tk.BaseWidget, window: Window, row: int, col: int
     ):
         """Configure the widget"""
 
@@ -285,7 +285,7 @@ class _LayoutMixin:
             widget.widget.focus()
 
 
-class _Container(Widget, _LayoutMixin):
+class _Container(BaseWidget, _LayoutMixin):
     """Container base class for Frame and other containers; intended for internal use only"""
 
     def __init__(
@@ -318,7 +318,7 @@ class _Container(Widget, _LayoutMixin):
         **kwargs,
     ):
         # padx and pady passed to Widget not Frame
-        Widget.__init__(
+        BaseWidget.__init__(
             self,
             key=key,
             disabled=disabled,
@@ -362,7 +362,7 @@ class _Container(Widget, _LayoutMixin):
         self.vspacing = vspacing
         self.hspacing = hspacing
 
-    def remove(self, key_or_widget: Hashable | Widget):
+    def remove(self, key_or_widget: Hashable | BaseWidget):
         """ "Remove widget from layout and destroy it.
 
         Args:
@@ -445,7 +445,7 @@ class _Container(Widget, _LayoutMixin):
         return self.widget
 
     def _insert_widget_row_col(
-        self, widget: Widget, row: int, col: int, vertical: bool = False
+        self, widget: BaseWidget, row: int, col: int, vertical: bool = False
     ):
         """Insert a widget into the container after the container has been created
             Intended for use at run-time only when widgets need to be added dynamically
@@ -484,7 +484,7 @@ class _Container(Widget, _LayoutMixin):
             while len(self.layout[row]) <= col:
                 self.layout[row].append(None)
 
-    def _pop_widget_row_col(self, row: int, col: int, vertical: bool = False) -> Widget:
+    def _pop_widget_row_col(self, row: int, col: int, vertical: bool = False) -> BaseWidget:
         """Remove a widget from the container after the container has been created and return it
             Intended for use at run-time only when widgets need to be added dynamically
 
@@ -524,7 +524,7 @@ class _Container(Widget, _LayoutMixin):
     def value(self, value):
         pass
 
-    def _add_widget(self, widget: Widget):
+    def _add_widget(self, widget: BaseWidget):
         """Add a widget to the frame's layout"""
         self.layout[0].append(widget)
 

@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Hashable
 
 from .events import Event, EventCommand, EventType
 from .types import CommandType, PadType, TooltipType
-from .widget import Widget
+from .basewidget import BaseWidget
 
 if TYPE_CHECKING:
     from .window import Window
@@ -37,7 +37,7 @@ _valid_ttk_checkbutton_attributes = {
 } | _valid_standard_attributes
 
 
-class Checkbutton(Widget):
+class Checkbutton(BaseWidget):
     """Checkbox / checkbutton"""
 
     def __init__(

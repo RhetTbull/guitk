@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Hashable, Union
 
 from .events import Event, EventCommand, EventType
 from .types import CommandType, PadType, TooltipType
-from .widget import Widget
+from .basewidget import BaseWidget
 
 if TYPE_CHECKING:
     from .window import Window
@@ -58,7 +58,7 @@ def _interval(from_, to, interval, value, tolerance=1e-9):
         return interval * quotient
 
 
-class Scale(Widget):
+class Scale(BaseWidget):
     """ttk.Scale / slider"""
 
     def __init__(

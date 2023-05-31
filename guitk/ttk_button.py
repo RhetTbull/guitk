@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING, Any, Hashable
 
 from .events import Event, EventCommand, EventType
 from .types import CommandType, PadType, TooltipType
-from .widget import Widget
+from .basewidget import BaseWidget
 
 if TYPE_CHECKING:
     from .window import Window
@@ -45,7 +45,7 @@ _valid_askopenfile_options = {
 }
 
 
-class Button(Widget):
+class Button(BaseWidget):
     """Basic button"""
 
     def __init__(

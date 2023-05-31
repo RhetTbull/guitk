@@ -11,7 +11,7 @@ from ._debug import debug, debug_borderwidth, debug_relief, debug_watch
 from .frame import _Container
 from .spacer import HSpacer, VSpacer
 from .types import HAlign, PaddingType, PadType, VAlign
-from .widget import Widget
+from .basewidget import BaseWidget
 
 if TYPE_CHECKING:
     from .window import Window
@@ -101,7 +101,7 @@ class _Stack(_Container):
             parent.grid_rowconfigure(row, weight=1)
 
     @property
-    def layout(self) -> list[list[Widget]]:
+    def layout(self) -> list[list[BaseWidget]]:
         """Return the layout of the Stack"""
         if self.distribute:
             self._layout_lol = []
@@ -118,27 +118,27 @@ class _Stack(_Container):
         return self._layout_lol
 
     @layout.setter
-    def layout(self, layout: list[list[Widget]]):
+    def layout(self, layout: list[list[BaseWidget]]):
         """Set the layout of the Stack"""
         self._layout_lol = layout
         self._layout_list = [widget for row in layout for widget in row]
 
     @property
-    def widgets(self) -> list[Widget]:
+    def widgets(self) -> list[BaseWidget]:
         """Return a list of the widgets in the Stack"""
         return self._layout_list or []
 
-    def append(self, widget: Widget):
+    def append(self, widget: BaseWidget):
         """Add a widget to the bottom of the Stack"""
         self._layout_list.append(widget)
         self.redraw()
 
-    def extend(self, widgets: list[Widget]):
+    def extend(self, widgets: list[BaseWidget]):
         """Add a list of widgets to the end of the Stack"""
         for widget in widgets:
             self.append(widget)
 
-    def insert(self, index: int, widget: Widget):
+    def insert(self, index: int, widget: BaseWidget):
         """Insert a widget at the given index in the Stack.
 
         Args:
@@ -183,7 +183,7 @@ class _Stack(_Container):
         return widget
 
     @debug_watch
-    def remove(self, key_or_widget: Hashable | Widget):
+    def remove(self, key_or_widget: Hashable | BaseWidget):
         """Remove widget from the container and destroy it.
 
         Args:
@@ -211,13 +211,13 @@ class _Stack(_Container):
         self._layout(self.frame, self.window)
         self.window.window.update_idletasks()
 
-    def _add_widget(self, widget: Widget):
+    def _add_widget(self, widget: BaseWidget):
         """Add a widget to the frame's layout"""
         self._layout_list.append(widget)
 
     @debug_watch
     def _insert_widget_row_col(
-        self, widget: Widget, row: int, col: int, is_vertical: bool = True
+        self, widget: BaseWidget, row: int, col: int, is_vertical: bool = True
     ):
         """Insert a widget into the container after the container has been created
             Intended for use at run-time only when widgets need to be added dynamically
@@ -368,7 +368,7 @@ class HStack(_Stack):
         self.expand = expand if height is None else False
 
     @property
-    def layout(self) -> list[list[Widget]]:
+    def layout(self) -> list[list[BaseWidget]]:
         """Return the layout of the HStack"""
         if self.distribute:
             self._layout_lol = [[]]
@@ -381,14 +381,14 @@ class HStack(_Stack):
         return self._layout_lol
 
     @layout.setter
-    def layout(self, layout: list[list[Widget]]):
+    def layout(self, layout: list[list[BaseWidget]]):
         """Set the layout of the VStack"""
         self._layout_lol = layout
         self._layout_list = [widget for row in layout for widget in row]
 
     @debug_watch
     def _insert_widget_row_col(
-        self, widget: Widget, row: int, col: int, is_vertical: bool = True
+        self, widget: BaseWidget, row: int, col: int, is_vertical: bool = True
     ):
         """Insert a widget into the container after the container has been created
             Intended for use at run-time only when widgets need to be added dynamically
@@ -463,7 +463,7 @@ class VGrid(_Stack):
         self.rows = rows
 
     @property
-    def layout(self) -> list[list[Widget]]:
+    def layout(self) -> list[list[BaseWidget]]:
         """Return the layout of the Stack"""
         if self.distribute:
             raise NotImplementedError("distribute note yet implemented for VGrid")
@@ -475,13 +475,13 @@ class VGrid(_Stack):
         return self._layout_lol
 
     @layout.setter
-    def layout(self, layout: list[list[Widget]]):
+    def layout(self, layout: list[list[BaseWidget]]):
         """Set the layout of the Stack"""
         ...
 
     @debug_watch
     def _insert_widget_row_col(
-        self, widget: Widget, row: int, col: int, is_vertical: bool = True
+        self, widget: BaseWidget, row: int, col: int, is_vertical: bool = True
     ):
         """Insert a widget into the container after the container has been created
             Intended for use at run-time only when widgets need to be added dynamically
@@ -566,7 +566,7 @@ class HGrid(_Stack):
         self.cols = cols
 
     @property
-    def layout(self) -> list[list[Widget]]:
+    def layout(self) -> list[list[BaseWidget]]:
         """Return the layout of the Stack"""
         if self.distribute:
             raise NotImplementedError("distribute not yet implemented for HGrid")
@@ -580,13 +580,13 @@ class HGrid(_Stack):
         return self._layout_lol
 
     @layout.setter
-    def layout(self, layout: list[list[Widget]]):
+    def layout(self, layout: list[list[BaseWidget]]):
         """Set the layout of the Stack"""
         ...
 
     @debug_watch
     def _insert_widget_row_col(
-        self, widget: Widget, row: int, col: int, is_vertical: bool = True
+        self, widget: BaseWidget, row: int, col: int, is_vertical: bool = True
     ):
         """Insert a widget into the container after the container has been created
             Intended for use at run-time only when widgets need to be added dynamically

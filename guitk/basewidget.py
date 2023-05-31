@@ -17,7 +17,7 @@ if TYPE_CHECKING:
     from .window import Window
 
 
-class Widget:
+class BaseWidget:
     """Basic abstract base class for all tk widgets"""
 
     def __init__(
@@ -149,7 +149,7 @@ class Widget:
     def disabled(self, value: bool) -> None:
         self.widget["state"] = "disabled" if value else "normal"
 
-    def style(self, **kwargs) -> Widget:
+    def style(self, **kwargs) -> BaseWidget:
         """Configure the widget style
 
         Args:
@@ -182,7 +182,7 @@ class Widget:
         slant: str | None = None,
         underline: bool | None = None,
         overstrike: bool | None = None,
-    ) -> Widget:
+    ) -> BaseWidget:
         """Configure the widget font
 
         Args:
@@ -234,7 +234,7 @@ class Widget:
         debug("destroy", self, self.parent)
         self.parent.remove(self)
 
-    def replace(self, widget: Widget) -> Widget:
+    def replace(self, widget: BaseWidget) -> BaseWidget:
         """Replace widget with another widget.
         This destroys the parent widget and replaces it with the new widget in the layout.
 
