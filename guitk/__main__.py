@@ -1,12 +1,16 @@
 """Demo of GUITk widgets and layouts"""
 
+
+import contextlib
 import pathlib
 import sys
 import tkinter as tk
 
+import guitk
 from guitk import *
 
-dummy_text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras tempus neque in vehicula hendrerit. Nam non posuere ante. Nunc libero libero, tempus eget enim vitae, egestas hendrerit tortor. Vivamus et egestas felis. Aliquam erat volutpat. Nulla facilisi. Aliquam hendrerit, nibh nec tempor lobortis, purus nisl vehicula ex, dapibus fermentum mauris nibh id nulla. Vivamus non pretium quam. Phasellus elementum commodo nisl. Nullam eu faucibus augue. Vivamus pulvinar metus vehicula urna porttitor euismod. "
+SAMPLE_TEXT = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras tempus neque in vehicula hendrerit. Nam non posuere ante. Nunc libero libero, tempus eget enim vitae, egestas hendrerit tortor. Vivamus et egestas felis. Aliquam erat volutpat. Nulla facilisi. Aliquam hendrerit, nibh nec tempor lobortis, purus nisl vehicula ex, dapibus fermentum mauris nibh id nulla. Vivamus non pretium quam. Phasellus elementum commodo nisl. Nullam eu faucibus augue. Vivamus pulvinar metus vehicula urna porttitor euismod. "
+ALL_WIDGETS = guitk.__all__
 
 
 def get_docstring(name):
@@ -101,7 +105,7 @@ class Demo(Window):
                                     Label("Text Box", pady=0)
                                     Text(
                                         key="text_box_1",
-                                        text=dummy_text,
+                                        text=SAMPLE_TEXT,
                                         height=4,
                                         tooltip="Text box",
                                         pady=0,
@@ -110,7 +114,7 @@ class Demo(Window):
                                     Label("Text Box With Scrollbar", pady=0)
                                     Text(
                                         key="text_box_2",
-                                        text=dummy_text,
+                                        text=SAMPLE_TEXT,
                                         height=4,
                                         vscrollbar=True,
                                         tooltip="Text box with scrollbar",
@@ -124,16 +128,29 @@ class Demo(Window):
                             tooltip="Treeview; click on headings to sort",
                             vscrollbar=True,
                         ),
+                        with VStack(expand=False, halign="center"):
+                            Label("Classes and functions in GUITk")
+                            ListBox(
+                                key="listbox",
+                                text=ALL_WIDGETS,
+                                height=10,
+                                width=160,
+                                vscrollbar=True,
+                            )
+                        with VStack(expand=False, halign="center"):
+                            Label("Doc String")
+                            Text(key="docstring", height=14, width=30, vscrollbar=True)
                 with HTab("Tab 2"):
                     ...
-            with HStack():
-                Output(key="output", sticky="nsew", weightx=1, weighty=1)
-                VSeparator()
-                with VStack(valign=tk.BOTTOM, expand=False):
-                    Checkbutton("Enable", key="check_enable")
-                    Checkbutton("Echo", key="check_echo")
-                    Button("stdout")
-                    Button("stderr")
+            with LabelFrame("Output Redirect", weightx=1, sticky="ew"):
+                with HStack():
+                    Output(key="output", sticky="nsew", weightx=1, weighty=1)
+                    VSeparator()
+                    with VStack(valign=tk.BOTTOM, expand=False):
+                        Checkbutton("Enable", key="check_enable")
+                        Checkbutton("Echo", key="check_echo")
+                        Button("stdout")
+                        Button("stderr")
 
     def setup(self):
         """gets called right after __init__"""
@@ -160,7 +177,11 @@ class Demo(Window):
         # will store timer id for the timer
         self.timer_id = None
 
-        print("Done with setup")
+        # set up the listbox
+        listbox = self.get("listbox")
+        first_item = ALL_WIDGETS[0]
+        listbox.widget.selection_set(first_item)
+        listbox.widget.see(first_item)
 
     def teardown(self):
         """gets called right before window is destroyed"""
@@ -255,6 +276,15 @@ class Demo(Window):
     def on_treeview(self):
         """User clicked on a treeview item"""
         print(f"You clicked on a treeview item: {self.get('treeview').value}")
+
+    @on(key="listbox")
+    def on_listbox(self):
+        """User clicked on a listbox item, update docstring text box"""
+        docstring = None
+        with contextlib.suppress(AttributeError):
+            docstring = get_docstring(self.get("listbox").value[0])
+        docstring = docstring or "doc string not found"
+        self.get("docstring").value = docstring
 
 
 if __name__ == "__main__":

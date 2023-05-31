@@ -212,7 +212,7 @@ class Treeview(Widget):
 
 
 class Listbox(Treeview):
-    """Listbox widget"""
+    """Listbox widget (which is a Treeview widget with only one column)"""
 
     def __init__(
         self,
@@ -254,6 +254,10 @@ class Listbox(Treeview):
             weightx (int, optional): Horizontal weight. Defaults to None.
             weighty (int, optional): Vertical weight. Defaults to None.
             **kwargs: Additional keyword arguments to pass to the widget constructor.
+
+        Note:
+            This Listbox widget is actually implemented as a Treeview widget with only one column.
+            This is because Tk does not offer a themed ttk Listbox widget.
         """
         self.key = key or "Listbox"
         self.widget_type = "guitk.Listbox"
