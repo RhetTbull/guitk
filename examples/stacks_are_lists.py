@@ -4,8 +4,9 @@
 from guitk import *
 
 
-class Demo(Window):
+class Stacks(Window):
     def config(self):
+        self.title = "Stacks are Lists"
         with VLayout():
             with HStack(expand=True):
                 with VStack():
@@ -148,4 +149,4 @@ class Demo(Window):
 
 if __name__ == "__main__":
     # set_debug(True)
-    Demo().run()
+    Stacks().run()
