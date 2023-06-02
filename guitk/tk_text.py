@@ -7,10 +7,10 @@ from typing import Hashable, TypeVar
 
 from guitk.redirect import StdErrRedirect, StdOutRedirect
 
+from .basewidget import BaseWidget
 from .events import Event, EventCommand, EventType
 from .types import CommandType, PadType, TooltipType
 from .utils import scrolled_widget_factory
-from .basewidget import BaseWidget
 
 __all__ = ["Text", "Output"]
 

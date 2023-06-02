@@ -17,12 +17,12 @@ if TYPE_CHECKING:
 # TODO: Add remove() to PanedWindow and Pane
 
 __all__ = [
-    "Panedwindow",
+    "HLabelPane",
+    "HPane",
     "PanedWindow",
-    "Pane",
-    "VerticalPane",
-    "LabelPane",
-    "VerticalLabelPane",
+    "Panedwindow",
+    "VLabelPane",
+    "VPane",
 ]
 
 _valid_standard_attributes = {
@@ -51,7 +51,7 @@ class Panedwindow(_Container):
     def __init__(
         self,
         key: Hashable | None = None,
-        panes: list[Pane] | None = None,
+        panes: list[HPane] | None = None,
         orient: Literal["horizontal", "vertical"] = "horizontal",
         disabled: bool = False,
         columnspan: int | None = None,
@@ -160,12 +160,12 @@ class Panedwindow(_Container):
 
         return self.widget
 
-    def add(self, pane: Pane):
+    def add(self, pane: HPane):
         """Add a pane to the Panedwindow as new pane"""
         pane_ = pane._create_widget(self.widget, self.window, 0, 0)
         self.panedwindow.add(pane_, **pane.kwargs)
 
-    def insert(self, pos, pane: Pane):
+    def insert(self, pos, pane: HPane):
         """Insert a layout to the Panedwindow as new pane at position pos"""
         pane_ = pane._create_widget(self.widget, self.window, 0, 0)
         self.panedwindow.insert(pos, pane_, **pane.kwargs)
@@ -182,7 +182,7 @@ class PanedWindow(Panedwindow):
     pass
 
 
-class Pane(Frame):
+class HPane(Frame):
     """Pane for Panedwindow widget that arranges its widgets horizontally"""
 
     def __init__(self, sticky: str | None = "nsew", **kwargs):
@@ -210,7 +210,7 @@ class Pane(Frame):
         self.kwargs = kwargs
 
 
-class VerticalPane(_VerticalContainer, Pane):
+class VPane(_VerticalContainer, HPane):
     """Pane for Panedwindow widget that arranges its widgets vertically"""
 
     def __init__(self, sticky: str | None = "nsew", **kwargs):
@@ -238,7 +238,7 @@ class VerticalPane(_VerticalContainer, Pane):
         self.kwargs = kwargs
 
 
-class LabelPane(LabelFrame):
+class HLabelPane(LabelFrame):
     """Pane for Panedwindow widget that arranges its widgets horizontally and includes a label"""
 
     def __init__(self, name=None, sticky: str | None = "nsew", **kwargs):
@@ -268,7 +268,7 @@ class LabelPane(LabelFrame):
         self.kwargs = kwargs
 
 
-class VerticalLabelPane(_VerticalContainer, LabelPane):
+class VLabelPane(_VerticalContainer, HLabelPane):
     """Pane for Panedwindow widget that includes a name and  arranges its widgets vertically"""
 
     def __init__(self, name=None, sticky: str | None = "nsew", **kwargs):

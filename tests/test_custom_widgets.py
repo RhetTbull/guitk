@@ -9,6 +9,6 @@ def test_linklabel():
         path="./examples/custom_widget.py",
         class_="CustomWidget",
         description="Test widgets created with widget_class_factory() and Widget(). "
-        "Verify that the custom Entry and Buttons work as expected."
+        "Verify that the custom Entry and Buttons work as expected.",
     )
     assert not runner.run()

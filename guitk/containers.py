@@ -8,10 +8,10 @@ from typing import TYPE_CHECKING, Hashable
 from guitk.constants import GUITK
 
 from ._debug import debug, debug_borderwidth, debug_relief, debug_watch
+from .basewidget import BaseWidget
 from .frame import _Container
 from .spacer import HSpacer, VSpacer
 from .types import HAlign, PaddingType, PadType, VAlign
-from .basewidget import BaseWidget
 
 if TYPE_CHECKING:
     from .window import Window

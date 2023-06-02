@@ -27,12 +27,12 @@ from .ttk_entry import Entry, LabelEntry
 from .ttk_label import Label, LinkLabel, Linklabel
 from .ttk_notebook import HTab, Notebook, NoteBook, VTab
 from .ttk_panedwindow import (
-    LabelPane,
-    Pane,
+    HLabelPane,
+    HPane,
     Panedwindow,
     PanedWindow,
-    VerticalLabelPane,
-    VerticalPane,
+    VLabelPane,
+    VPane,
 )
 from .ttk_progressbar import (
     PROGRESS_DETERMINATE,
@@ -75,7 +75,7 @@ __all__ = [
     "Label",
     "LabelEntry",
     "LabelFrame",
-    "LabelPane",
+    "HLabelPane",
     "LinkLabel",
     "Linklabel",
     "ListBox",
@@ -86,7 +86,7 @@ __all__ = [
     "Output",
     "PROGRESS_DETERMINATE",
     "PROGRESS_INDETERMINATE",
-    "Pane",
+    "HPane",
     "PanedWindow",
     "Panedwindow",
     "ProgressBar",
@@ -103,8 +103,8 @@ __all__ = [
     "VSpacer",
     "VStack",
     "VTab",
-    "VerticalLabelPane",
-    "VerticalPane",
+    "VLabelPane",
+    "VPane",
     "Widget",
     "Window",
     "debug",

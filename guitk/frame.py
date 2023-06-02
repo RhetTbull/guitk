@@ -10,13 +10,13 @@ from typing import TYPE_CHECKING, Hashable
 from guitk.constants import GUITK
 
 from ._debug import debug, debug_borderwidth, debug_relief, debug_watch
+from .basewidget import BaseWidget
 from .layout import HLayout, VLayout, pop_parent, push_parent
 from .spacer import HSpacer, VSpacer
 from .tooltips import Hovertip
 from .ttk_label import Label
 from .ttk_separator import HSeparator, VSeparator
 from .types import HAlign, LayoutType, PaddingType, PadType, TooltipType, VAlign
-from .basewidget import BaseWidget
 
 _valid_frame_attributes = {
     "cursor",
@@ -238,7 +238,12 @@ class _LayoutMixin:
 
     @debug_watch
     def _configure_widget(
-        self, widget: BaseWidget, parent: tk.BaseWidget, window: Window, row: int, col: int
+        self,
+        widget: BaseWidget,
+        parent: tk.BaseWidget,
+        window: Window,
+        row: int,
+        col: int,
     ):
         """Configure the widget"""
 
@@ -484,7 +489,9 @@ class _Container(BaseWidget, _LayoutMixin):
             while len(self.layout[row]) <= col:
                 self.layout[row].append(None)
 
-    def _pop_widget_row_col(self, row: int, col: int, vertical: bool = False) -> BaseWidget:
+    def _pop_widget_row_col(
+        self, row: int, col: int, vertical: bool = False
+    ) -> BaseWidget:
         """Remove a widget from the container after the container has been created and return it
             Intended for use at run-time only when widgets need to be added dynamically
 

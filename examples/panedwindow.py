@@ -2,14 +2,16 @@
 
 from guitk import (
     Button,
+    HLabelPane,
     HLayout,
+    HPane,
+    Label,
     LabelEntry,
-    LabelPane,
-    Pane,
     PanedWindow,
-    VerticalLabelPane,
-    VerticalPane,
+    VLabelPane,
+    VPane,
     VSeparator,
+    VStack,
     Window,
 )
 
@@ -19,33 +21,41 @@ class PanedDemo(Window):
         self.title = "Panedwindow Demo"
 
         with HLayout():
-            with PanedWindow(orient="horizontal", weightx=1, weighty=1, sticky="nsew"):
-                with Pane():
-                    LabelEntry("Pane")
-                    Button("Hello")
-                with LabelPane("Pane 2"):
-                    LabelEntry("LabelPane")
-                    Button("Hello")
-                with VerticalPane():
-                    LabelEntry("VerticalPane")
-                    Button("Hello")
-                with VerticalLabelPane("Pane 4"):
-                    LabelEntry("VerticalLabelPane")
-                    Button("Hello")
+            with VStack():
+                Label("Horizontal PanedWindow", anchor="center", sticky="ew")
+                with PanedWindow(
+                    orient="horizontal", weightx=1, weighty=1, sticky="nsew"
+                ):
+                    with HPane():
+                        LabelEntry("HPane")
+                        Button("Hello")
+                    with HLabelPane("Pane 2"):
+                        LabelEntry("LabelPane")
+                        Button("Hello")
+                    with VPane():
+                        LabelEntry("VerticalPane")
+                        Button("Hello")
+                    with VLabelPane("Pane 4"):
+                        LabelEntry("VLabelPane")
+                        Button("Hello")
             VSeparator()
-            with PanedWindow(orient="vertical", weightx=1, weighty=1, sticky="nsew"):
-                with Pane():
-                    LabelEntry("Pane")
-                    Button("Hello")
-                with LabelPane("Pane 2"):
-                    LabelEntry("LabelPane")
-                    Button("Hello")
-                with VerticalPane():
-                    LabelEntry("VerticalPane")
-                    Button("Hello")
-                with VerticalLabelPane("Pane 4"):
-                    LabelEntry("VerticalLabelPane")
-                    Button("Hello")
+            with VStack():
+                Label("Vertical PanedWindow", anchor="center", sticky="ew")
+                with PanedWindow(
+                    orient="vertical", weightx=1, weighty=1, sticky="nsew"
+                ):
+                    with HPane():
+                        LabelEntry("HPane")
+                        Button("Hello")
+                    with HLabelPane("Pane 2"):
+                        LabelEntry("LabelPane")
+                        Button("Hello")
+                    with VPane():
+                        LabelEntry("VPane")
+                        Button("Hello")
+                    with VLabelPane("Pane 4"):
+                        LabelEntry("VLabelPane")
+                        Button("Hello")
 
 
 if __name__ == "__main__":

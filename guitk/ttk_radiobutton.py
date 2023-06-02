@@ -6,9 +6,9 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from typing import TYPE_CHECKING, Any, Hashable, TypeVar, Union
 
+from .basewidget import BaseWidget
 from .events import Event, EventCommand, EventType
 from .types import CommandType, PadType, TooltipType
-from .basewidget import BaseWidget
 
 if TYPE_CHECKING:
     from .window import Window

@@ -7,9 +7,9 @@ import tkinter.ttk as ttk
 from tkinter import filedialog
 from typing import TYPE_CHECKING, Any, Hashable
 
+from .basewidget import BaseWidget
 from .events import Event, EventCommand, EventType
 from .types import CommandType, PadType, TooltipType
-from .basewidget import BaseWidget
 
 if TYPE_CHECKING:
     from .window import Window

@@ -6,8 +6,8 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from typing import TYPE_CHECKING, Hashable, TypeVar
 
-from .types import PadType, TooltipType
 from .basewidget import BaseWidget
+from .types import PadType, TooltipType
 
 if TYPE_CHECKING:
     from .window import Window

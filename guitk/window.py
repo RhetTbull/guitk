@@ -12,6 +12,7 @@ from typing import TYPE_CHECKING, Any, Hashable
 from guitk.tkroot import _TKRoot
 
 from ._debug import debug, debug_watch
+from .basewidget import BaseWidget
 from .constants import DEFAULT_PADX, DEFAULT_PADY
 from .events import Event, EventCommand, EventType
 from .frame import _LayoutMixin
@@ -19,7 +20,6 @@ from .layout import push_parent
 from .menu import Command, Menu
 from .ttk_label import Label
 from .types import PadType, SizeType, TooltipType
-from .basewidget import BaseWidget
 
 
 class _WindowBaseClass:

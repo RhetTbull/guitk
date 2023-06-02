@@ -6,10 +6,10 @@ from __future__ import annotations
 import tkinter.ttk as ttk
 from typing import TYPE_CHECKING, Hashable
 
+from .basewidget import BaseWidget
 from .events import Event, EventCommand, EventType
 from .types import CommandType, PadType, TooltipType
 from .utils import scrolled_widget_factory
-from .basewidget import BaseWidget
 
 if TYPE_CHECKING:
     from .window import Window

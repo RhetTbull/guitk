@@ -22,6 +22,7 @@ CustomButton = ui.widget_class_factory(tk.Button, event_type="my_button")
 # a Layout or Container just as any other guitk Widget.
 # see the example below.
 
+
 class CustomWidget(ui.Window):
     def config(self):
         with ui.VLayout(valign="top", halign="center"):
@@ -36,10 +37,10 @@ class CustomWidget(ui.Window):
             with ui.HStack():
                 CustomButton(text="Hello", key="hello_button")
                 ui.Widget(
-                widget_class=tk.Button,
-                event_type="button2",
-                text="Goodbye",
-                key="custom_button2",
+                    widget_class=tk.Button,
+                    event_type="button2",
+                    text="Goodbye",
+                    key="custom_button2",
                 )
 
     def setup(self):
@@ -48,7 +49,6 @@ class CustomWidget(ui.Window):
         # but it is necessary for a custom widget to handle events other than the default
         entry = self.get("custom_entry")
         entry.bind_event("<Return>")
-
 
     @ui.on(key="hello_button")
     @ui.on(key="custom_entry", event_type="<Return>")
