@@ -355,7 +355,7 @@ class Window(_LayoutMixin, _WindowBaseClass):
         """Return child windows"""
         return self._tk.get_children(self)
 
-    def get(self, key: Hashable):
+    def get(self, key: Hashable) -> BaseWidget:
         """Get widget with key or raise KeyError if not found"""
         try:
             return self._widget_by_key[key]
@@ -479,7 +479,7 @@ class Window(_LayoutMixin, _WindowBaseClass):
                 else:
                     command.command()
 
-    def __getitem__(self, key) -> "BaseWidget":
+    def __getitem__(self, key) -> BaseWidget:
         try:
             return self._widget_by_key[key]
         except KeyError as e:

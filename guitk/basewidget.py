@@ -51,6 +51,8 @@ class BaseWidget:
             sticky (str | None, optional): Sticky direction for widget layout. Defaults to None.
             tooltip (TooltipType | None, optional): Tooltip text or callback to generate tooltip text. Defaults to None.
             command (CommandType | None, optional): Command callback. Defaults to None.
+            value_type (ValueType | None, optional): Type of value to store (for example, tk.StringVar). Defaults to None.
+                If None, a tk.StringVar is used.
             weightx (int | None, optional): Weight for horizontal resizing. Defaults to None.
             weighty (int | None, optional): Weight for vertical resizing. Defaults to None.
             focus (bool, optional): If True, widget has focus. Defaults to False.

@@ -44,6 +44,7 @@ from .ttk_radiobutton import Radiobutton, RadioButton
 from .ttk_scale import Scale
 from .ttk_separator import HSeparator, VSeparator
 from .ttk_treeview import Listbox, ListBox, Treeview, TreeView
+from .widget import Widget, widget_class_factory
 from .window import Window
 
 __version__ = "0.3.0"
@@ -104,10 +105,12 @@ __all__ = [
     "VTab",
     "VerticalLabelPane",
     "VerticalPane",
+    "Widget",
     "Window",
     "debug",
     "debug_watch",
     "is_debug",
     "on",
     "set_debug",
+    "widget_class_factory",
 ]
