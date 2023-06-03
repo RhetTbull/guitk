@@ -112,7 +112,7 @@ class HLayout:
                 self.window._forget_widget(widget)
                 widget.widget.grid_forget()
                 widget.widget.destroy()
-                self.redraw()
+                self.window.window.update_idletasks()
                 return
         raise ValueError(f"Widget {key_or_widget} not found in Layout")
 
