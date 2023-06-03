@@ -8,8 +8,16 @@ import tkinter as tk
 
 import guitk
 from guitk import *
+from guitk.containers import _Container
 
-SAMPLE_TEXT = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras tempus neque in vehicula hendrerit. Nam non posuere ante. Nunc libero libero, tempus eget enim vitae, egestas hendrerit tortor. Vivamus et egestas felis. Aliquam erat volutpat. Nulla facilisi. Aliquam hendrerit, nibh nec tempor lobortis, purus nisl vehicula ex, dapibus fermentum mauris nibh id nulla. Vivamus non pretium quam. Phasellus elementum commodo nisl. Nullam eu faucibus augue. Vivamus pulvinar metus vehicula urna porttitor euismod. "
+SAMPLE_TEXT = """Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras tempus neque in vehicula hendrerit. 
+Nam non posuere ante. Nunc libero libero, tempus eget enim vitae, egestas hendrerit tortor. Vivamus et egestas felis. 
+Aliquam erat volutpat. Nulla facilisi. Aliquam hendrerit, nibh nec tempor lobortis, purus nisl vehicula ex, dapibus 
+fermentum mauris nibh id nulla. Vivamus non pretium quam. Phasellus elementum commodo nisl. Nullam eu faucibus augue. 
+Vivamus pulvinar metus vehicula urna porttitor euismod. """
+SAMPLE_TEXT = SAMPLE_TEXT.replace("\n", "")
+
+
 ALL_WIDGETS = guitk.__all__
 
 
@@ -61,18 +69,18 @@ class Demo(Window):
                         LabelEntry("Enter some text:", key="entry", events=True)
                         Label("You entered:")
                         Label("", key="label_entered")
-                    with HStack(valign="center"):
-                        LinkLabel("This Label is a link", key="link").font(
+                    with HStack():
+                        LinkLabel("This Label is a link", key="link", sticky="ns").font(
                             underline=True
                         ).style(foreground="blue")
                         CheckButton(
-                            "Enable other checkbutton", key="check_enable_other"
+                            "Enable other checkbutton", key="check_enable_other", sticky="ns"
                         )
                         CheckButton(
-                            "Other checkbutton", key="check_other", disabled=True
+                            "Other checkbutton", key="check_other", disabled=True, sticky="ns"
                         )
-                        Button("Start Timer", key="start_timer")
-                        Label("0", key="timer", width=4)
+                        Button("Start Timer", key="start_timer", sticky="ns")
+                        Label("0", key="timer", width=4, sticky="ns")
                         ComboBox(
                             default="PNG",
                             values=["PNG", "JPEG", "GIF"],
@@ -285,6 +293,7 @@ class Demo(Window):
             docstring = get_docstring(self.get("listbox").value[0])
         docstring = docstring or "doc string not found"
         self.get("docstring").value = docstring
+
 
 
 if __name__ == "__main__":
