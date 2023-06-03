@@ -43,6 +43,7 @@ from .ttk_progressbar import (
 from .ttk_radiobutton import Radiobutton, RadioButton
 from .ttk_scale import Scale
 from .ttk_separator import HSeparator, VSeparator
+from .ttk_spinbox import Spinbox, SpinBox
 from .ttk_treeview import Listbox, ListBox, Treeview, TreeView
 from .widget import Widget, widget_class_factory
 from .window import Window
@@ -94,6 +95,8 @@ __all__ = [
     "RadioButton",
     "Radiobutton",
     "Scale",
+    "Spinbox",
+    "SpinBox",
     "Text",
     "TreeView",
     "Treeview",
