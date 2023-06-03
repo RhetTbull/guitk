@@ -87,6 +87,7 @@ class Demo(Window):
                             width=4,
                             readonly=True,
                         )
+                        SpinBox(from_value=0, to_value=5, wrap=True, width=4)
                     with HStack():
                         with LabelFrame("Radio Buttons"):
                             with VStack():
@@ -149,7 +150,11 @@ class Demo(Window):
                             Label("Doc String")
                             Text(key="docstring", height=14, width=30, vscrollbar=True)
                 with HTab("Tab 2"):
-                    ...
+                    with PanedWindow(key="paned_window", weightx=1):
+                        with HPane():
+                            Text(text=SAMPLE_TEXT, weightx=1, width=None)
+                        with VPane():
+                            Text(text=SAMPLE_TEXT, weightx=1, width=None)
             with LabelFrame("Output Redirect", weightx=1, sticky="ew"):
                 with HStack():
                     Output(key="output", sticky="nsew", weightx=1, weighty=1)
