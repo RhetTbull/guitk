@@ -17,6 +17,9 @@ DecoratedType = TypeVar("DecoratedType")
 SizeType = tuple[int, int] | str | None
 PaddingType = tuple[int, int, int, int] | tuple[int, int] | int | str
 PadType = tuple[int, int] | int
+CompoundType = (
+    Literal["image", "text", "top", "bottom", "left", "right", "center"] | None
+)
 
 
 class _WindowBaseClass:

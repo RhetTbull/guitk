@@ -45,6 +45,7 @@ class EventType(Enum):
     ComboboxSelected = "<<ComboboxSelected>>"
     DeleteWindow = "WM_DELETE_WINDOW"
     EntryReturn = "<<EntryReturn>>"
+    ImagePress = "<<ImagePress>>"
     KeyRelease = "<KeyRelease>"
     LinkLabel = "<<LinkLabel>>"
     ListBoxSelect = "<<ListboxSelect>>"

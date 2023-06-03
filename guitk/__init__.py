@@ -15,6 +15,7 @@ from .containers import HGrid, HStack, VGrid, VStack
 from .debugwindow import DebugWindow
 from .events import Event, EventCommand, EventType
 from .frame import Frame, LabelFrame
+from .image import Image
 from .layout import HLayout, VLayout
 from .menu import Command, Menu
 from .spacer import HSpacer, VSpacer
@@ -68,15 +69,17 @@ __all__ = [
     "EventType",
     "Frame",
     "HGrid",
+    "HLabelPane",
     "HLayout",
+    "HPane",
     "HSeparator",
     "HSpacer",
     "HStack",
     "HTab",
+    "Image",
     "Label",
     "LabelEntry",
     "LabelFrame",
-    "HLabelPane",
     "LinkLabel",
     "Linklabel",
     "ListBox",
@@ -87,7 +90,6 @@ __all__ = [
     "Output",
     "PROGRESS_DETERMINATE",
     "PROGRESS_INDETERMINATE",
-    "HPane",
     "PanedWindow",
     "Panedwindow",
     "ProgressBar",
@@ -95,19 +97,19 @@ __all__ = [
     "RadioButton",
     "Radiobutton",
     "Scale",
-    "Spinbox",
     "SpinBox",
+    "Spinbox",
     "Text",
     "TreeView",
     "Treeview",
     "VGrid",
+    "VLabelPane",
     "VLayout",
+    "VPane",
     "VSeparator",
     "VSpacer",
     "VStack",
     "VTab",
-    "VLabelPane",
-    "VPane",
     "Widget",
     "Window",
     "debug",

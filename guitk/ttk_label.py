@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING, Hashable
 from .basewidget import BaseWidget
 from .events import Event, EventCommand, EventType
 from .types import CommandType, PadType, TooltipType, Window
+from .utils import load_image
 
 if TYPE_CHECKING:
     from .window import Window
@@ -48,6 +49,7 @@ class Label(BaseWidget):
     def __init__(
         self,
         text: str,
+        image: str | None = None,
         key: Hashable | None = None,
         disabled: bool = False,
         columnspan: int | None = None,
@@ -67,6 +69,7 @@ class Label(BaseWidget):
         Args:
             key (Hashable, optional): Unique key for this widget. Defaults to None.
             text (str): Text to display in the label.
+            image: (str, optional): Path to image to display in the label. Defaults to None.
             disabled (bool, optional): If True, widget is disabled. Defaults to False.
             columnspan (int | None, optional): Number of columns to span. Defaults to None.
             rowspan (int | None, optional): Number of rows to span. Defaults to None.
@@ -97,13 +100,21 @@ class Label(BaseWidget):
         self.key = key or text
         self.columnspan = columnspan
         self.rowspan = rowspan
+        self.image = image
         self.kwargs = kwargs
 
     def _create_widget(self, parent, window: Window, row, col):
+        """Create the ttk.Label widget"""
+
         # Arg list for ttk.Label
         kwargs_label = {
             k: v for k, v in self.kwargs.items() if k in _valid_ttk_label_attributes
         }
+
+        if self.image:
+            self._photoimage = load_image(self.image)
+            kwargs_label["image"] = self._photoimage
+
         self.widget = ttk.Label(
             parent,
             text=self.text,

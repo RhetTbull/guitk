@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import pathlib
+import tkinter as tk
 import tkinter.ttk as ttk
 from tkinter import filedialog
 from typing import TYPE_CHECKING, Any, Hashable
@@ -10,6 +11,7 @@ from typing import TYPE_CHECKING, Any, Hashable
 from .basewidget import BaseWidget
 from .events import Event, EventCommand, EventType
 from .types import CommandType, PadType, TooltipType
+from .utils import load_image
 
 if TYPE_CHECKING:
     from .window import Window
@@ -51,6 +53,7 @@ class Button(BaseWidget):
     def __init__(
         self,
         text: str,
+        image: str | None = None,
         key: Hashable | None = None,
         disabled: bool = False,
         columnspan: int | None = None,
@@ -71,6 +74,7 @@ class Button(BaseWidget):
 
         Args:
             text (str): Text for the button.
+            image (str | None, optional): Image for the button. Defaults to None.
             key (Hashable, optional): Unique key for this widget. Defaults to None.
             disabled (bool, optional): If True, widget is disabled. Defaults to False.
             columnspan (int | None, optional): Number of columns to span. Defaults to None.
@@ -101,11 +105,11 @@ class Button(BaseWidget):
             weightx=weightx,
             weighty=weighty,
             focus=focus,
-            **kwargs,
         )
 
         self.widget_type = "ttk.Button"
         self.text = text
+        self.image = image
         self.key = key or text
         self.columnspan = columnspan
         self.rowspan = rowspan
@@ -123,12 +127,17 @@ class Button(BaseWidget):
         self.widget["text"] = text
 
     def _create_widget(self, parent: Any, window: Window, row: int, col: int):
+        """Create the ttk.Button widget"""
         event = Event(self, window, self.key, EventType.ButtonPress)
 
         # build arg list for Button()
         kwargs_button = {
             k: v for k, v in self.kwargs.items() if k in _valid_ttk_button_attributes
         }
+
+        if self.image:
+            self._photoimage = load_image(self.image)
+            kwargs_button["image"] = self._photoimage
 
         self.widget = ttk.Button(
             parent,

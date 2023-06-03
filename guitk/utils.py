@@ -61,3 +61,18 @@ def scrolled_widget_factory(
     widget._guitk_framed_widget = bool(frame)
 
     return widget
+
+
+def load_image(file: str) -> tk.PhotoImage:
+    """Load a photo image from a file and return it.
+
+    If Pillow is installed, this will support more image formats than the default
+    tkinter PhotoImage class. Pillow will be used automatically if it is installed.
+    """
+    try:
+        from PIL import Image, ImageTk
+    except ImportError:
+        return tk.PhotoImage(file=file)
+    else:
+        image = Image.open(file)
+        return ImageTk.PhotoImage(image)

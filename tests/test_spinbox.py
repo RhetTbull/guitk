@@ -1,10 +1,10 @@
-"""Test list behavior of Spinbox"""
+"""Test Spinbox widget"""
 
 
 from .runner import TestRunner
 
 
-def test_linklabel():
+def test_spinbox():
     runner = TestRunner(
         path="./examples/spinbox.py",
         class_="SpinboxDemo",

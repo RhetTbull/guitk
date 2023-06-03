@@ -11,7 +11,7 @@ from .basewidget import BaseWidget
 from .events import Event, EventCommand, EventType
 from .frame import Frame, _Container, _LayoutMixin, _VerticalContainer
 from .layout import get_parent, push_parent
-from .types import CommandType, PadType, TooltipType
+from .types import CommandType, HAlign, PadType, TooltipType, VAlign
 
 if TYPE_CHECKING:
     from .window import Window
@@ -184,8 +184,23 @@ class NoteBook(Notebook):
 class HTab(_Container):
     """Tab for Notebook widget that arranges its widgets horizontally"""
 
-    def __init__(self, name=None, sticky: str | None = "nsew", **kwargs):
-        """Initialize a Tab"""
+    def __init__(
+        self,
+        name=None,
+        sticky: str | None = "nsew",
+        valign: VAlign | None = None,
+        halign: HAlign | None = None,
+        **kwargs,
+    ):
+        """Initialize a horizontal Tab
+
+        Args:
+            name (str, optional): Name of the tab. Defaults to None.
+            sticky (str | None, optional): Sticky direction for widget layout. Defaults to None.
+            valign (VAlign | None, optional): Vertical alignment of widgets in the tab. Defaults to None.
+            halign (HAlign | None, optional): Horizontal alignment of widgets in the tab. Defaults to None.
+            **kwargs: Additional keyword arguments are passed to ttk.Frame.
+        """
 
         super().__init__(
             frametype=GUITK.ELEMENT_FRAME,
@@ -203,6 +218,8 @@ class HTab(_Container):
             sticky=sticky,
             tooltip=None,
             autoframe=True,
+            valign=valign,
+            halign=halign,
             padx=0,
             pady=0,
         )
@@ -213,8 +230,23 @@ class HTab(_Container):
 class VTab(HTab, _VerticalContainer):
     """Tab for Notebook widget that arranges its widgets vertically"""
 
-    def __init__(self, name=None, sticky: str | None = "nsew", **kwargs):
-        """Initialize a vertical Tab"""
+    def __init__(
+        self,
+        name=None,
+        sticky: str | None = "nsew",
+        valign: VAlign | None = None,
+        halign: HAlign | None = None,
+        **kwargs,
+    ):
+        """Initialize a vertical Tab
+
+        Args:
+            name (str, optional): Name of the tab. Defaults to None.
+            sticky (str | None, optional): Sticky direction for widget layout. Defaults to None.
+            valign (VAlign | None, optional): Vertical alignment of widgets in the tab. Defaults to None.
+            halign (HAlign | None, optional): Horizontal alignment of widgets in the tab. Defaults to None.
+            **kwargs: Additional keyword arguments are passed to ttk.Frame.
+        """
 
         super().__init__(
             frametype=GUITK.ELEMENT_FRAME,
@@ -234,6 +266,8 @@ class VTab(HTab, _VerticalContainer):
             autoframe=True,
             padx=0,
             pady=0,
+            valign=valign,
+            halign=halign,
         )
         self.name = name
         self.kwargs = kwargs
