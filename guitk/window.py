@@ -91,6 +91,9 @@ class Window(_LayoutMixin, _WindowBaseClass):
         self._radiobuttons = {}
         """ will hold group name/variable for radio buttons in the window """
 
+        self._destroyed = False
+        """ set to True when window is destroyed """
+
         self._mainframe = ttk.Frame(self.window, padding="3 3 12 12")
         self._mainframe.grid(column=0, row=0, sticky="nsew")
         self.window.columnconfigure(0, weight=1)
@@ -153,15 +156,16 @@ class Window(_LayoutMixin, _WindowBaseClass):
 
         # TODO: add geometry code to ensure window appears in good spot relative to parent
 
+        # setup event handling
         self.events = True
-
         self._bind_timer_event(
             100, EventType.WindowFinishedLoading.value, EventType.WindowFinishedLoading
         )
-
         self._bind_event_handlers()
+        self._create_setup_teardown_events()
 
         self.setup()
+        self.root.event_generate(EventType.Setup.value)
 
         if self.modal:
             self.window.wait_window()
@@ -207,8 +211,9 @@ class Window(_LayoutMixin, _WindowBaseClass):
 
     def handle_event(self, event: Event):
         """Handle event objects, inheriting classes should implement handle_event"""
-        if event.event_type == EventType.Quit:
-            self.quit(self._return_value)
+        ...
+        # if event.event_type == EventType.Quit:
+        # self.quit(self._return_value)
 
     def setup(self):
         """Perform any needed setup for the window.
@@ -222,8 +227,10 @@ class Window(_LayoutMixin, _WindowBaseClass):
         """
         pass
 
+    @debug_watch
     def quit(self, return_value: Any = None):
-        """Close the window"""
+        """Called when closing the window"""
+        # set return value which is returned by run()
         self._return_value = return_value
         self._destroy()
 
@@ -272,6 +279,14 @@ class Window(_LayoutMixin, _WindowBaseClass):
         self.root.bind(event_name, self._make_callback(event))
         self._timer_events[timer_id] = self._tk.root.after(delay, _generate_event)
         return timer_id
+
+    def _create_setup_teardown_events(self):
+        """Create the setup and teardown events"""
+        setup_event = Event(self, self, EventType.Setup.value, EventType.Setup)
+        self.root.bind(EventType.Setup.value, self._make_callback(setup_event))
+
+        teardown_event = Event(self, self, EventType.Teardown.value, EventType.Teardown)
+        self.root.bind(EventType.Teardown.value, self._make_callback(teardown_event))
 
     def cancel_timer_event(self, timer_id):
         """Cancel a timer event created with bind_timer_event"""
@@ -400,9 +415,20 @@ class Window(_LayoutMixin, _WindowBaseClass):
             m._create_widget(self._root_menu, self)
             self._add_menus(m, self.menu[m])
 
+    @debug_watch
     def _destroy(self):
+        """Destroy the window and all child windows and perform cleanup"""
+        if self._destroyed:
+            # HACK: avoid multiple calls to _destroy which can occur if
+            # the user handles the Quit event themselves
+            # TODO: find a better way to handle this
+            return
+
         # call teardown to perform any cleanup
         self.teardown()
+
+        # generate a Teardown event
+        self.root.event_generate(EventType.Teardown.value)
 
         # kill any child windows
         for child in self.children():
@@ -432,6 +458,7 @@ class Window(_LayoutMixin, _WindowBaseClass):
         self._parent.focus_set()
         self.window.destroy()
         self._tk.deregister(self)
+        self._destroyed = True
 
     def _make_callback(self, event):
         def _callback(*arg):
@@ -441,9 +468,9 @@ class Window(_LayoutMixin, _WindowBaseClass):
 
         return _callback
 
-    def _handle_event(self, event):
+    @debug_watch
+    def _handle_event(self, event: Event):
         """Handle events for this window"""
-
         # only handle events if widget has events=True; Window objects always get events
         if isinstance(event.widget, (BaseWidget, Window)) and not event.widget.events:
             return
@@ -459,6 +486,7 @@ class Window(_LayoutMixin, _WindowBaseClass):
             if event.event_type == EventType.Quit:
                 self._destroy()
 
+    @debug_watch
     def _handle_commands(self, event):
         """Handle commands bound to widgets in the window"""
         for command in self._commands:

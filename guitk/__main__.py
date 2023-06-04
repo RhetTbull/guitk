@@ -74,10 +74,15 @@ class Demo(Window):
                             underline=True
                         ).style(foreground="blue")
                         CheckButton(
-                            "Enable other checkbutton", key="check_enable_other", sticky="ns"
+                            "Enable other checkbutton",
+                            key="check_enable_other",
+                            sticky="ns",
                         )
                         CheckButton(
-                            "Other checkbutton", key="check_other", disabled=True, sticky="ns"
+                            "Other checkbutton",
+                            key="check_other",
+                            disabled=True,
+                            sticky="ns",
                         )
                         Button("Start Timer", key="start_timer", sticky="ns")
                         Label("0", key="timer", width=4, sticky="ns")
@@ -298,7 +303,6 @@ class Demo(Window):
             docstring = get_docstring(self.get("listbox").value[0])
         docstring = docstring or "doc string not found"
         self.get("docstring").value = docstring
-
 
 
 if __name__ == "__main__":
