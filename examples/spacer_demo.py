@@ -16,7 +16,7 @@ class SpacerDemo(Window):
                 Label("Bottom left")
             HSpacer()
             with VStack(halign="center"):
-                Label("Top Center")
+                Label("Top Center", anchor="center")
                 VSpacer()
                 Label("Center", anchor="center")
                 VSpacer()
