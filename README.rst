@@ -11,11 +11,12 @@ GUITk allows you to build complete GUI applications with a few lines of code. GU
 
 GUITk is in alpha stage but is in constant development so check back frequently if this interests you or open an issue to start a conversation about what pain points this project could help you solve!
 
-Examples
+Example
 --------
 .. image:: https://raw.githubusercontent.com/RhetTbull/guitk/main/examples/hello.py.png
 
-.. code-block::
+
+.. code-block:: python
     """Simple Hello World example using guitk """
 
     import guitk as ui
