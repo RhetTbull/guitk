@@ -34,9 +34,9 @@ class HelloWindow(ui.Window):
 
         # define a layout for the window
         # the layout manager will automatically add widgets to the window
-        with ui.VLayout():
+        with ui.HLayout():
             ui.Label("What's your name?")
-            ui.Entry(key="name")
+            ui.Entry(key="name", focus=True)
             ui.Button("Ok")
 
     @ui.on(key="Ok")
