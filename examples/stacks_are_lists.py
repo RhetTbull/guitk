@@ -1,6 +1,8 @@
 """Demo showing how to use stacks as lists to add or remove widgets from a stack"""
 
 
+
+import contextlib
 from guitk import *
 
 
@@ -109,7 +111,8 @@ class Stacks(Window):
     def on_del(self):
         idx = int(self["pop"].value)
         stack = self["stack"].value
-        del self[stack][idx]
+        with contextlib.suppress(IndexError):
+            del self[stack][idx]
 
     @on(event_type=EventType.ButtonPress)
     def on_popped(self, event: Event):
