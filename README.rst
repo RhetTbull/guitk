@@ -13,6 +13,7 @@ GUITk is in alpha stage but is in constant development so check back frequently 
 
 Examples
 --------
+.. image:: https://raw.githubusercontent.com/RhetTbull/guitk/main/examples/hello.py.png
 
 .. code-block::
     """Simple Hello World example using guitk """
@@ -30,7 +31,7 @@ Examples
 
             # define a layout for the window
             # the layout manager will automatically add widgets to the window
-            with ui.VLayout():
+            with ui.HLayout():
                 ui.Label("What's your name?")
                 ui.Entry(key="name")
                 ui.Button("Ok")
