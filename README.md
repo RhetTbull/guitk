@@ -71,13 +71,11 @@ Though you can build simple apps without knowing much about tkinter, GUITk is no
 import guitk as ui
 
 
-# subclass guitk.Window as the starting point for your app's main window
 class HelloWorld(ui.Window):
-    # every Window class needs a config() method that
-    # defines the title and the layout (and optionally menu and other other settings)
+    # subclass guitk.Window as the starting point for your app's main window
     def config(self):
         # Your Window class needs to define a config() method that describes the layout, title, etc for your app
-        # config() is called by the Window class when the Window is created
+        # config() is called by the Window class when the Window is being created
 
         # Title for the window
         self.title = "Hello, World"
@@ -85,118 +83,78 @@ class HelloWorld(ui.Window):
         # optionally set size as a tuple of (width, height)
         self.size = (320, 240)
 
+        # you can also use self.geometry for consistency with tkinter
+        # self.geometry = "320x240"
+
         # Define the window's contents
         # guitk.Label corresponds to a tkinter.ttk.Label, etc.
         # optionally provide a unique key to each element to easily reference the element later
         # use a HLayout or VLayout class to define the layout of the window
+        # HLayout arranges widgets horizontally, VLayout arranges widgets vertically
         with ui.VLayout():
+            # use a VLayout to stack the widgets vertically
+            # standard tkinter layout options such as sticky and weight are supported
             ui.Label("What's your name?", sticky="ew", anchor="center", weightx=1)
-            ui.Entry(key="ENTRY_NAME", events=True, focus=True, sticky="ew", weightx=1)
-            ui.Label("", width=40, key="OUTPUT", columnspan=2)
+            # most widgets emit events; Entry has events turned off by default so enable with events=True
+            # each widget can be assigned a key, which should be unique, to easily reference the widget later
+            # set focus=True so the Entry box has focus when the window is displayed
+            ui.Entry(key="entry_name", events=True, focus=True, weightx=1, sticky="ew")
+            ui.Label("", width=40, key="output")
             with ui.HStack():
-                # align these two buttons in a horizontal row
+                # align these two buttons in a horizontal row using HStack
                 ui.Button("Ok")
                 ui.Button("Quit")
 
+    # Every Window class has 3 special methods that can be overridden to provide custom behavior
+    # you do not need to provide any of these methods if you do not need to customize the default behavior
+    # (the default behavior is to do nothing)
+    # These special methods are: setup(), teardown(), and handle_event()
+
     def setup(self):
+        """Perform any initialization needed before the Window is displayed"""
         # your setup() method is called by the Window class after config() just before the Window is displayed
         # use this to initialize any internal state you need
         # you do not need to provide a setup() method if no initialization is needed
         print("setup")
 
     def teardown(self):
+        """Perform any cleanup needed before destroying the window"""
         # your teardown() method is called by the Window class after the Window is closed
         # use this to clean up before the Window is destroyed
         # you do not need to provide a teardown() method if no cleanup is needed
         print("teardown")
 
-    # Interact with the Window using an event Loop
-    # every guitk.Window will call self.handle_event() to handle GUI events
-    # event is a guitk.Event object
     def handle_event(self, event: ui.Event):
-        name = self["ENTRY_NAME"].value
+        """handle_event() is called by the Window class when an event occurs"""
+        # you do not need to provide a handle_event() method if you prefer to use
+        # the @on decorator to bind functions to events (see below)
+        # handle_event() is a useful place to put code that needs to run for every event
+        # or for use during debugging
+        print(f"handle_event: {event}")
 
-        if event.key == "Quit":
-            # a key wasn't supplied in `guitk.Button("Quit")` so guitk uses the name of the button
-            # value passed to quit will be returned by HelloWorld.run()
-            self.quit(name)
+    @ui.on(key="Quit")
+    def on_quit(self):
+        # return the value of the Entry box
+        self.quit(self["entry_name"].value)
 
-        if event.key == "Ok" or event.event_type == ui.EventType.EntryReturn:
-            # User pressed the OK button or the Return key inside the Entry box
-            # set the output Label to the value of the Entry box
-            # individual widgets can be accessed by their key; the window object acts as a dictionary of widgets
-            self["OUTPUT"].value = f"Hello {name}! Thanks for trying guitk."
+    @ui.on(key="Ok")
+    @ui.on(event_type=ui.EventType.EntryReturn)
+    def on_ok(self):
+        # User pressed the OK button or the Return key inside the Entry box
+        # the @on decorator can be used to bind a function to an event
+        # @on can be repeated to bind the function to multiple events
+        # set the output Label to the value of the Entry box
+        # individual widgets can be accessed by their key; the window object acts as a dictionary of widgets
+        greeting = f"Hello {self['entry_name'].value}! Thanks for trying guitk."
+
+        # if you prefer, you can use get() instead of the dictionary syntax
+        self.get("output").value = greeting
 
 
 if __name__ == "__main__":
     # instantiate your Window class and run it
     name = HelloWorld().run()
     print(f"Hello {name}")
-```
-
-guitk supports both an event-loop style of app-development (very similar to how PySimpleGUI works) and also callbacks which are triggered by events.  The above example can be rewritten using a callback style:
-
-```python
-"""Hello World example using guitk, shows how to use callback style instead of event loop """
-
-from guitk import Button, Entry, Event, HStack, Label, VLayout, Window
-
-
-# subclass Window as the starting point for your app's main window
-class HelloWorld(Window):
-    # every Window class needs a config() method that
-    # defines the title and the layout (and optionally menu and other other settings)
-    def config(self):
-        # Title for the window
-        self.title = "Hello, World"
-
-        # Define the window's contents
-        # Label corresponds to a tkinter.ttk.Label, etc.
-        # optionally provide a unique key to each element to easily reference the element later
-        # callbacks are functions that will be called when the user interact with the widget
-        # callbacks are specified with the `command` parameter
-        with VLayout() as layout:
-            Label("What's your name?")
-            Entry(
-                key="ENTRY_NAME", events=True, command=self.on_entry_changed, focus=True
-            )
-            Label("", width=40, key="OUTPUT", columnspan=2)
-            with HStack():
-                Button("Ok", command=self.on_ok)
-                Button("Quit", command=self.on_quit)
-        self.layout = layout
-
-    def setup(self):
-        # this method is called after the window is created
-        # you can use it to set up any internal state you need
-
-        # bind_event_command() binds a callback command to a specific event,
-        # in this case, when user hits return in the entry field, the same command as hitting "Ok" will be called
-        # the widget objects can be accessed as self["KEY"] in setup() but not in config() as they aren't created until after config() is called
-        self["ENTRY_NAME"].bind_event("<Return>", command=self.on_ok)
-
-    def on_ok(self):
-        # the underlying guitk widgets are accessible as self["KEY"]
-        # the value of each widget is accessible as self["KEY"].value
-        name = self["ENTRY_NAME"].value
-        self["OUTPUT"].value = f"Hello {name}! Thanks for trying "
-
-    def on_entry_changed(self):
-        print(self["ENTRY_NAME"].value)
-
-    def on_quit(self):
-        name = self["ENTRY_NAME"].value
-        # value passed to quit will be returned by HelloWorld.run()
-        self.quit(name)
-
-    def handle_event(self, event: Event):
-        print(event)
-
-
-if __name__ == "__main__":
-    # instantiate your Window class and run it
-    name = HelloWorld().run()
-    print(f"HelloWorld: {name}")
 ```
 
 ## Documentation
@@ -227,7 +185,7 @@ Contributions welcome! If this project interests you, open an Issue or send a PR
 * [x] Treeview
 * [x] Listbox
 * [x] Combobox
-* [ ] Spinner
+* [x] Spinner
 * [ ] Other widgets
 * [ ] Menus
 * [x] Tooltips

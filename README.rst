@@ -4,34 +4,46 @@ guitk: GUI Toolkit for TKinter
 What is guitk?
 ------------------
 
-guitk is yet another toolkit for building graphical user interfaces (GUIs) with TKinter. 
+
+GUITk is a declarative framework for building nice-looking, cross-platform GUIs with tkinter inspired by SwiftUI.
+
+GUITk allows you to build complete GUI applications with a few lines of code. GUITk makes it easy to layout your GUI elements and respond to events using a declarative syntax. Because GUITk is built on top of tkinter, you can access the underlying tkinter API if you need to but for many use cases, you can build your GUI without needing to know much about tkinter.
+
+GUITk is in alpha stage but is in constant development so check back frequently if this interests you or open an issue to start a conversation about what pain points this project could help you solve!
 
 Examples
 --------
 
 .. code-block::
-    
-    import guitk
+    """Simple Hello World example using guitk """
+
+    import guitk as ui
+
 
     # subclass guitk.Window as the starting point for your app's main window
-    class HelloWindow(guitk.Window):
-        # define a layout for the window
-        # you must have a class variable named `layout` or you'll get an empty window
-        layout = [
-            [guitk.Label("What's your name?")],
-            [guitk.Entry(key="name")],
-            [guitk.Button("Ok")],
-        ]
+    class HelloWindow(ui.Window):
+        def config(self):
+            """Configure the window"""
 
-        # define your event loop
-        # every guitk.Window will call self.handle_event to handle GUI events
-        # event is a guitk.Event object
-        def handle_event(self, event):
-            print(f"Hello {self['name'].value}")
+            # set the window title
+            self.title = "Hello, World"
+
+            # define a layout for the window
+            # the layout manager will automatically add widgets to the window
+            with ui.VLayout():
+                ui.Label("What's your name?")
+                ui.Entry(key="name")
+                ui.Button("Ok")
+
+        @ui.on(key="Ok")
+        def on_ok(self, event: ui.Event):
+            """Handle the Ok button click"""
+            print("Hello, ", self.get("name").value)
 
 
     # run your event loop
-    HelloWindow("Window Title").run()
+    if __name__ == "__main__":
+        HelloWindow().run()
 
 License
 -------

@@ -1,8 +1,8 @@
 """Demo showing how to use stacks as lists to add or remove widgets from a stack"""
 
 
-
 import contextlib
+
 from guitk import *
 
 

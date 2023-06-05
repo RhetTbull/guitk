@@ -41,12 +41,6 @@ Though you can build simple apps without knowing much about tkinter, GUITk is no
 !INCLUDE "examples/hello2.py"
 ```
 
-guitk supports both an event-loop style of app-development (very similar to how PySimpleGUI works) and also callbacks which are triggered by events.  The above example can be rewritten using a callback style:
-
-```python
-!INCLUDE "examples/hello2_callback.py"
-```
-
 ## Documentation
 
 Not much documentation at this point.  Take a look at the [examples](https://github.com/RhetTbull/guitk/tree/main/examples) directory for a number of self-documenting examples on use of various widgets.
@@ -75,7 +69,7 @@ Contributions welcome! If this project interests you, open an Issue or send a PR
 * [x] Treeview
 * [x] Listbox
 * [x] Combobox
-* [ ] Spinner
+* [x] Spinner
 * [ ] Other widgets
 * [ ] Menus
 * [x] Tooltips
