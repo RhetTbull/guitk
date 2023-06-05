@@ -15,9 +15,9 @@ Example
 --------
 .. image:: https://raw.githubusercontent.com/RhetTbull/guitk/main/examples/hello.py.png
 
-And here's the code:
 
 .. code-block:: python
+
     """Simple Hello World example using guitk """
 
     import guitk as ui
