@@ -2,23 +2,22 @@
 
 import sys
 
-import guitk
+import guitk as ui
 
 
-class MyWindow(guitk.Window):
+class MyWindow(ui.Window):
     def config(self):
         self.title = "Demo Window"
-        self.layout = [
-            [guitk.Label("Type some text then click a button.")],
-            [guitk.Entry(key="INPUT")],
-            [guitk.Button("STDOUT"), guitk.Button("STDERR")],
-        ]
+        with ui.VLayout():
+            ui.Label("Type some text then click a button.")
+            ui.Entry(key="INPUT")
+            ui.Button("STDOUT"), ui.Button("STDERR")
 
     def setup(self):
         # launch a debug window
         # don't need to use .run() as event loop already running in the parent window
-        guitk.DebugWindow(parent=self.window, output_width=100, output_height=30)
-        
+        ui.DebugWindow(parent=self.window, output_width=100, output_height=30)
+
     def handle_event(self, event):
         value = self["INPUT"].value
         if event.key == "STDOUT":

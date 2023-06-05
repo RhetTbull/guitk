@@ -1,27 +1,27 @@
 """Simple Hello World example using guitk """
 
-import guitk
+import guitk as ui
 
 
 # subclass guitk.Window as the starting point for your app's main window
-class HelloWindow(guitk.Window):
-
+class HelloWindow(ui.Window):
     def config(self):
-        # define a layout for the window
-        # you must have a class variable named `layout` or you'll get an empty window
-        self.layout = [
-            [guitk.Label("What's your name?")],
-            [guitk.Entry(key="name")],
-            [guitk.Button("Ok")],
-        ]
+        """Configure the window"""
+
+        # set the window title
         self.title = "Hello, World"
 
-    # define your event loop
-    # every guitk.Window will call self.handle_event to handle GUI events
-    # event is a guitk.Event object
-    def handle_event(self, event):
-        if event.key == "Ok":
-            print(f"Hello {self['name'].value}")
+        # define a layout for the window
+        # the layout manager will automatically add widgets to the window
+        with ui.VLayout():
+            ui.Label("What's your name?")
+            ui.Entry(key="name")
+            ui.Button("Ok")
+
+    @ui.on(key="Ok")
+    def on_ok(self, event: ui.Event):
+        """Handle the Ok button click"""
+        print("Hello, ", self.get("name").value)
 
 
 # run your event loop

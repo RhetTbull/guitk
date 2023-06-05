@@ -1,21 +1,19 @@
 """ Demonstrates use of guitk.TreeView widget """
 
-import guitk
 import pathlib
 
+from guitk import EventType, HLayout, Treeview, Window
 
-class ShowMeATree(guitk.Window):
+
+class ShowMeATree(Window):
     def config(self):
         self.title = "Tree View"
-        self.layout = [
-            [
-                guitk.Treeview(
-                    headings=["Filename", "Size"],
-                    key="TREE",
-                    vscrollbar=True,
-                )
-            ]
-        ]
+        with HLayout():
+            Treeview(
+                headings=["Filename", "Size"],
+                key="TREE",
+                vscrollbar=True,
+            )
 
     def list_files(self, path, tree):
         files = pathlib.Path(path).iterdir()
@@ -65,7 +63,7 @@ class ShowMeATree(guitk.Window):
                 "tree_sort_filename_reverse"
             ]
 
-        if event.event_type == guitk.EventType.TreeviewSelect:
+        if event.event_type == EventType.TreeviewSelect:
             print(event)
             print(f"You selected file(s): {self[event.key].value}")
 

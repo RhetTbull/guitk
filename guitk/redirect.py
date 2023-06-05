@@ -1,10 +1,12 @@
 """Redirect stdout/stderr """
 
+from __future__ import annotations
+
 import sys
 
 
 class _StdOutRedirectBaseClass:
-    """Base class for StdOutRedirect and StdErrRedirect """
+    """Base class for StdOutRedirect and StdErrRedirect"""
 
     def __init__(self):
         self._echo = False
@@ -72,10 +74,10 @@ class _StdOutRedirectBaseClass:
 
 
 class StdOutRedirect(_StdOutRedirectBaseClass):
-    """Singleton class that handles redirect """
+    """Singleton class that handles redirect"""
 
     def __new__(cls, *args, **kwargs):
-        """ create new object or return instance of already created singleton """
+        """create new object or return instance of already created singleton"""
         if not hasattr(cls, "instance") or not cls.instance:
             cls.instance = super().__new__(cls)
 
@@ -90,10 +92,10 @@ class StdOutRedirect(_StdOutRedirectBaseClass):
 
 
 class StdErrRedirect(_StdOutRedirectBaseClass):
-    """Singleton class that handles redirect """
+    """Singleton class that handles redirect"""
 
     def __new__(cls, *args, **kwargs):
-        """ create new object or return instance of already created singleton """
+        """create new object or return instance of already created singleton"""
         if not hasattr(cls, "instance") or not cls.instance:
             cls.instance = super().__new__(cls)
 

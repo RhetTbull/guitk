@@ -2,22 +2,21 @@
 
 import time
 
-import guitk
+import guitk as ui
 
 
-class TimerWindow(guitk.Window):
+class TimerWindow(ui.Window):
     def config(self):
         self.title = "Timer Window"
 
-        self.layout = [
-            [guitk.Label("Press Start Timer to fire event after 2000 ms")],
-            [guitk.Label("", width=60, key="OUTPUT")],
-            [
-                guitk.Button("Start Timer", command=self.on_start_timer),
-                guitk.Button("Cancel Timer", command=self.on_cancel_timer),
-                guitk.Checkbutton("Repeat", key="REPEAT"),
-            ],
-        ]
+        with ui.VLayout():
+            ui.Label("Press Start Timer to fire event after 2000 ms")
+            ui.Label("", width=60, key="OUTPUT")
+            with ui.HStack(valign="center"):
+                ui.Button("Start Timer", command=self.on_start_timer)
+                ui.HSpacer()
+                ui.Button("Cancel Timer", command=self.on_cancel_timer)
+                ui.Checkbutton("Repeat", key="REPEAT")
 
     def setup(self):
         # store the id of the running timer so it can be cancelled

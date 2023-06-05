@@ -1,7 +1,9 @@
 """Example of various types of progress bars """
 
+from tkinter import HORIZONTAL, VERTICAL
+
 import guitk
-from tkinter import VERTICAL, HORIZONTAL
+
 
 # subclass guitk.Window as the starting point for your app's main window
 class ProgressWindow(guitk.Window):
