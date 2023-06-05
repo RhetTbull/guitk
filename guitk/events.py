@@ -36,6 +36,7 @@ class Event:
 class EventType(Enum):
     """Constants for event types"""
 
+    Any = "*"  # special case for binding to all events
     BrowseDirectory = "<<BrowseDirectory>>"
     BrowseFile = "<<BrowseFile>>"
     ButtonPress = "<<Button>>"

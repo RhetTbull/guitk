@@ -60,6 +60,11 @@ class HelloWorld(ui.Window):
             name = self["ENTRY_NAME"].value
             self["OUTPUT"].value = f"Hello {name}! Thanks for trying ui."
 
+    @ui.on(event_type=ui.EventType.Any)
+    def on_any_event(self, event):
+        """An event handler bound to EventType.Any will be called for every event"""
+        print(f"Any event!: {event}")
+
 
 if __name__ == "__main__":
     HelloWorld().run()

@@ -35,6 +35,11 @@ def on(
         @on(key="Cancel", event_type=EventType.ButtonPressed)
         def ok_or_cancel_button(self) -> None:
             ...
+
+        # Handle any event
+        @on(event_type=EventType.Any)
+        def any_event(self) -> None:
+            ...
         ```
 
     Args:

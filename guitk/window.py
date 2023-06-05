@@ -242,6 +242,14 @@ class Window(_LayoutMixin, _WindowBaseClass):
     def title(self, value):
         self._title = value
 
+    @property
+    def geometry(self):
+        return self.size
+
+    @geometry.setter
+    def geometry(self, value):
+        self.size = value
+
     def bind_command(self, key=None, event_type=None, command=None):
         if not any([key, event_type]):
             raise ValueError("At least one of key, event_type must be specified")
@@ -496,7 +504,7 @@ class Window(_LayoutMixin, _WindowBaseClass):
                 and (
                     command.event_type is None or command.event_type == event.event_type
                 )
-            ):
+            ) or command.event_type == EventType.Any:
                 if hasattr(command.command, "_guitk_event_handlers"):
                     # command was decorated with @on, so it's a method of this class
                     if len(inspect.signature(command.command).parameters) == 2:
