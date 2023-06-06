@@ -12,6 +12,8 @@ GUITk apps are built by subclasses the `guitk.Window` class. Your GUI elements a
 
 GUITk is in alpha stage but is in constant development so check back frequently if this interests you or open an issue to start a conversation about what pain points this project could help you solve!
 
+Documentation is available at [GUITk](https://rhettbull.github.io/guitk/).
+
 ## Code Example
 
 ### Simple VLayout
@@ -43,7 +45,7 @@ Though you can build simple apps without knowing much about tkinter, GUITk is no
 
 ## Documentation
 
-Not much documentation at this point.  Take a look at the [examples](https://github.com/RhetTbull/guitk/tree/main/examples) directory for a number of self-documenting examples on use of various widgets.
+Not much documentation at this point but there's a start [here](https://rhettbull.github.io/guitk/).  Take a look at the [examples](https://github.com/RhetTbull/guitk/tree/main/examples) directory for a number of self-documenting examples on use of various widgets.
 
 ## Testing
 
