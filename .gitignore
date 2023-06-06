@@ -13,3 +13,4 @@ working/
 .mypy_cache/
 *.pyc
 venv/
+site/
