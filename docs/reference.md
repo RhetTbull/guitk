@@ -5,6 +5,36 @@
 ::: guitk.Window
     handler.: python
 
+## HLayout
+
+::: guitk.HLayout
+    handler.: python
+
+## VLayout
+
+::: guitk.VLayout
+    handler.: python
+
+## HStack
+
+::: guitk.HStack
+    handler.: python
+
+## VStack
+
+::: guitk.VStack
+    handler.: python
+
+## HSpacer
+
+::: guitk.HSpacer
+    handler.: python
+
+## VSpacer
+
+::: guitk.VSpacer
+    handler.: python
+
 ## Button
 
 ::: guitk.Button
@@ -20,6 +50,16 @@
 ::: guitk.BrowseDirectoryButton
     handler.: python
 
+## Checkbutton
+
+::: guitk.Checkbutton
+    handler.: python
+
+## Combobox
+
+::: guitk.Combobox
+    handler.: python
+
 ## Entry
 
 ::: guitk.Entry
@@ -30,6 +70,25 @@
 ::: guitk.LabelEntry
     handler.: python
 
+## Label
+
+::: guitk.Label
+    handler.: python
+
+## Notebook
+
+::: guitk.Notebook
+    handler.: python
+
+## HTab
+
+::: guitk.HTab
+    handler.: python
+
+## VTab
+
+::: guitk.VTab
+    handler.: python
 
 ## Text
 
