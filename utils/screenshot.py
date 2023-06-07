@@ -109,10 +109,11 @@ class ScreenshotRunner(ui.Window):
 
     def get_region(self):
         """Get x-coordinate, y-coordinate, width and height of the tkinter target window"""
+        # this is a hack to get the window size and may not work on all platforms
 
         target = self.target_window
         target.window.update()
-        x_pos, y_pos = target.window.winfo_x() + 8, target.window.winfo_y() + 2
+        x_pos, y_pos = target.window.winfo_x(), target.window.winfo_y()
         width, height = target.window.winfo_width(), target.window.winfo_height() + 29
         return Region(x_pos, y_pos, width, height)
 

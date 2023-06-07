@@ -23,7 +23,7 @@ import os
 os.system("python3 utils/screenshot.py examples/hello.py HelloWindow docs/images/hello.py.png --overwrite")
 ]]]-->
 <!--[[[end]]]-->
-![hello.py example](https://raw.githubusercontent.com/RhetTbull/guitk/main/examples/hello.py.png "Hello World example")
+![hello.py example](https://raw.githubusercontent.com/RhetTbull/guitk/main/docs/images/hello.py.png "Hello World example")
 
 ```python
 !INCLUDE "examples/hello.py"
