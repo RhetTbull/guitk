@@ -114,9 +114,7 @@ class ScreenshotRunner(ui.Window):
         target = self.target_window
         target.window.update()
         x_pos, y_pos = target.window.winfo_x(), target.window.winfo_y()
-        if x_pos >= 1:
-            x_pos -= 1
-        width, height = target.window.winfo_width() + 1, target.window.winfo_height() + 29
+        width, height = target.window.winfo_width(), target.window.winfo_height() + 29
         return Region(x_pos, y_pos, width, height)
 
     def capture(self):
