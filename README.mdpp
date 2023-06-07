@@ -18,6 +18,11 @@ Documentation is available at [GUITk](https://rhettbull.github.io/guitk/).
 
 ### Simple HLayout
 
+<!--[[[cog
+import os
+os.system("python3 utils/screenshot.py examples/hello.py HelloWindow docs/images/hello.py.png --overwrite")
+]]]-->
+<!--[[[end]]]-->
 ![hello.py example](https://raw.githubusercontent.com/RhetTbull/guitk/main/examples/hello.py.png "Hello World example")
 
 ```python
@@ -29,7 +34,6 @@ Documentation is available at [GUITk](https://rhettbull.github.io/guitk/).
 The goal of GUITk is to make it very easy to create simple and attractive GUI apps with python. It borrows ideas from several other libraries include [PySimpleGUI](https://www.pysimplegui.org/en/latest/), [SwiftUI](https://developer.apple.com/documentation/swiftui), [textual](https://github.com/Textualize/textual), and [applepy](https://github.com/eduardohleite/applepy). GUITk builds on [tkinter](https://docs.python.org/3/library/tkinter.html) which ships with the Python standard library and works across many platforms. tkinter is a mature and powerful GUI framework but requires a fair bit of boiler plate and understanding of the underlying framework to use effectively. GUITk attempts to simplify this by providing a higher level interface to tkinter while still allowing you to access the underlying tkinter API if you need to.
 
 Though you can build simple apps without knowing much about tkinter, GUITk is not intended to fully abstract away the tkinter interface. A basic understanding of tkinter will be helpful when building with GUITk. I highly recommend Mark Roseman's excellent [Modern Tkinter for Busy Python Developers](https://tkdocs.com/book.html) book as a starting point.
-
 
 ## Installation
 
