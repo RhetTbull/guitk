@@ -69,7 +69,12 @@ Though you can build simple apps without knowing much about tkinter, GUITk is no
 
 ## Anatomy of a guitk program
 
-![hello2.py example](https://raw.githubusercontent.com/RhetTbull/guitk/main/examples/hello2.py.png "Hello World example")
+<!--[[[cog
+import os
+os.system("python3 utils/screenshot.py examples/hello2.py HelloWorld docs/images/hello2.py.png --overwrite")
+]]]-->
+<!--[[[end]]]-->
+![hello2.py example](https://raw.githubusercontent.com/RhetTbull/guitk/main/docs/images/hello2.py.png "Hello World example")
 
 ```python
 """Hello World example using guitk """
