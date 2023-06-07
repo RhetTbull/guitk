@@ -15,6 +15,8 @@ These are here to help me remember how to do things.
 
 ## Build
 
+Uses [pydoit](https://pydoit.org/) to run tasks. Running `doit` will run all default tasks.
+
 - `doit`
 
 ## Docs
@@ -27,6 +29,12 @@ Can be served locally with:
 
 - `mkdocs serve`
 
+## Test
+
+All tests are interactive and require user interaction.  There are currently no automated tests.
+
+- `pytest` or `doit tests`
+
 ## Updating README.md
 
-Do not directly edit README.md, instead edit README.mdpp and process with MarkdownPP using `doit` to update README.md
+Do not directly edit README.md, instead edit README.mdpp and process with MarkdownPP using `doit` to update README.md.
