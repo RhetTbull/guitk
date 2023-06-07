@@ -1,14 +1,21 @@
 """Task list for doit, used to build the project; run with `doit` or `doit list` to see commands"""
 
+DOIT_CONFIG = {"default_tasks": ["update_readme", "clean_build_files", "build"]}
+
 
 def task_update_readme():
-    """Update README """
-    return {"actions": ["poetry run cog -r README.mdpp", "markdown-pp README.mdpp -o README.md"]}
+    """Update README"""
+    return {
+        "actions": [
+            "poetry run cog -r README.mdpp",
+            "markdown-pp README.mdpp -o README.md",
+        ]
+    }
 
 
-# def task_test():
-#     """Run tests"""
-#     return {"actions": ["poetry run pytest"]}
+def task_test():
+    """Run tests"""
+    return {"actions": ["poetry run pytest"]}
 
 
 def task_clean_build_files():
