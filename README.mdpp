@@ -16,7 +16,7 @@ Documentation is available at [GUITk](https://rhettbull.github.io/guitk/).
 
 ## Code Example
 
-### Simple VLayout
+### Simple HLayout
 
 ![hello.py example](https://raw.githubusercontent.com/RhetTbull/guitk/main/examples/hello.py.png "Hello World example")
 
