@@ -15,13 +15,18 @@ These are here to help me remember how to do things.
 
 ## Build
 
-- `./build_readme.sh` to update the README.md uses Markdown Preprocessor
-- `poetry build`
+- `doit`
 
 ## Docs
 
+Will be built as part of `doit` but can be built separately with:
+
 - `mkdocs build`
+
+Can be served locally with:
+
+- `mkdocs serve`
 
 ## Updating README.md
 
-Do not directly edit README.md, instead edit README.mdpp and process with MarkdownPP using `build_readme.sh` to update README.md
+Do not directly edit README.md, instead edit README.mdpp and process with MarkdownPP using `doit` to update README.md

@@ -14,3 +14,4 @@ working/
 *.pyc
 venv/
 site/
+.doit.db.db
