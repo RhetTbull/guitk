@@ -17,7 +17,7 @@ from .events import Event, EventCommand, EventType
 from .frame import Frame, LabelFrame
 from .image import Image
 from .layout import HLayout, VLayout
-from .menu import Command, Menu
+from .menu import Command, Menu, MenuBar, MenuSeparator, SubMenu
 from .spacer import HSpacer, VSpacer
 from .tk_text import Output, Text
 from .tkroot import *
@@ -85,6 +85,8 @@ __all__ = [
     "ListBox",
     "Listbox",
     "Menu",
+    "MenuBar",
+    "MenuSeparator",
     "NoteBook",
     "Notebook",
     "Output",
@@ -97,6 +99,7 @@ __all__ = [
     "RadioButton",
     "Radiobutton",
     "Scale",
+    "SubMenu",
     "SpinBox",
     "Spinbox",
     "Text",
