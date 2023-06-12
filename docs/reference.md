@@ -110,11 +110,6 @@
 ::: guitk.Menu
     handler.: python
 
-## SubMenu
-
-::: guitk.SubMenu
-    handler.: python
-
 ## Command
 
 ::: guitk.Command

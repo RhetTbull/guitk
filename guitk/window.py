@@ -13,11 +13,11 @@ from guitk.tkroot import _TKRoot
 
 from ._debug import debug, debug_watch
 from .basewidget import BaseWidget
-from .constants import DEFAULT_PADX, DEFAULT_PADY
+from .constants import DEFAULT_PADX, DEFAULT_PADY, MENU_MARKER
 from .events import Event, EventCommand, EventType
 from .frame import _LayoutMixin
 from .layout import push_parent
-from .menu import Command, Menu, MenuBar, SubMenu
+from .menu import Command, Menu, MenuBar
 from .ttk_label import Label
 from .types import PadType, SizeType, TooltipType
 
@@ -401,13 +401,13 @@ class Window(_LayoutMixin, _WindowBaseClass):
             menu (Menu): the Menu object to add
             path (str, optional): the path to the menu item which is used as the key
         """
-        path = f"Menu:{menu._label}" if path is None else path
+        path = f"{MENU_MARKER}{menu._label}" if path is None else path
         for m in menu:
             subpath = f"{path}|{m._label}"
             m._create_widget(menu._menu, self, subpath)
             self._widgets.append(m)
             self._widget_by_key[m.key] = m
-            if isinstance(m, SubMenu):
+            if isinstance(m, Menu):
                 self._add_menus(m, subpath)
 
     def _build_menu(self):
@@ -421,7 +421,7 @@ class Window(_LayoutMixin, _WindowBaseClass):
         for m in self.menu:
             if not isinstance(m, Menu):
                 raise ValueError("self.menu items must be Menu objects")
-            path = f"Menu:{m._label}"
+            path = f"{MENU_MARKER}{m._label}"
             m._create_widget(self._root_menu, self, path)
             self._widgets.append(m)
             self._widget_by_key[m.key] = m
@@ -490,6 +490,9 @@ class Window(_LayoutMixin, _WindowBaseClass):
         # filter events for this window
         if event.id != self._id:
             return
+
+        # swallow MenuCommand events if the menu is disabled
+        # if event.event_type == EventType.MenuCommand and not self.menu.enabled:
 
         # handle custom commands
         self._handle_commands(event)

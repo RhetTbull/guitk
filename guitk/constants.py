@@ -15,3 +15,5 @@ class GUITK(Enum):
 
 DEFAULT_PADX = 5
 DEFAULT_PADY = 5
+
+MENU_MARKER = "Menu:"

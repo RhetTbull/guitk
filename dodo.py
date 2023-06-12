@@ -1,6 +1,8 @@
 """Task list for doit, used to build the project; run with `doit` or `doit list` to see commands"""
 
-DOIT_CONFIG = {"default_tasks": ["update_readme", "clean_build_files", "build"]}
+DOIT_CONFIG = {
+    "default_tasks": ["update_readme", "build_docs", "clean_build_files", "build"]
+}
 
 
 def task_update_readme():
@@ -9,6 +11,15 @@ def task_update_readme():
         "actions": [
             "poetry run cog -r README.mdpp",
             "markdown-pp README.mdpp -o README.md",
+        ]
+    }
+
+
+def task_build_docs():
+    """Build documentation"""
+    return {
+        "actions": [
+            "poetry run mkdocs build",
         ]
     }
 
