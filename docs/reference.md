@@ -99,3 +99,23 @@
 
 ::: guitk.Output
     handler.: python
+
+## MenuBar
+
+::: guitk.MenuBar
+    handler.: python
+
+## Menu
+
+::: guitk.Menu
+    handler.: python
+
+## Command
+
+::: guitk.Command
+    handler.: python
+
+## MenuSeparator
+
+::: guitk.MenuSeparator
+    handler.: python

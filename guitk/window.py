@@ -13,11 +13,11 @@ from guitk.tkroot import _TKRoot
 
 from ._debug import debug, debug_watch
 from .basewidget import BaseWidget
-from .constants import DEFAULT_PADX, DEFAULT_PADY
+from .constants import DEFAULT_PADX, DEFAULT_PADY, MENU_MARKER
 from .events import Event, EventCommand, EventType
 from .frame import _LayoutMixin
 from .layout import push_parent
-from .menu import Command, Menu
+from .menu import Command, Menu, MenuBar
 from .ttk_label import Label
 from .types import PadType, SizeType, TooltipType
 
@@ -185,7 +185,7 @@ class Window(_LayoutMixin, _WindowBaseClass):
         self.layout = []
         """Every class that inherits from Window must define it's own layout """
 
-        self.menu = {}
+        self.menu: MenuBar | None = None
         """ Optionally provide a menu """
 
         self.padx = DEFAULT_PADX
@@ -394,23 +394,24 @@ class Window(_LayoutMixin, _WindowBaseClass):
         self._widget_by_key.pop(widget.key, None)
         self._widgets.remove(widget)
 
-    def _add_menus(self, menu: Menu, menu_items, path=None):
-        path = f"MENU:{menu._label}" if path is None else path
-        for m in menu_items:
-            if type(m) == dict:
-                # submenu
-                for subm in m:
-                    subm._create_widget(menu._menu, self)
-                    subpath = f"{path}|{subm._label}"
-                    self._add_menus(subm, m[subm], subpath)
-            elif isinstance(m, Command):
-                command_path = f"{path}|{m._label}"
-                m._create_widget(menu._menu, self, command_path)
+    def _add_menus(self, menu: Menu, path: str | None = None):
+        """Add menus to the window recursively
+
+        Args:
+            menu (Menu): the Menu object to add
+            path (str, optional): the path to the menu item which is used as the key
+        """
+        path = f"{MENU_MARKER}{menu._label}" if path is None else path
+        for m in menu:
+            subpath = f"{path}|{m._label}"
+            m._create_widget(menu._menu, self, subpath)
+            self._widgets.append(m)
+            self._widget_by_key[m.key] = m
+            if isinstance(m, Menu):
+                self._add_menus(m, subpath)
 
     def _build_menu(self):
-        if type(self.menu) != dict:
-            raise ValueError("self.menu must be a dict")
-
+        """Build the menu bar"""
         if self._root_menu is None:
             # create the root menu
             self.root.option_add("*tearOff", tk.FALSE)
@@ -419,9 +420,12 @@ class Window(_LayoutMixin, _WindowBaseClass):
 
         for m in self.menu:
             if not isinstance(m, Menu):
-                raise ValueError("self.menu keys must be Menu objects")
-            m._create_widget(self._root_menu, self)
-            self._add_menus(m, self.menu[m])
+                raise ValueError("self.menu items must be Menu objects")
+            path = f"{MENU_MARKER}{m._label}"
+            m._create_widget(self._root_menu, self, path)
+            self._widgets.append(m)
+            self._widget_by_key[m.key] = m
+            self._add_menus(m, path)
 
     @debug_watch
     def _destroy(self):
@@ -484,15 +488,21 @@ class Window(_LayoutMixin, _WindowBaseClass):
             return
 
         # filter events for this window
-        if event.id == self._id:
-            # handle custom commands
-            self._handle_commands(event)
+        if event.id != self._id:
+            return
 
-            self.handle_event(event)
+        # swallow MenuCommand events if the menu is disabled
+        # if event.event_type == EventType.MenuCommand and not self.menu.enabled:
 
-            # if deleting the window, call _destroy after handle_event has had a chance to handle it
-            if event.event_type == EventType.Quit:
-                self._destroy()
+        # handle custom commands
+        self._handle_commands(event)
+
+        # call subclass handle_event
+        self.handle_event(event)
+
+        # if deleting the window, call _destroy after handle_event has had a chance to handle it
+        if event.event_type == EventType.Quit:
+            self._destroy()
 
     @debug_watch
     def _handle_commands(self, event):
