@@ -197,8 +197,8 @@ Contributions welcome! If this project interests you, open an Issue or send a PR
 * [x] Listbox
 * [x] Combobox
 * [x] Spinner
-* [ ] Other widgets
-* [ ] Menus
+* [x] Other widgets
+* [x] Menus
 * [x] Tooltips
 * [ ] Documentation
 * [x] Add docstrings
