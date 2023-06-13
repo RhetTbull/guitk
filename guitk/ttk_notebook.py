@@ -76,6 +76,10 @@ class Notebook(_Container):
             focus (bool, optional): If True, widget will have focus. Defaults to False.
                 Only one widget in a window can have focus.HLayout
             **kwargs: Additional keyword arguments are passed to ttk.Entry.
+
+
+        Note:
+            Emits EventType.NotebookTabChanged event.
         """
         super().__init__(
             frametype=GUITK.ELEMENT_FRAME,
@@ -119,9 +123,7 @@ class Notebook(_Container):
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
         )
 
-        event_tab_change = Event(
-            self.widget, window, self.key, EventType.NotebookTabChanged
-        )
+        event_tab_change = Event(self, window, self.key, EventType.NotebookTabChanged)
         self.widget.bind(
             "<<NotebookTabChanged>>", window._make_callback(event_tab_change)
         )
@@ -137,7 +139,7 @@ class Notebook(_Container):
                 # the actual widget will be a tk widget in form widget=.!toplevel.!frame.!notebook, so it won't match self.widget
                 # so set widget=None or _handle_commands won't correctly handle the command
                 EventCommand(
-                    widget=None,
+                    widget=self,
                     key=self.key,
                     event_type=EventType.NotebookTabChanged,
                     command=self._command,

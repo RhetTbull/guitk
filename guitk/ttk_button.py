@@ -90,6 +90,9 @@ class Button(BaseWidget):
             focus (bool, optional): If True, widget has focus. Defaults to False.
                 Only one widget in a window can have focus.HLayout
             **kwargs: Additional keyword arguments are passed to ttk.Button.
+
+        Note:
+            Emits EventType.ButtonPress event.
         """
         super().__init__(
             key=key,
@@ -214,6 +217,9 @@ class BrowseFileButton(Button):
             focus (bool, optional): If True, widget has focus. Defaults to False.
                 Only one widget in a window can have focus.HLayout
             **kwargs: Additional keyword arguments are passed to ttk.Button or filedialog.askopenfilename as appropriate.
+
+        Note:
+            Emits a EventType.BrowseFile event after the file dialog is closed.
         """
         super().__init__(
             text,
@@ -312,6 +318,9 @@ class BrowseDirectoryButton(Button):
             focus (bool, optional): If True, widget has focus. Defaults to False.
                 Only one widget in a window can have focus.HLayout
             **kwargs: Additional keyword arguments are passed to ttk.Button or filedialog.askopenfilename as appropriate.
+
+        Note:
+            Emits a EventType.BrowseDirectory event after the file dialog is closed.
         """
         super().__init__(
             text,

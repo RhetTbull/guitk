@@ -83,6 +83,7 @@ class Checkbutton(BaseWidget):
 
         Notes:
             Unlike a regular ttk.Checkbutton, the onvalue and offvalue are always True and False.
+            Emits an EventType.Checkbutton event when the checkbutton is clicked.
         """
         super().__init__(
             key=key,

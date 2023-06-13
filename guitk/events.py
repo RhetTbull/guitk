@@ -42,6 +42,8 @@ class EventType(Enum):
     ButtonPress = "<<Button>>"
     CheckButton = "<<Checkbutton>>"
     Checkbutton = "<<Checkbutton>>"
+    ComboboxReturn = "<<ComboboxReturn>>"
+    ComboBoxReturn = "<<ComboboxReturn>>"
     ComboBoxSelected = "<<ComboboxSelected>>"
     ComboboxSelected = "<<ComboboxSelected>>"
     DeleteWindow = "WM_DELETE_WINDOW"

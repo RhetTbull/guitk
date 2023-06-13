@@ -112,6 +112,9 @@ class Scale(BaseWidget):
             focus (bool, optional): If True, widget has focus. Defaults to False.
                 Only one widget in a window can have focus.HLayout
             **kwargs: Additional keyword arguments are passed to ttk.Entry.
+
+        Note:
+            Emits EventType.ScaleUpdate event when the scale value changes.
         """
         super().__init__(
             key=key,
