@@ -53,6 +53,11 @@ def list_files(path: str, tree: Treeview):
 
 class Demo(Window):
     def config(self):
+        self.title = "GUTk Demo"
+        self.create_layout()
+        self.create_menubar()
+
+    def create_layout(self):
         with VLayout():
             with HStack(halign=tk.CENTER):
                 Label("This is a demo of GUITk widgets and layouts")
@@ -169,6 +174,26 @@ class Demo(Window):
                         Checkbutton("Echo", key="check_echo")
                         Button("stdout")
                         Button("stderr")
+
+    def create_menubar(self):
+        """create the menu"""
+        with MenuBar():
+            with Menu("File"):
+                Command("Open", shortcut="Ctrl+O")
+                Command("Save")
+                Command("Save As")
+                Command("Exit", command=self.quit)
+            with Menu("Edit"):
+                Command("Cut")
+                Command("Copy")
+                Command("Paste")
+            with Menu("SubMenus"):
+                with Menu("SubMenu 1"):
+                    Command("Command 1")
+                    Command("Command 2")
+                with Menu("SubMenu 2"):
+                    Command("Command 3")
+                    Command("Command 4")
 
     def setup(self):
         """gets called right after __init__"""
