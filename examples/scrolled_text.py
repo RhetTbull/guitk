@@ -1,7 +1,7 @@
 """ Demo of how to use scrollbars on Text widget """
 import tkinter as tk
 
-import guitk
+import guitk as ui
 
 sample_text = """Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam ut ornare nunc. Duis vulputate sodales ultrices. Nulla vitae nisl at magna consequat semper ut vel mi. Proin dignissim efficitur nisi sed pulvinar. Interdum et malesuada fames ac ante ipsum primis in faucibus. Etiam pulvinar est tellus, nec rutrum purus aliquet sed. Vivamus non ornare tortor. Aenean sodales congue tincidunt. Aliquam ut mauris eget augue dictum scelerisque. Praesent in turpis a magna ullamcorper ultricies. Suspendisse efficitur ullamcorper turpis, at molestie lacus rhoncus id. Fusce faucibus sagittis molestie. Aenean et enim sollicitudin, bibendum odio vitae, mattis felis.
 
@@ -49,60 +49,53 @@ sample_text = "\n".join(
 )
 
 
-class ScrollDemo(guitk.Window):
+class ScrollDemo(ui.Window):
     def config(self):
         self.title = "Scroll Demo"
-        scroll_none = guitk.Text(
-            key="TEXT_NO_SCROLL",
-            text=sample_text,
-            width=40,
-            height=20,
-            wrap=tk.NONE,
-        )
-        scroll_vh = guitk.Text(
-            key="TEXT_VH_SCROLL",
-            vscrollbar=True,
-            hscrollbar=True,
-            text=sample_text,
-            width=40,
-            height=20,
-            wrap=tk.NONE,
-        )
-        scroll_v = guitk.Text(
-            key="TEXT_V_SCROLL",
-            vscrollbar=True,
-            text=sample_text,
-            width=40,
-            height=20,
-            wrap=tk.NONE,
-        )
-        scroll_h = guitk.Text(
-            key="TEXT_H_SCROLL",
-            hscrollbar=True,
-            text=sample_text,
-            width=40,
-            height=20,
-            wrap=tk.NONE,
-        )
-        self.layout = [
-            [
-                guitk.Frame(
-                    autoframe=False,
-                    layout=[
-                        [
-                            guitk.Label("No Scrollbar"),
-                            guitk.Label("Vertical/Horizontal Scrollbars"),
-                        ],
-                        [scroll_none, scroll_vh],
-                        [
-                            guitk.Label("Horizontal Scrollbar"),
-                            guitk.Label("Vertical Scrollbar"),
-                        ],
-                        [scroll_h, scroll_v],
-                    ],
-                )
-            ]
-        ]
+
+        with ui.VLayout():
+            with ui.HStack():
+                with ui.VStack():
+                    ui.Label("No Scrollbar")
+                    ui.Text(
+                        key="TEXT_NO_SCROLL",
+                        text=sample_text,
+                        width=40,
+                        height=20,
+                        wrap=tk.NONE,
+                    )
+                with ui.VStack():
+                    ui.Label("Vertical/Horizontal Scrollbars")
+                    ui.Text(
+                        key="TEXT_VH_SCROLL",
+                        vscrollbar=True,
+                        hscrollbar=True,
+                        text=sample_text,
+                        width=40,
+                        height=20,
+                        wrap=tk.NONE,
+                    )
+            with ui.HStack():
+                with ui.VStack():
+                    ui.Label("Horizontal Scrollbar")
+                    ui.Text(
+                        key="TEXT_H_SCROLL",
+                        hscrollbar=True,
+                        text=sample_text,
+                        width=40,
+                        height=20,
+                        wrap=tk.NONE,
+                    )
+                with ui.VStack():
+                    ui.Label("Vertical Scrollbar")
+                    ui.Text(
+                        key="TEXT_V_SCROLL",
+                        vscrollbar=True,
+                        text=sample_text,
+                        width=40,
+                        height=20,
+                        wrap=tk.NONE,
+                    )
 
 
 if __name__ == "__main__":

@@ -93,7 +93,6 @@ class Progressbar(BaseWidget):
             events=events,
             sticky=sticky,
             tooltip=tooltip,
-            anchor=None,
             value_type=tk.DoubleVar,
         )
         self.widget_type = "ttk.Progressbar"

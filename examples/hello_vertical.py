@@ -13,12 +13,10 @@ class HelloWindow(Window):
 
         # define a layout for the window
         # you must have a class variable named `layout` or you'll get an empty window
-        with VLayout() as layout:
+        with VLayout():
             Label("What's your name?")
             Entry(key="name")
             Button("Ok")
-
-        self.layout = layout
 
     # define your event loop
     # every guitk.Window will call self.handle_event to handle GUI events

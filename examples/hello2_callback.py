@@ -16,14 +16,13 @@ class HelloWorld(Window):
         # optionally provide a unique key to each element to easily reference the element later
         # callbacks are functions that will be called when the user interact with the widget
         # callbacks are specified with the `command` parameter
-        with VLayout() as layout:
+        with VLayout():
             Label("What's your name?")
             Entry(key="ENTRY_NAME", command=self.on_entry_changed, focus=True)
             Label("", width=40, key="OUTPUT", columnspan=2)
             with HStack():
                 Button("Ok", command=self.on_ok)
                 Button("Quit", command=self.on_quit)
-        self.layout = layout
 
     def setup(self):
         # this method is called after the window is created
