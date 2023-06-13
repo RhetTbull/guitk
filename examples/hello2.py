@@ -27,10 +27,9 @@ class HelloWorld(ui.Window):
             # use a VLayout to stack the widgets vertically
             # standard tkinter layout options such as sticky and weight are supported
             ui.Label("What's your name?", sticky="ew", anchor="center", weightx=1)
-            # most widgets emit events; Entry has events turned off by default so enable with events=True
             # each widget can be assigned a key, which should be unique, to easily reference the widget later
             # set focus=True so the Entry box has focus when the window is displayed
-            ui.Entry(key="entry_name", events=True, focus=True, weightx=1, sticky="ew")
+            ui.Entry(key="entry_name", focus=True, weightx=1, sticky="ew")
             ui.Label("", width=40, key="output")
             with ui.HStack():
                 # align these two buttons in a horizontal row using HStack

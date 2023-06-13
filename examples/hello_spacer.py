@@ -8,7 +8,7 @@ class Hello(Window):
         self.size = (640, 200)
         with HLayout(valign="center") as layout:
             Label("What's your name?")
-            Entry(key="ENTRY_NAME", events=True)
+            Entry(key="ENTRY_NAME")
             HSpacer()
             Button("Ok")
 

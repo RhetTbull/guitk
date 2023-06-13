@@ -11,7 +11,7 @@ class HelloWorld(Window):
 
         with VLayout():
             Label("What's your name?")
-            Entry(key="ENTRY_NAME", events=True, focus=True)
+            Entry(key="ENTRY_NAME", focus=True)
             Label("", width=40, key="OUTPUT")
             with HStack():
                 Button("Ok")

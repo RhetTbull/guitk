@@ -18,9 +18,7 @@ class HelloWorld(Window):
         # callbacks are specified with the `command` parameter
         with VLayout() as layout:
             Label("What's your name?")
-            Entry(
-                key="ENTRY_NAME", events=True, command=self.on_entry_changed, focus=True
-            )
+            Entry(key="ENTRY_NAME", command=self.on_entry_changed, focus=True)
             Label("", width=40, key="OUTPUT", columnspan=2)
             with HStack():
                 Button("Ok", command=self.on_ok)
