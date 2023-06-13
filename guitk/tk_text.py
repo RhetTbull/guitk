@@ -1,7 +1,9 @@
 """ tk Text and Output widgets """
 
+
 from __future__ import annotations
 
+import contextlib
 import tkinter as tk
 from typing import Hashable, TypeVar
 
@@ -107,6 +109,9 @@ class Text(BaseWidget):
             focus (bool, optional): If True, widget has focus. Defaults to False.
                 Only one widget in a window can have focus.HLayout
             **kwargs: Additional keyword arguments are passed to tk Text.
+
+        Note:
+            Emits EventType.KeyRelease events when the text is changed and events is True.
         """
         super().__init__(
             key=key,
@@ -301,8 +306,10 @@ class Output(Text):
             self._redirect_id[r] = r.register(self._write)
 
     def _write(self, line):
-        self.text.insert(tk.END, line)
-        self.text.yview(tk.END)
+        with contextlib.suppress(tk.TclError):
+            # ignore TclError if widget has been destroyed while trying to write
+            self.text.insert(tk.END, line)
+            self.text.yview(tk.END)
         self.window.root.event_generate(EventType.OutputWrite.value)
 
     @property

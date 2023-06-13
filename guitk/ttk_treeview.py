@@ -78,6 +78,11 @@ class Treeview(BaseWidget):
             focus (bool, optional): If True, widget will have focus. Defaults to False.
                 Only one widget in a window can have focus.HLayout
             **kwargs: Additional keyword arguments to pass to ttk.Treeview.
+
+        Note:
+            Emits EventType.TreeviewSelect event when selection changes.
+            If bind_heading() is used, emits EventType.TreeviewHeading event when column heading is clicked.
+            If bind_tag() is used, emits EventType.TreeviewTag event when tag is clicked.
         """
         super().__init__(
             key=key,
@@ -258,6 +263,7 @@ class Listbox(Treeview):
         Note:
             This Listbox widget is actually implemented as a Treeview widget with only one column.
             This is because Tk does not offer a themed ttk Listbox widget.
+            Emits EventType.ListboxSelect event when the selection changes.
         """
         self.key = key or "Listbox"
         self.widget_type = "guitk.Listbox"

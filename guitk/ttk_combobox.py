@@ -47,6 +47,7 @@ class Combobox(BaseWidget):
         padx: PadType | None = None,
         pady: PadType | None = None,
         events: bool = True,
+        keyrelease: bool = False,
         sticky: str | None = None,
         tooltip: TooltipType | None = None,
         command: CommandType | None = None,
@@ -85,6 +86,7 @@ class Combobox(BaseWidget):
             padx (PadType | None, optional): X padding. Defaults to None.
             pady (PadType | None, optional): Y padding. Defaults to None.
             events (bool, optional): Enable events for this widget. Defaults to False.
+            keyrelease (bool, optional): If True and events is True, emit EventType.KeyRelease event when a key is released.
             sticky (str | None, optional): Sticky direction for widget layout. Defaults to None.
             tooltip (TooltipType | None, optional): Tooltip text or callback to generate tooltip text. Defaults to None.
             command (CommandType | None, optional): Command callback. Defaults to None.
@@ -96,6 +98,11 @@ class Combobox(BaseWidget):
             focus (bool, optional): If True, widget has focus. Defaults to False.
                 Only one widget in a window can have focus.HLayout
             **kwargs: Additional keyword arguments are passed to ttk.Checkbutton.
+
+        Note:
+            Emits EventType.ComboboxSelected event when a value is selected from the list.
+            Emits EventType.ComboboxReturn event when the Return key is pressed.
+            Emits EventType.KeyRelease event when a key is released (if keyrelease is True).
         """
         self.widget_type = "ttk.Combobox"
         self.key = key or "Combobox"
@@ -106,6 +113,7 @@ class Combobox(BaseWidget):
         self.kwargs = kwargs
         self.values = values
         self.default = default
+        self.keyrelease = keyrelease
 
     def _create_widget(self, parent, window: Window, row, col):
         # build arg list for Combobox
@@ -128,13 +136,16 @@ class Combobox(BaseWidget):
             row=row, column=col, rowspan=self.rowspan, columnspan=self.columnspan
         )
 
-        event_release = Event(self.widget, window, self.key, EventType.KeyRelease)
-        self.widget.bind("<KeyRelease>", window._make_callback(event_release))
+        # bind events
+        if self.keyrelease:
+            event_release = Event(self, window, self.key, EventType.KeyRelease)
+            self.widget.bind("<KeyRelease>", window._make_callback(event_release))
 
-        event_selected = Event(
-            self.widget, window, self.key, EventType.ComboboxSelected
-        )
+        event_selected = Event(self, window, self.key, EventType.ComboboxSelected)
         self.widget.bind("<<ComboboxSelected>>", window._make_callback(event_selected))
+
+        combo_return_key = Event(self, window, self.key, EventType.ComboboxReturn)
+        self.widget.bind("<Return>", window._make_callback(combo_return_key))
 
         if self._command:
             self.events = True

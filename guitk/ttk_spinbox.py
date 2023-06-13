@@ -176,13 +176,9 @@ class Spinbox(BaseWidget):
         )
 
         # bind <<Decrement>> and <<Increment>> events
-        event_decrement = Event(
-            self.widget, window, self.key, EventType.SpinboxDecrement
-        )
+        event_decrement = Event(self, window, self.key, EventType.SpinboxDecrement)
         self.widget.bind("<<Decrement>>", window._make_callback(event_decrement))
-        event_increment = Event(
-            self.widget, window, self.key, EventType.SpinboxIncrement
-        )
+        event_increment = Event(self, window, self.key, EventType.SpinboxIncrement)
         self.widget.bind("<<Increment>>", window._make_callback(event_increment))
 
         if self._command:

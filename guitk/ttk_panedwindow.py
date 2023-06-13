@@ -60,13 +60,12 @@ class Panedwindow(_Container):
         pady: PadType | None = None,
         sticky: str | None = None,
         tooltip: TooltipType = None,
-        command: CommandType | None = None,
         weightx: int | None = None,
         weighty: int | None = None,
         focus: bool = False,
         **kwargs,
     ):
-        """Initialize a Notebook widget.
+        """Initialize a PanedWindow widget.
 
         Args:
             key (Hashable, optional): Unique key for this widget. Defaults to None.
@@ -78,7 +77,6 @@ class Panedwindow(_Container):
             pady (PadType | None, optional): Y padding. Defaults to None.
             sticky (str | None, optional): Sticky direction for widget layout. Defaults to None.
             tooltip (TooltipType | None, optional): Tooltip text or callback to generate tooltip text. Defaults to None.
-            command (CommandType | None, optional): Command to execute when clicked. Defaults to None.
             weightx (int | None, optional): Horizontal weight. Defaults to None.
             weighty (int | None, optional): Vertical weight. Defaults to None.
             focus (bool, optional): If True, widget will have focus. Defaults to False.
@@ -112,7 +110,6 @@ class Panedwindow(_Container):
         self.columnspan = columnspan
         self.rowspan = rowspan
         self.panes = panes or []
-        self._command = command
         self.kwargs = kwargs
         self._pane_count = 0
         self.orient = orient
@@ -137,20 +134,6 @@ class Panedwindow(_Container):
             for row in self.layout:
                 for pane in row:
                     self.add(pane)
-
-        if self._command:
-            self.events = True
-            window._bind_command(
-                # the actual widget will be a tk widget in form widget=.!toplevel.!frame.!notebook
-                # so it won't match self.widget
-                # set widget=None or _handle_commands won't correctly handle the command
-                EventCommand(
-                    widget=None,
-                    key=self.key,
-                    event_type=EventType.NotebookpaneChanged,
-                    command=self._command,
-                )
-            )
 
         if self.width or self.height:
             self.widget.grid_propagate(0)

@@ -83,6 +83,9 @@ class Radiobutton(BaseWidget):
             focus (bool, optional): If True, widget will have focus. Defaults to False.
                 Only one widget in a window can have focus.HLayout
             **kwargs: Additional keyword arguments are passed to ttk.Radiobutton.
+
+        Note:
+            Emits EventType.Radiobutton event.
         """
         super().__init__(
             key=key,
