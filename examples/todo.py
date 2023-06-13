@@ -10,7 +10,7 @@ class ToDoWindow(ui.Window):
             ui.Label("ToDo List", anchor="center", sticky="ew", weightx=1)
             with ui.VStack() as self.vs_todo:
                 # start with a new Entry widget for a new ToDo item
-                ui.Entry(key="todo_0", events=True, focus=True)
+                ui.Entry(key="todo_0", focus=True)
             with ui.HStack(halign="right", expand=False):
                 ui.Button("+", key="add")
 
@@ -23,7 +23,7 @@ class ToDoWindow(ui.Window):
     def on_add(self, event: ui.Event):
         """Event handler for the add button"""
         key = f"todo_{self.todo_count}"
-        self.vs_todo.append(ui.Entry(key=key, events=True))
+        self.vs_todo.append(ui.Entry(key=key))
         self[key].focus()
 
     @ui.on(event_type=ui.EventType.EntryReturn)

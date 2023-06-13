@@ -15,7 +15,7 @@ class HelloWindow(Window):
         # the layout manager will automatically add widgets to the window
         with HLayout():
             Label("What's your name?")
-            Entry(key="name", events=True, focus=True)
+            Entry(key="name", focus=True)
             Button("Ok")
 
     @on(event_type=EventType.EntryReturn)

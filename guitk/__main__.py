@@ -66,7 +66,7 @@ class Demo(Window):
                         BrowseDirectoryButton(target_key="directory")
                         Button("Debug Window", key="debug_window")
                     with HStack():
-                        LabelEntry("Enter some text:", key="entry", events=True)
+                        LabelEntry("Enter some text:", key="entry", keyrelease=True)
                         Label("You entered:")
                         Label("", key="label_entered")
                     with HStack():

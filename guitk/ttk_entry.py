@@ -49,7 +49,8 @@ class Entry(BaseWidget):
         rowspan: int | None = None,
         padx: PadType | None = None,
         pady: PadType | None = None,
-        events: bool = False,
+        events: bool = True,
+        keyrelease: bool = False,
         sticky: str | None = None,
         tooltip: TooltipType = None,
         command: CommandType | None = None,
@@ -69,7 +70,8 @@ class Entry(BaseWidget):
             rowspan (int | None, optional): Number of rows to span. Defaults to None.
             padx (PadType | None, optional): X padding. Defaults to None.
             pady (PadType | None, optional): Y padding. Defaults to None.
-            events (bool, optional): Enable events for this widget. Defaults to False.
+            events (bool, optional): Enable events for this widget. Defaults to True.
+            keyrelease (bool, optional): If True, generate events on key release. Defaults to False.
             sticky (str | None, optional): Sticky direction for widget layout. Defaults to None.
             tooltip (TooltipType | None, optional): Tooltip text or callback to generate tooltip text. Defaults to None.
             command (CommandType | None, optional): Command callback. Defaults to None.
@@ -79,6 +81,10 @@ class Entry(BaseWidget):
             focus (bool, optional): If True, widget has focus. Defaults to False.
                 Only one widget in a window can have focus.HLayout
             **kwargs: Additional keyword arguments are passed to ttk.Entry.
+
+        Note:
+            Emits EventType.EntryReturn event on return key press.
+            If keyrelease is True, emits EventType.KeyRelease event on every key release.
         """
         super().__init__(
             key=key,
@@ -102,6 +108,7 @@ class Entry(BaseWidget):
         self.columnspan = columnspan
         self.rowspan = rowspan
         self.hscrollbar = hscrollbar
+        self.keyrelease = keyrelease
         self.kwargs = kwargs
 
     def _create_widget(self, parent, window: Window, row, col):
@@ -121,8 +128,9 @@ class Entry(BaseWidget):
         )
 
         # bind key release event
-        event = Event(self, window, self.key, EventType.KeyRelease)
-        self.widget.bind("<KeyRelease>", window._make_callback(event))
+        if self.keyrelease:
+            event = Event(self, window, self.key, EventType.KeyRelease)
+            self.widget.bind("<KeyRelease>", window._make_callback(event))
 
         # bind return key event
         entry_return_key = Event(self, window, self.key, EventType.EntryReturn)
@@ -196,7 +204,8 @@ class LabelEntry(Entry):
         rowspan: int | None = None,
         padx: PadType | None = None,
         pady: PadType | None = None,
-        events: bool = False,
+        events: bool = True,
+        keyrelease: bool = False,
         sticky: str | None = None,
         tooltip: TooltipType = None,
         command: CommandType | None = None,
@@ -217,7 +226,8 @@ class LabelEntry(Entry):
             rowspan (int | None, optional): Number of rows to span. Defaults to None.
             padx (PadType | None, optional): X padding. Defaults to None.
             pady (PadType | None, optional): Y padding. Defaults to None.
-            events (bool, optional): Enable events for this widget. Defaults to False.
+            events (bool, optional): Enable events for this widget. Defaults to True.
+            keyrelease (bool, optional): If True, emits EventType.KeyRelease event on every key release.
             sticky (str | None, optional): Sticky direction for widget layout. Defaults to None.
             tooltip (TooltipType | None, optional): Tooltip text or callback to generate tooltip text. Defaults to None.
             command (CommandType | None, optional): Command callback. Defaults to None.
@@ -226,6 +236,10 @@ class LabelEntry(Entry):
             weighty (int | None, optional): Weight for vertical resizing. Defaults to None.
             focus (bool, optional): If True, widget will have focus. Defaults to False. Only one widget can have focus.
             **kwargs: Additional keyword arguments are passed to ttk.Entry.
+
+        Note:
+            Emits EventType.EntryReturn event on return key press.
+            If keyrelease is True, emits EventType.KeyRelease event on every key release.
         """
         super().__init__(
             key=key,
@@ -236,6 +250,7 @@ class LabelEntry(Entry):
             padx=padx,
             pady=pady,
             events=events,
+            keyrelease=keyrelease,
             sticky=sticky,
             tooltip=tooltip,
             command=command,

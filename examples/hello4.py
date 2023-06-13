@@ -16,7 +16,7 @@ class HelloWorld(Window):
             Label("What's your name?")
             # some widgets like Entry do not send events by default
             # so use events=True to enable them
-            Entry(key="ENTRY_NAME", events=True, focus=True)
+            Entry(key="ENTRY_NAME", focus=True)
             Label("", width=40, key="OUTPUT")
             with LabelFrame("Label Frame", labelanchor=tk.N):
                 with HStack():

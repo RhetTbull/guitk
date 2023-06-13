@@ -11,7 +11,7 @@ class HelloWorld(ui.Window):
         # Define the window's contents
         with ui.VLayout():
             ui.Label("What's your name?")
-            ui.Entry(key="ENTRY_NAME", events=True)
+            ui.Entry(key="ENTRY_NAME")
             ui.Label("", width=40, key="OUTPUT")
             with ui.HStack():
                 ui.Button("Ok")
