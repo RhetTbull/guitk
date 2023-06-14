@@ -19,8 +19,9 @@ class HelloWindow(ui.Window):
             ui.Button("Ok")
 
     @ui.on(key="Ok")
+    @ui.on(event_type=ui.EventType.EntryReturn)
     def on_ok(self, event: ui.Event):
-        """Handle the Ok button click"""
+        """Handle the Ok button click or the Enter key press in the Entry box"""
         print("Hello, ", self.get("name").value)
 
 

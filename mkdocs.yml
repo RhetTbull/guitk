@@ -2,6 +2,7 @@ site_name: GUITk Docs
 site_url: https://rhettbull.github.io/guitk/
 nav:
     - Home: index.md
+    - Tutorial: tutorial.md
     - Reference: reference.md
 plugins:
     - search

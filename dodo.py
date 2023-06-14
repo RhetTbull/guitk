@@ -19,6 +19,7 @@ def task_build_docs():
     """Build documentation"""
     return {
         "actions": [
+            "markdown-pp docs/tutorial.mdpp -o docs/tutorial.md",
             "poetry run mkdocs build",
         ]
     }
