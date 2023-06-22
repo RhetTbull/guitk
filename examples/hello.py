@@ -16,12 +16,11 @@ class HelloWindow(ui.Window):
         with ui.HLayout():
             ui.Label("What's your name?")
             ui.Entry(key="name", focus=True)
-            ui.Button("Ok")
+            ui.Button("Ok", key="ok")
 
-    @ui.on(key="Ok")
-    @ui.on(event_type=ui.EventType.EntryReturn)
+    @ui.on(key="ok")
     def on_ok(self, event: ui.Event):
-        """Handle the Ok button click or the Enter key press in the Entry box"""
+        """Handle the Ok button click"""
         print("Hello, ", self.get("name").value)
 
 

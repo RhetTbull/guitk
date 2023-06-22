@@ -31,7 +31,7 @@ When the user presses Return or clicks the button, a greeting is printed to the 
 <!--* This image updated with doit for README.md -->
 ![hello.py example](images/hello.py.png "Hello World example")
 
-<!--* The code is updated with mdpp which is run from proeject root so include paths are relative to project root -->
+<!--* The code is updated with mdpp which is run from project root so include paths are relative to project root -->
 ```python
 """Simple Hello World example using guitk """
 
@@ -51,12 +51,11 @@ class HelloWindow(ui.Window):
         with ui.HLayout():
             ui.Label("What's your name?")
             ui.Entry(key="name", focus=True)
-            ui.Button("Ok")
+            ui.Button("Ok", key="ok")
 
-    @ui.on(key="Ok")
-    @ui.on(event_type=ui.EventType.EntryReturn)
+    @ui.on(key="ok")
     def on_ok(self, event: ui.Event):
-        """Handle the Ok button click or the Enter key press in the Entry box"""
+        """Handle the Ok button click"""
         print("Hello, ", self.get("name").value)
 
 
@@ -65,10 +64,57 @@ if __name__ == "__main__":
     HelloWindow().run()
 ```
 
+A few things to note about this example:
+
+- The `HelloWindow` class subclasses `guitk.Window`. This is the starting point for your app's main window.
+- The `HelloWindow` class defines a `config` method that configures the window. `config()` is a special method
+   that is called by GUITk before the window is created. It is used to configure the window's title, size, and
+   widgets. Your window class must define a `config()` method.
+- Widgets are added to your window using a layout manager. Creating an instance of a layout manager within your
+   `config()` method adds it to the window. The `HelloWindow` class uses an `HLayout()` layout manager which
+    arranges widgets horizontally.
+- Widgets, such as `Label` (static text), `Entry` (text entry box), and `Button`, are added to the window by
+   creating instances of them within the context of the layout manager.
+- Every widget has an optional key, which is a unique identifier for the widget. In this example, the "Ok" button
+   has a key of "ok".
+- Events (such as a button press) are handled using the `@on()` decorator. The `@on()` decorator is used to
+   register a callback function that is called when the event occurs. In this example, the `on_ok()` function
+    is called when the user presses Return or clicks the "Ok" button (because the button has a key of "ok" which
+    the `on_ok()` function is registered to handle).
+
 ## Creating a Window
 
-## Creating a Layout
+Every GUITk app must have at least one class that subclasses `guitk.Window`. This class is the starting point
+for your app's main window. An app may have multiple windows but one of them must be the main window. The main
+window is created by calling the `run()` method on the window class. The `run()` method starts the main event
+loop and displays the window.
 
-## Creating a Button
+The `Window` class has a `config()` method that is called by GUITk before the window is created. You must define
+a `config()` method in your window class in order to display any widgets in the window (and without widgets, your
+window would be a pretty boring GUI). The config method will be automatically called by GUITk before the window
+is displayed. You should not need to create an `__init__()` method in your window class as all configuration
+is done in the `config()` method.
 
-## Creating a Label
+Here is a minimal window class:
+
+<!--[[[cog
+import os
+os.system("python3 utils/screenshot.py docs/examples/minimal_window.py MinimalWindow docs/images/minimal_window.py.png --overwrite")
+]]]-->
+<!--[[[end]]]-->
+![minimal_window.py example](https://raw.githubusercontent.com/RhetTbull/guitk/main/docs/images/minimal_window.py.png "Minimal Window example")
+
+<!--* The code is updated with mdpp which is run from project root so include paths are relative to project root -->
+```python
+"""Minimal example of a GUITk Window"""
+
+import guitk as ui
+
+
+class MinimalWindow(ui.Window):
+    def config(self):
+        with ui.VLayout():
+            ui.Label("Hello World!")
+
+if __name__ == "__main__":
+    MinimalWindow().run()```
