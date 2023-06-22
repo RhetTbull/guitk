@@ -8,5 +8,6 @@ class MinimalWindow(ui.Window):
         with ui.VLayout():
             ui.Label("Hello World!")
 
+
 if __name__ == "__main__":
     MinimalWindow().run()
