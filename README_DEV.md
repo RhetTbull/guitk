@@ -29,6 +29,9 @@ Can be served locally with:
 
 - `mkdocs serve`
 
+To add a new page to the docs, edit the `mkdocs.yml` file and add the page under the `nav` section.
+Then add the markdown file to the `docs/` directory.
+
 ## Test
 
 All tests are interactive and require user interaction.  There are currently no automated tests.

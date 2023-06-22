@@ -1,4 +1,4 @@
-<!--* DO NOT EDIT README.md, instead edit README.mdpp and process with MarkdownPP using build_readme.sh -->
+<!--* DO NOT EDIT README.md, instead edit README.mdpp and process with MarkdownPP using doit (see dodo.py) -->
 
 # Python GUI Toolkit for TK (GUITk)
 
@@ -10,9 +10,11 @@ GUITk allows you to build complete GUI applications with a few lines of code. GU
 
 GUITk apps are built by subclasses the `guitk.Window` class. Your GUI elements are layed out using a `guitk.HLayout` (horizontal layout) or `guitk.VLayout` (vertical layout) object which takes care of placing all widgets in the window using a declarative syntax. This is much simpler than using the underlying tkinter [grid manager](https://tkdocs.com/shipman/grid.html) or [pack](https://dafarry.github.io/tkinterbook/pack.htm) geometry managers.
 
-GUITk is in alpha stage but is in constant development so check back frequently if this interests you or open an issue to start a conversation about what pain points this project could help you solve!
+GUITk is in early beta but is in constant development so check back frequently if this interests you or open an issue to start a conversation about what pain points this project could help you solve!
 
 Documentation is available at [GUITk](https://rhettbull.github.io/guitk/).
+
+GUITk has no dependencies outside of the Python standard library. (Though if [Pillow](https://pypi.org/project/Pillow/) is installed, GUITk will use it to load images.)
 
 ## Code Example
 
@@ -44,9 +46,9 @@ class HelloWindow(ui.Window):
         with ui.HLayout():
             ui.Label("What's your name?")
             ui.Entry(key="name", focus=True)
-            ui.Button("Ok")
+            ui.Button("Ok", key="ok")
 
-    @ui.on(key="Ok")
+    @ui.on(key="ok")
     def on_ok(self, event: ui.Event):
         """Handle the Ok button click"""
         print("Hello, ", self.get("name").value)
@@ -61,7 +63,17 @@ if __name__ == "__main__":
 
 The goal of GUITk is to make it very easy to create simple and attractive GUI apps with python. It borrows ideas from several other libraries include [PySimpleGUI](https://www.pysimplegui.org/en/latest/), [SwiftUI](https://developer.apple.com/documentation/swiftui), [textual](https://github.com/Textualize/textual), and [applepy](https://github.com/eduardohleite/applepy). GUITk builds on [tkinter](https://docs.python.org/3/library/tkinter.html) which ships with the Python standard library and works across many platforms. tkinter is a mature and powerful GUI framework but requires a fair bit of boiler plate and understanding of the underlying framework to use effectively. GUITk attempts to simplify this by providing a higher level interface to tkinter while still allowing you to access the underlying tkinter API if you need to.
 
-Though you can build simple apps without knowing much about tkinter, GUITk is not intended to fully abstract away the tkinter interface. A basic understanding of tkinter will be helpful when building with GUITk. I highly recommend Mark Roseman's excellent [Modern Tkinter for Busy Python Developers](https://tkdocs.com/book.html) book as a starting point.
+Though you can build simple apps without knowing much about tkinter, a basic understanding of tkinter will be helpful when building with GUITk. I highly recommend Mark Roseman's excellent [Modern Tkinter for Busy Python Developers](https://tkdocs.com/book.html) book as a starting point.
+
+## Is GUITk for you?
+
+GUITk is still beta software so I would not use it for anything really important. That said, I am using GUITk regularly for small projects and it is working well for me. If you want to build a simple GUI for your Python app using a minimal amount of code and without having to think too much about the geometry of your window, GUITk might be worth trying. GUITk has no dependencies outside the Python standard library so it's easy to add to your project and it should work across many platforms.
+
+If you need complex widgets or native OS features like drag & drop, notifications, etc. or a native OS look & feel, then GUITk is not the best choice as it's built on tkinter which does not offer these features.
+
+## Supported Platforms
+
+GUITk requires Python 3.9+ and is currently tested on macOS Ventura (13.x) and macOS Catalina (10.15.7). It should work on any platform that supports tkinter but this has not been tested. If you run into issues on a particular platform, please open an issue.
 
 ## Installation
 
@@ -169,7 +181,7 @@ if __name__ == "__main__":
 
 ## Documentation
 
-Not much documentation at this point but there's a start [here](https://rhettbull.github.io/guitk/).  Take a look at the [examples](https://github.com/RhetTbull/guitk/tree/main/examples) directory for a number of self-documenting examples on use of various widgets.
+Documentation can be found [here](https://rhettbull.github.io/guitk/).  Take a look at the [examples](https://github.com/RhetTbull/guitk/tree/main/examples) directory for a number of examples on use of various widgets.
 
 ## Testing
 
