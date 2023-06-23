@@ -80,3 +80,7 @@ os.system("python3 utils/screenshot.py docs/examples/minimal_window.py MinimalWi
 ```python
 !INCLUDE "docs/examples/minimal_window.py"
 ```
+
+## TODO: finish tutorial
+
+This tutorial is a work in progress. More to come soon...

@@ -120,3 +120,7 @@ class MinimalWindow(ui.Window):
 if __name__ == "__main__":
     MinimalWindow().run()
 ```
+
+## TODO: finish tutorial
+
+This tutorial is a work in progress. More to come soon...
