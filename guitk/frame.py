@@ -12,6 +12,7 @@ from guitk.constants import GUITK
 from ._debug import debug, debug_borderwidth, debug_relief, debug_watch
 from .basewidget import BaseWidget
 from .layout import HLayout, VLayout, pop_parent, push_parent
+from .scrolledframe import ScrolledFrame
 from .spacer import HSpacer, VSpacer
 from .tooltips import Hovertip
 from .ttk_label import Label
@@ -320,6 +321,9 @@ class _Container(BaseWidget, _LayoutMixin):
         halign: HAlign | None = None,
         vspacing: PadType | None = None,
         hspacing: PadType | None = None,
+        vscrollbar: bool = False,
+        # hscrollbar: bool = False,
+        autohide_scrollbars: bool = True,
         **kwargs,
     ):
         # padx and pady passed to Widget not Frame
@@ -366,6 +370,9 @@ class _Container(BaseWidget, _LayoutMixin):
         self.halign = halign.lower() if halign else None
         self.vspacing = vspacing
         self.hspacing = hspacing
+        self.vscrollbar = vscrollbar
+        # self.hscrollbar = hscrollbar
+        self.autohide = autohide_scrollbars
 
     def remove(self, key_or_widget: Hashable | BaseWidget):
         """ "Remove widget from layout and destroy it.
@@ -397,14 +404,28 @@ class _Container(BaseWidget, _LayoutMixin):
             kwargs["style"] = self._style
 
         if self.frametype == GUITK.ELEMENT_FRAME:
-            self.widget = ttk.Frame(
-                parent,
-                width=self.width,
-                height=self.height,
-                borderwidth=self.borderwidth,
-                relief=self.relief,
-                **kwargs,
-            )
+            # if self.vscrollbar or self.hscrollbar:
+            if self.vscrollbar:
+                self.widget = ScrolledFrame(
+                    parent,
+                    vscrollbar=self.vscrollbar,
+                    # hscrollbar=self.hscrollbar,
+                    autohide=self.autohide,
+                    width=self.width,
+                    height=self.height,
+                    borderwidth=self.borderwidth,
+                    relief=self.relief,
+                    **kwargs,
+                )
+            else:
+                self.widget = ttk.Frame(
+                    parent,
+                    width=self.width,
+                    height=self.height,
+                    borderwidth=self.borderwidth,
+                    relief=self.relief,
+                    **kwargs,
+                )
         elif self.frametype == GUITK.ELEMENT_TK_FRAME:
             self.widget = tk.Frame(
                 parent,

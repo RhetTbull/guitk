@@ -1,9 +1,10 @@
-"""Debug utilities"""
+"""Debug utilities; set GUITK_DEBUG=1 to enable debugging or use set_debug()"""
 
 from __future__ import annotations
 
 import datetime
 import inspect
+import os
 import sys
 import time
 from functools import wraps
@@ -82,3 +83,8 @@ def debug_watch(func):
         return rv
 
     return wrapper
+
+
+if os.getenv("GUITK_DEBUG") == "1":
+    set_debug(True)
+    debug("debugging enabled")

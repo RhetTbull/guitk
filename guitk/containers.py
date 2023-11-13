@@ -34,6 +34,9 @@ class _Stack(_Container):
         distribute: bool = False,
         vspacing: PadType | None = None,
         hspacing: PadType | None = None,
+        vscrollbar: bool = False,
+        # hscrollbar: bool = False,
+        autohide_scrollbars: bool = True,
     ):
         """Base container container that stacks widgets when added to a Layout.
 
@@ -57,6 +60,7 @@ class _Stack(_Container):
             distribute (bool, optional): Whether the Stack should distribute widgets evenly.
             vspacing (PadType, optional): Vertical spacing between widgets. Defaults to None.
             hspacing (PadType, optional): Horizontal spacing between widgets. Defaults to None.
+            vscrollbar (bool): Whether to include a vertical scrollbar. Defaults to False.
 
         Note:
             If width or height is specified, the Stack will not expand to fill the available space and the
@@ -84,6 +88,9 @@ class _Stack(_Container):
             halign=halign,
             vspacing=vspacing,
             hspacing=hspacing,
+            vscrollbar=vscrollbar,
+            # hscrollbar=hscrollbar,
+            autohide_scrollbars=autohide_scrollbars,
         )
         self.expand = expand if (width is None or height is None) else False
         self.distribute = distribute
@@ -179,7 +186,6 @@ class _Stack(_Container):
         widget = self._layout_list.pop(index)
         widget.widget.grid_forget()
         self.redraw()
-        print(f"popped {widget.key} {widget.widget}")
         return widget
 
     @debug_watch
@@ -263,6 +269,7 @@ class VStack(_Stack):
         self,
         key: Hashable | None = None,
         width: int | None = None,
+        # height: int | None = None,
         padding: PaddingType | None = None,
         disabled: bool | None = False,
         sticky: str | None = "nsew",
@@ -272,6 +279,9 @@ class VStack(_Stack):
         distribute: bool = False,
         vspacing: PadType | None = None,
         hspacing: PadType | None = None,
+        vscrollbar: bool = False,
+        # hscrollbar: bool = False,
+        autohide_scrollbars: bool = True,
     ):
         """Base container container that stacks widgets vertically when added to a Layout
 
@@ -290,6 +300,8 @@ class VStack(_Stack):
             distribute (bool, optional): Whether the VStack should distribute widgets evenly.
             vspacing (PadType, optional): Vertical spacing between widgets. Defaults to None.
             hspacing (PadType, optional): Horizontal spacing between widgets. Defaults to None.
+            vscrollbar (bool): Whether to include a vertical scrollbar. Defaults to False.
+            autohide_scrollbars (bool): Whether to hide scrollbars when not needed. Defaults to True.
 
         Note:
             If width is specified, the VStack will not expand to fill the available space and the
@@ -297,8 +309,8 @@ class VStack(_Stack):
         """
         super().__init__(
             key=key,
-            height=None,
             width=width,
+            height=None,
             padding=padding,
             disabled=disabled,
             sticky=sticky,
@@ -308,6 +320,9 @@ class VStack(_Stack):
             distribute=distribute,
             vspacing=vspacing,
             hspacing=hspacing,
+            vscrollbar=vscrollbar,
+            # hscrollbar=hscrollbar,
+            autohide_scrollbars=autohide_scrollbars,
         )
         self.expand = expand if width is None else False
 
@@ -328,6 +343,9 @@ class HStack(_Stack):
         distribute: bool = False,
         vspacing: PadType | None = None,
         hspacing: PadType | None = None,
+        vscrollbar: bool = False,
+        # hscrollbar: bool = False,
+        autohide_scrollbars: bool = True,
     ):
         """A container that stacks widgets horizontally when added to a Layout
 
@@ -346,6 +364,8 @@ class HStack(_Stack):
             distribute (bool, optional): Whether the HStack should distribute widgets evenly.
             vspacing (PadType, optional): Vertical spacing between widgets. Defaults to None.
             hspacing (PadType, optional): Horizontal spacing between widgets. Defaults to None.
+            vscrollbar (bool): Whether to include a vertical scrollbar. Defaults to False.
+            autohide_scrollbars (bool): Whether to hide scrollbars when not needed. Defaults to True.
 
         Note:
             If height is specified, the HStack will not expand to fill the available space and the
@@ -364,6 +384,9 @@ class HStack(_Stack):
             distribute=distribute,
             vspacing=vspacing,
             hspacing=hspacing,
+            vscrollbar=vscrollbar,
+            # hscrollbar=hscrollbar,
+            autohide_scrollbars=autohide_scrollbars,
         )
         self.expand = expand if height is None else False
 
@@ -421,6 +444,9 @@ class VGrid(_Stack):
         expand: bool = True,
         vspacing: PadType | None = None,
         hspacing: PadType | None = None,
+        vscrollbar: bool = False,
+        # hscrollbar: bool = False,
+        autohide_scrollbars: bool = True,
     ):
         """Container that stacks widgets in a vertical grid when added to a Layout
 
@@ -440,6 +466,8 @@ class VGrid(_Stack):
                 Defaults to True.
             vspacing (PadType, optional): Vertical spacing between widgets. Defaults to None.
             hspacing (PadType, optional): Horizontal spacing between widgets. Defaults to None.
+            vscrollbar (bool): Whether to include a vertical scrollbar. Defaults to False.
+            autohide_scrollbars (bool): Whether to hide scrollbars when not needed. Defaults to True.
 
         Note:
             If width is specified, the VStack will not expand to fill the available space and the
@@ -458,6 +486,9 @@ class VGrid(_Stack):
             distribute=False,
             vspacing=vspacing,
             hspacing=hspacing,
+            vscrollbar=vscrollbar,
+            # hscrollbar=hscrollbar,
+            autohide_scrollbars=autohide_scrollbars,
         )
         self.expand = expand if width is None else False
         self.rows = rows
@@ -524,6 +555,9 @@ class HGrid(_Stack):
         expand: bool = True,
         vspacing: PadType | None = None,
         hspacing: PadType | None = None,
+        vscrollbar: bool = False,
+        # hscrollbar: bool = False,
+        autohide_scrollbars: bool = True,
     ):
         """Container that stacks widgets in a horizontal grid when added to a Layout
 
@@ -543,6 +577,8 @@ class HGrid(_Stack):
                 Defaults to True.
             vspacing (PadType, optional): Vertical spacing between widgets. Defaults to None.
             hspacing (PadType, optional): Horizontal spacing between widgets. Defaults to None.
+            vscrollbar (bool): Whether to include a vertical scrollbar. Defaults to False.
+            autohide_scrollbars (bool): Whether to hide scrollbars when not needed. Defaults to True.
 
         Note:
             If width is specified, the VStack will not expand to fill the available space and the
@@ -561,6 +597,9 @@ class HGrid(_Stack):
             distribute=False,
             vspacing=vspacing,
             hspacing=hspacing,
+            vscrollbar=vscrollbar,
+            # hscrollbar=hscrollbar,
+            autohide_scrollbars=autohide_scrollbars,
         )
         self.expand = expand if width is None else False
         self.cols = cols
