@@ -66,7 +66,7 @@ class ScrolledFrame(ttk.Frame):
             width=width,
             height=height,
         )
-        self.container.propagate(0)
+        self.container.propagate(False)
 
         # content frame
         super().__init__(
@@ -138,7 +138,6 @@ class ScrolledFrame(ttk.Frame):
             new_width = max(container_width, requested_width)
             new_height = max(container_height, requested_height)
             self.container.configure(width=new_width, height=new_height)
-            # self.itemconfigure(width=new_width)
 
     def yview(self, *args):
         """Update the vertical position of the content frame within the

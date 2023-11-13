@@ -186,7 +186,6 @@ class _Stack(_Container):
         widget = self._layout_list.pop(index)
         widget.widget.grid_forget()
         self.redraw()
-        print(f"popped {widget.key} {widget.widget}")
         return widget
 
     @debug_watch
@@ -270,6 +269,7 @@ class VStack(_Stack):
         self,
         key: Hashable | None = None,
         width: int | None = None,
+        # height: int | None = None,
         padding: PaddingType | None = None,
         disabled: bool | None = False,
         sticky: str | None = "nsew",
@@ -309,8 +309,8 @@ class VStack(_Stack):
         """
         super().__init__(
             key=key,
-            height=None,
             width=width,
+            height=None,
             padding=padding,
             disabled=disabled,
             sticky=sticky,
@@ -322,6 +322,7 @@ class VStack(_Stack):
             hspacing=hspacing,
             vscrollbar=vscrollbar,
             # hscrollbar=hscrollbar,
+            autohide_scrollbars=autohide_scrollbars,
         )
         self.expand = expand if width is None else False
 
