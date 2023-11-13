@@ -1,0 +1,150 @@
+<!--* DO NOT EDIT tutorial.md, instead edit tutorial.mdpp and process with MarkdownPP using doit (see dodo.py) -->
+
+# GUITk Tutorial
+
+## Overview of the GUITk Library
+
+GUITk is a declarative framework, built on [tkinter](https://docs.python.org/3/library/tkinter.html),
+for building nice-looking, cross-platform GUIs in Python. The goal of GUITk is to make it easy to build
+GUIs without knowing a lot about tkinter.
+The GUITk object model is partially inspired by [SwiftUI](https://developer.apple.com/documentation/swiftui).
+
+GUITk wraps tkinter widgets in GUITk objects. Instead of the standard tkinter geometry managers
+([pack](https://docs.python.org/3/library/tkinter.html?highlight=tkinter#the-packer), 
+[grid](https://tkdocs.com/tutorial/grid.html), [place](https://www.pythonguis.com/faq/pack-place-and-grid-in-tkinter/)),
+GUITk uses declarative layout objects to place widgets in a window. GUITk also provides a declarative
+
+### Why tkinter?
+
+GUITk builds on tkinter because tkinter is a mature, stable, cross-platform GUI framework that is included
+in the Python standard library. tkinter was first added to Python 1.4 in 1996 and runs on most platforms.
+It is not, however, the easiest to use nor the most pythonic GUI framework. GUITk aims to make it easier
+to build GUIs with tkinter. Standard tkinter widgets look somewhat dated but tkinter includes themed widgets
+([ttk](https://docs.python.org/3/library/tkinter.ttk.html)) that look much better. GUITk uses ttk widgets
+whenever possible.
+
+## Basic Concepts
+
+Let's start with an example. The following "hello world" example creates a window with a label, a text entry box, and a button.
+When the user presses Return or clicks the button, a greeting is printed to the console.
+
+<!--* This image updated with doit for README.md -->
+![hello.py example](images/hello.py.png "Hello World example")
+
+<!--* The code is updated with mdpp which is run from project root so include paths are relative to project root -->
+```python
+!INCLUDE "examples/hello.py"
+```
+
+A few things to note about this example:
+
+- The `HelloWindow` class subclasses `guitk.Window`. This is the starting point for your app's main window.
+- The `HelloWindow` class defines a `config` method that configures the window. `config()` is a special method
+   that is called by GUITk before the window is created. It is used to configure the window's title, size, and
+   widgets. Your window class must define a `config()` method.
+- Widgets are added to your window using a layout manager. Creating an instance of a layout manager within your
+   `config()` method adds it to the window. The `HelloWindow` class uses an `HLayout()` layout manager which
+    arranges widgets horizontally.
+- Widgets, such as `Label` (static text), `Entry` (text entry box), and `Button`, are added to the window by
+   creating instances of them within the context of the layout manager.
+- Every widget has an optional key, which is a unique identifier for the widget. In this example, the "Ok" button
+   has a key of "ok".
+- Events (such as a button press) are handled using the `@on()` decorator. The `@on()` decorator is used to
+   register a callback function that is called when the event occurs. In this example, the `on_ok()` function
+    is called when the user presses Return or clicks the "Ok" button (because the button has a key of "ok" which
+    the `on_ok()` function is registered to handle).
+
+## Creating a Window
+
+Every GUITk app must have at least one class that subclasses `guitk.Window`. This class is the starting point
+for your app's main window. An app may have multiple windows but one of them must be the main window. The main
+window is created by calling the `run()` method on the window class. The `run()` method starts the main event
+loop and displays the window.
+
+The `Window` class has a `config()` method that is called by GUITk before the window is created. You must define
+a `config()` method in your window class in order to display any widgets in the window (and without widgets, your
+window would be a pretty boring GUI). The config method will be automatically called by GUITk before the window
+is displayed. You should not need to create an `__init__()` method in your window class as all configuration
+is done in the `config()` method.
+
+Here is a minimal window class:
+
+<!--[[[cog
+import os
+os.system("python3 utils/screenshot.py docs/examples/minimal_window.py MinimalWindow docs/images/minimal_window.py.png --overwrite")
+]]]-->
+<!--[[[end]]]-->
+![minimal_window.py example](https://raw.githubusercontent.com/RhetTbull/guitk/main/docs/images/minimal_window.py.png "Minimal Window example")
+
+<!--* The code is updated with mdpp which is run from project root so include paths are relative to project root -->
+```python
+!INCLUDE "docs/examples/minimal_window.py"
+```
+
+### Window Configuration
+
+The `config()` method is used to configure the window. When subclassing `guitk.Window`, you must define a `config()` method.
+You do not need to call the `config()` method yourself nor should you call the superclass `config()` method. GUITk will call
+`config()` for you before the window is created.
+
+In `config()`, you can set the title and size of the window and create your layout by creating an instance of GUITk Layout Manager.
+
+For example, here is a window with a title and size:
+
+```python
+class MyWindow(guitk.Window):
+    def config(self):
+        self.title = "My Window"
+        self.size = (400, 300)
+```
+
+Window size (in pixels) can be set as a tuple of (width, height) or as a string in the form "widthxheight" (e.g. "400x300").
+Consistent with tkinter, the window size can also be set by setting `self.geometry`:
+
+```python
+class MyWindow(guitk.Window):
+    def config(self):
+        self.title = "My Window"
+        self.geometry = "400x300"
+```
+
+Layouts are covered in more detail in the next section.
+
+### Window Methods
+
+In addition to the `config()` method, you can define the following methods in your window class and if defined, they will be called by GUITk:
+
+`setup(self) -> None` - called after the window is created (after `config()`) but before it is displayed. This is a good place to initialize your app's state.
+If you need to access any of the underlying tkinter widgets, you can do so in `setup()` as the widgets will have been created by this point.
+
+`teardown(self) -> None` - called when the window is closed. This is a good place to clean up any resources used by your app.
+
+`handle_event(self, event: guitk.Event) -> None` - called when an event occurs. This is a good place to handle events that are not handled by widgets or by the `@on()` decorator.
+The GUITk event system is covered in more detail in a later section.
+
+Here's an example of a window with a title and size and the `setup()`, `teardown()`, and `handle_event()` methods defined:
+
+<!--* The code is updated with mdpp which is run from project root so include paths are relative to project root -->
+```python
+!INCLUDE "examples/hello2.py"
+```
+
+### Starting the App
+
+Once you have defined your window class, you can start the app by calling the `run()` method on the window class:
+
+```python
+MyWindow.run()
+```
+
+This creates the window and starts the tkinter event loop. The `run()` method does not return until the window is closed.
+Child windows may be created in your class by creating an instance of a window class, for example, `child = MyChildWindow()`, but you
+should call `run()` only on the main window.
+
+## Layouts
+
+## Events
+
+## TODO: finish tutorial
+
+This tutorial is a work in progress. More to come soon...
