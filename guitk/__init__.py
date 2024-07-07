@@ -49,7 +49,7 @@ from .ttk_treeview import Listbox, ListBox, Treeview, TreeView
 from .widget import Widget, widget_class_factory
 from .window import Window
 
-__version__ = "0.4.3"
+__version__ = "0.4.4"
 __author__ = "Rhet Turnbull"
 
 __all__ = [
