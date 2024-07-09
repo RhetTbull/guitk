@@ -30,7 +30,6 @@ class _Stack(_Container):
         sticky: str | None = "nsew",
         valign: VAlign | None = None,
         halign: HAlign | None = None,
-        expand: bool = True,
         vexpand: bool = True,
         hexpand: bool = True,
         distribute: bool = False,
@@ -57,8 +56,6 @@ class _Stack(_Container):
                 Defaults to None.
             halign (HAlign, optional): The horizontal alignment for the widgets in the Stack.
                 Defaults to None.
-            expand (bool, optional): Whether the Stack should expand to fill the available space.
-                Defaults to True.
             vexpand (bool, optional): Whether the Stack should expand vertically.
                 Defaults to True.
             hexpand (bool, optional): Whether the Stack should expand horizontally.
@@ -98,24 +95,19 @@ class _Stack(_Container):
             # hscrollbar=hscrollbar,
             autohide_scrollbars=autohide_scrollbars,
         )
-        self.expand = expand if (width is None or height is None) else False
-        self.vexpand = vexpand
-        self.hexpand = hexpand
+        self.vexpand = vexpand if height is None else False
+        self.hexpand = hexpand if width is None else False
         self.distribute = distribute
         self._layout_list = []
         self._layout_lol = [[]]
 
     def _create_widget(self, parent: tk.BaseWidget, window: Window, row: int, col: int):
         super()._create_widget(parent, window, row, col)
-        if self.expand:
-            if self.vexpand:
-                parent.grid_rowconfigure(row, weight=1)
-            if self.hexpand:
-                parent.grid_columnconfigure(col, weight=1)
-        if self.height:
-            parent.grid_columnconfigure(col, weight=1)
-        if self.width:
+
+        if self.vexpand:
             parent.grid_rowconfigure(row, weight=1)
+        if self.hexpand:
+            parent.grid_columnconfigure(col, weight=1)
 
     @property
     def layout(self) -> list[list[BaseWidget]]:
@@ -285,7 +277,6 @@ class VStack(_Stack):
         sticky: str | None = "nsew",
         valign: VAlign | None = None,
         halign: HAlign | None = None,
-        expand: bool = True,
         vexpand: bool = True,
         hexpand: bool = True,
         distribute: bool = False,
@@ -307,8 +298,6 @@ class VStack(_Stack):
                 Defaults to None.
             halign (HAlign, optional): The horizontal alignment for the widgets in the VStack.
                 Defaults to None.
-            expand (bool, optional): Whether the VStack should expand to fill the available space.
-                Defaults to True.
             vexpand (bool, optional): Whether the Stack should expand vertically.
                 Defaults to True.
             hexpand (bool, optional): Whether the Stack should expand horizontally.
@@ -332,7 +321,6 @@ class VStack(_Stack):
             sticky=sticky,
             valign=valign,
             halign=halign,
-            expand=expand,
             vexpand=vexpand,
             hexpand=hexpand,
             distribute=distribute,
@@ -342,7 +330,6 @@ class VStack(_Stack):
             # hscrollbar=hscrollbar,
             autohide_scrollbars=autohide_scrollbars,
         )
-        self.expand = expand if width is None else False
 
 
 class HStack(_Stack):
@@ -357,7 +344,6 @@ class HStack(_Stack):
         sticky: str | None = "nsew",
         valign: VAlign | None = None,
         halign: HAlign | None = None,
-        expand: bool = True,
         vexpand: bool = True,
         hexpand: bool = True,
         distribute: bool = False,
@@ -379,8 +365,6 @@ class HStack(_Stack):
                 Defaults to None.
             halign (HAlign, optional): The horizontal alignment for the widgets in the HStack.
                 Defaults to None.
-            expand (bool, optional): Whether the HStack should expand to fill the available space.
-                Defaults to True.
             vexpand (bool, optional): Whether the Stack should expand vertically.
                 Defaults to True.
             hexpand (bool, optional): Whether the Stack should expand horizontally.
@@ -404,7 +388,6 @@ class HStack(_Stack):
             sticky=sticky,
             valign=valign,
             halign=halign,
-            expand=expand,
             vexpand=vexpand,
             hexpand=hexpand,
             distribute=distribute,
@@ -414,7 +397,6 @@ class HStack(_Stack):
             # hscrollbar=hscrollbar,
             autohide_scrollbars=autohide_scrollbars,
         )
-        self.expand = expand if height is None else False
 
     @property
     def layout(self) -> list[list[BaseWidget]]:
@@ -467,7 +449,6 @@ class VGrid(_Stack):
         sticky: str | None = "nsew",
         valign: VAlign | None = None,
         halign: HAlign | None = None,
-        expand: bool = True,
         vexpand: bool = True,
         hexpand: bool = True,
         vspacing: PadType | None = None,
@@ -490,8 +471,6 @@ class VGrid(_Stack):
                 Defaults to None.
             halign (HAlign, optional): The horizontal alignment for the widgets in the VStack.
                 Defaults to None.
-            expand (bool, optional): Whether the VStack should expand to fill the available space.
-                Defaults to True.
             vexpand (bool, optional): Whether the Stack should expand vertically.
                 Defaults to True.
             hexpand (bool, optional): Whether the Stack should expand horizontally.
@@ -514,7 +493,6 @@ class VGrid(_Stack):
             sticky=sticky,
             valign=valign,
             halign=halign,
-            expand=expand,
             vexpand=vexpand,
             hexpand=hexpand,
             distribute=False,
@@ -524,7 +502,6 @@ class VGrid(_Stack):
             # hscrollbar=hscrollbar,
             autohide_scrollbars=autohide_scrollbars,
         )
-        self.expand = expand if width is None else False
         self.rows = rows
 
     @property
@@ -586,7 +563,6 @@ class HGrid(_Stack):
         sticky: str | None = "nsew",
         valign: VAlign | None = None,
         halign: HAlign | None = None,
-        expand: bool = True,
         vexpand: bool = True,
         hexpand: bool = True,
         vspacing: PadType | None = None,
@@ -609,8 +585,6 @@ class HGrid(_Stack):
                 Defaults to None.
             halign (HAlign, optional): The horizontal alignment for the widgets in the VStack.
                 Defaults to None.
-            expand (bool, optional): Whether the VStack should expand to fill the available space.
-                Defaults to True.
             vexpand (bool, optional): Whether the Stack should expand vertically.
                 Defaults to True.
             hexpand (bool, optional): Whether the Stack should expand horizontally.
@@ -633,7 +607,6 @@ class HGrid(_Stack):
             sticky=sticky,
             valign=valign,
             halign=halign,
-            expand=expand,
             vexpand=vexpand,
             hexpand=hexpand,
             distribute=False,
@@ -643,7 +616,6 @@ class HGrid(_Stack):
             # hscrollbar=hscrollbar,
             autohide_scrollbars=autohide_scrollbars,
         )
-        self.expand = expand if width is None else False
         self.cols = cols
 
     @property
