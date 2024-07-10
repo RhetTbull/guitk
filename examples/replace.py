@@ -17,18 +17,18 @@ class Replace(ui.Window):
             ui.CheckButton(text="VLayout 1", key="vlayout_1")
             ui.CheckButton(text="VLayout 2", key="vlayout_2")
             ui.CheckButton(text="VLayout 3", key="vlayout_3")
-            with ui.VStack(expand=False):
+            with ui.VStack(vexpand=False, hexpand=False):
                 ui.CheckButton(text="VStack 1", key="vstack_1")
                 ui.CheckButton(text="VStack 2", key="vstack_2")
                 ui.CheckButton(text="VStack 3", key="vstack_3")
-            with ui.HStack(expand=False):
+            with ui.HStack(vexpand=False, hexpand=False):
                 ui.CheckButton(text="HStack 1", key="hstack_1")
                 ui.CheckButton(text="HStack 2", key="hstack_2")
                 ui.CheckButton(text="HStack 3", key="hstack_3")
-            with ui.VGrid(rows=2, expand=False):
+            with ui.VGrid(rows=2, vexpand=False, hexpand=False):
                 for i in range(8):
                     ui.CheckButton(text=f"VGrid {i}", key=f"vgrid_{i}")
-            with ui.HGrid(cols=2, expand=False):
+            with ui.HGrid(cols=2, vexpand=False, hexpand=False):
                 for i in range(8):
                     ui.CheckButton(text=f"HGrid {i}", key=f"hgrid_{i}")
 

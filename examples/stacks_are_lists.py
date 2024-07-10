@@ -10,7 +10,7 @@ class Stacks(Window):
     def config(self):
         self.title = "Stacks are Lists"
         with VLayout():
-            with HStack(expand=True):
+            with HStack():
                 with VStack():
                     self.add_control_widgets()
                 VSeparator()
@@ -24,12 +24,12 @@ class Stacks(Window):
                     with HStack(key="HStack") as self.hs:
                         ...
                 VSeparator()
-                with VStack(expand=True):
+                with VStack():
                     Label("Popped").font(weight="bold", underline=True)
                     with VStack() as self.vs_popped:
                         ...
             HSeparator()
-            with HStack(expand=False):
+            with HStack(vexpand=False, hexpand=False):
                 Label("VStack:", key="vstack_count")
                 Label("HStack:", key="hstack_count")
             HSeparator()

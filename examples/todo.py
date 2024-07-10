@@ -11,7 +11,7 @@ class ToDoWindow(ui.Window):
             with ui.VStack() as self.vs_todo:
                 # start with a new Entry widget for a new ToDo item
                 ui.Entry(key="todo_0", focus=True)
-            with ui.HStack(halign="right", expand=False):
+            with ui.HStack(vexpand=False, hexpand=False, halign="right"):
                 ui.Button("+", key="add")
 
     def setup(self):

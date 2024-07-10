@@ -15,7 +15,7 @@ class Grid(Window):
                 for i in range(11):
                     Button(f"HGrid {i}")
             HSeparator()
-            with HStack(expand=False):
+            with HStack(vexpand=False, hexpand=False):
                 Button("Add")
                 Button("Remove")
             HSeparator()

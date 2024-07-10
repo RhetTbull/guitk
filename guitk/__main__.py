@@ -103,14 +103,14 @@ class Demo(Window):
                             with VStack():
                                 Label("These RadioButtons are in a LabelFrame")
                                 with HStack():
-                                    with VStack(expand=False):
+                                    with VStack(vexpand=False, hexpand=False):
                                         RadioButton(
                                             "Option A", key="option_a", group="group1"
                                         )
                                         RadioButton(
                                             "Option B", key="option_b", group="group1"
                                         )
-                                    with VStack(expand=False):
+                                    with VStack(vexpand=False, hexpand=False):
                                         RadioButton(
                                             "Option 1", key="option_1", group="group2"
                                         )
@@ -147,7 +147,7 @@ class Demo(Window):
                             tooltip="Treeview; click on headings to sort",
                             vscrollbar=True,
                         ),
-                        with VStack(expand=False, halign="center"):
+                        with VStack(vexpand=False, hexpand=False, halign="center"):
                             Label("Classes and functions in GUITk")
                             ListBox(
                                 key="listbox",
@@ -156,7 +156,7 @@ class Demo(Window):
                                 width=160,
                                 vscrollbar=True,
                             )
-                        with VStack(expand=False, halign="center"):
+                        with VStack(vexpand=False, hexpand=False, halign="center"):
                             Label("Doc String")
                             Text(key="docstring", height=14, width=30, vscrollbar=True)
                 with HTab("Tab 2"):
@@ -169,7 +169,7 @@ class Demo(Window):
                 with HStack():
                     Output(key="output", sticky="nsew", weightx=1, weighty=1)
                     VSeparator()
-                    with VStack(valign=tk.BOTTOM, expand=False):
+                    with VStack(vexpand=False, hexpand=False, valign=tk.BOTTOM):
                         Checkbutton("Enable", key="check_enable")
                         Checkbutton("Echo", key="check_echo")
                         Button("stdout")
