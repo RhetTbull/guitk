@@ -22,10 +22,10 @@ class OutputDemo(Window):
         self.title = "Output Demo"
         with HLayout():
             with VStack():
-                with HStack(expand=False):
+                with HStack(vexpand=False, hexpand=False):
                     LabelEntry("stdout", key="STDOUT")
                     Button("Print", key="PRINT_STDOUT")
-                with HStack(expand=False):
+                with HStack(vexpand=False, hexpand=False):
                     LabelEntry("stderr", key="STDERR")
                     Button("Print", key="PRINT_STDERR")
             with VStack():
