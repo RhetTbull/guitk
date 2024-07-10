@@ -1,7 +1,4 @@
 <!--* DO NOT EDIT README.md, instead edit README.mdpp and process with MarkdownPP using doit (see dodo.py) -->
-<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
-<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 # Python GUI Toolkit for TK (GUITk)
 
@@ -195,21 +192,6 @@ You can also run `python3 -m guitk` which opens a window with examples of all th
 ## Contributors
 
 Contributions welcome! If this project interests you, open an Issue or send a PR!
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore-start -->
-<!-- markdownlint-disable -->
-<table>
-  <tbody>
-    <tr>
-      <td align="center" valign="top" width="14.28%"><a href="http://kevinrpb.me"><img src="https://avatars.githubusercontent.com/u/11138513?v=4?s=100" width="100px;" alt="Kevin Romero Peces-Barba"/><br /><sub><b>Kevin Romero Peces-Barba</b></sub></a><br /><a href="https://github.com/RhetTbull/guitk/commits?author=kevinrpb" title="Code">💻</a></td>
-    </tr>
-  </tbody>
-</table>
-
-<!-- markdownlint-restore -->
-<!-- prettier-ignore-end -->
-
-<!-- ALL-CONTRIBUTORS-LIST:END -->
 
 ## TODO
 

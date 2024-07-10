@@ -41,3 +41,11 @@ All tests are interactive and require user interaction.  There are currently no 
 ## Updating README.md
 
 Do not directly edit README.md, instead edit README.mdpp and process with MarkdownPP using `doit` to update README.md.
+
+## Publish
+
+I don't use `poetry publish` do to PyPI authentication which I have set up to use `twine`.
+
+`pip install twine`
+`twine upload dist/*`
+`gh release create v0.4.4 dist/*`
