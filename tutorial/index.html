@@ -1,0 +1,825 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://rhettbull.github.io/guitk/tutorial/">
+      
+      
+        <link rel="prev" href="..">
+      
+      
+        <link rel="next" href="../reference/">
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.28">
+    
+    
+      
+        <title>Tutorial - GUITk Docs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.6543a935.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#guitk-tutorial" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="GUITk Docs" class="md-header__button md-logo" aria-label="GUITk Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            GUITk Docs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Tutorial
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="GUITk Docs" class="md-nav__button md-logo" aria-label="GUITk Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    GUITk Docs
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Tutorial
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Tutorial
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview-of-the-guitk-library" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview of the GUITk Library
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Overview of the GUITk Library">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#why-tkinter" class="md-nav__link">
+    <span class="md-ellipsis">
+      Why tkinter?
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-concepts" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Concepts
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-a-window" class="md-nav__link">
+    <span class="md-ellipsis">
+      Creating a Window
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Creating a Window">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#window-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Window Configuration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#window-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      Window Methods
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#starting-the-app" class="md-nav__link">
+    <span class="md-ellipsis">
+      Starting the App
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#layouts" class="md-nav__link">
+    <span class="md-ellipsis">
+      Layouts
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#events" class="md-nav__link">
+    <span class="md-ellipsis">
+      Events
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#todo-finish-tutorial" class="md-nav__link">
+    <span class="md-ellipsis">
+      TODO: finish tutorial
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Reference
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview-of-the-guitk-library" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview of the GUITk Library
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Overview of the GUITk Library">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#why-tkinter" class="md-nav__link">
+    <span class="md-ellipsis">
+      Why tkinter?
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-concepts" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Concepts
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-a-window" class="md-nav__link">
+    <span class="md-ellipsis">
+      Creating a Window
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Creating a Window">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#window-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Window Configuration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#window-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      Window Methods
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#starting-the-app" class="md-nav__link">
+    <span class="md-ellipsis">
+      Starting the App
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#layouts" class="md-nav__link">
+    <span class="md-ellipsis">
+      Layouts
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#events" class="md-nav__link">
+    <span class="md-ellipsis">
+      Events
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#todo-finish-tutorial" class="md-nav__link">
+    <span class="md-ellipsis">
+      TODO: finish tutorial
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<!--* DO NOT EDIT tutorial.md, instead edit tutorial.mdpp and process with MarkdownPP using doit (see dodo.py) -->
+
+<h1 id="guitk-tutorial">GUITk Tutorial</h1>
+<h2 id="overview-of-the-guitk-library">Overview of the GUITk Library</h2>
+<p>GUITk is a declarative framework, built on <a href="https://docs.python.org/3/library/tkinter.html">tkinter</a>,
+for building nice-looking, cross-platform GUIs in Python. The goal of GUITk is to make it easy to build
+GUIs without knowing a lot about tkinter.
+The GUITk object model is partially inspired by <a href="https://developer.apple.com/documentation/swiftui">SwiftUI</a>.</p>
+<p>GUITk wraps tkinter widgets in GUITk objects. Instead of the standard tkinter geometry managers
+(<a href="https://docs.python.org/3/library/tkinter.html?highlight=tkinter#the-packer">pack</a>, 
+<a href="https://tkdocs.com/tutorial/grid.html">grid</a>, <a href="https://www.pythonguis.com/faq/pack-place-and-grid-in-tkinter/">place</a>),
+GUITk uses declarative layout objects to place widgets in a window. GUITk also provides a declarative</p>
+<h3 id="why-tkinter">Why tkinter?</h3>
+<p>GUITk builds on tkinter because tkinter is a mature, stable, cross-platform GUI framework that is included
+in the Python standard library. tkinter was first added to Python 1.4 in 1996 and runs on most platforms.
+It is not, however, the easiest to use nor the most pythonic GUI framework. GUITk aims to make it easier
+to build GUIs with tkinter. Standard tkinter widgets look somewhat dated but tkinter includes themed widgets
+(<a href="https://docs.python.org/3/library/tkinter.ttk.html">ttk</a>) that look much better. GUITk uses ttk widgets
+whenever possible.</p>
+<h2 id="basic-concepts">Basic Concepts</h2>
+<p>Let's start with an example. The following "hello world" example creates a window with a label, a text entry box, and a button.
+When the user presses Return or clicks the button, a greeting is printed to the console.</p>
+<!--* This image updated with doit for README.md -->
+<p><img alt="hello.py example" src="../images/hello.py.png" title="Hello World example" /></p>
+<!--* The code is updated with mdpp which is run from project root so include paths are relative to project root -->
+
+<pre><code class="language-python">&quot;&quot;&quot;Simple Hello World example using guitk &quot;&quot;&quot;
+
+import guitk as ui
+
+
+# subclass guitk.Window as the starting point for your app's main window
+class HelloWindow(ui.Window):
+    def config(self):
+        &quot;&quot;&quot;Configure the window&quot;&quot;&quot;
+
+        # set the window title
+        self.title = &quot;Hello, World&quot;
+
+        # define a layout for the window
+        # the layout manager will automatically add widgets to the window
+        with ui.HLayout():
+            ui.Label(&quot;What's your name?&quot;)
+            ui.Entry(key=&quot;name&quot;, focus=True)
+            ui.Button(&quot;Ok&quot;, key=&quot;ok&quot;)
+
+    @ui.on(key=&quot;ok&quot;)
+    def on_ok(self, event: ui.Event):
+        &quot;&quot;&quot;Handle the Ok button click&quot;&quot;&quot;
+        print(&quot;Hello, &quot;, self.get(&quot;name&quot;).value)
+
+
+# run your event loop
+if __name__ == &quot;__main__&quot;:
+    HelloWindow().run()
+</code></pre>
+<p>A few things to note about this example:</p>
+<ul>
+<li>The <code>HelloWindow</code> class subclasses <code>guitk.Window</code>. This is the starting point for your app's main window.</li>
+<li>The <code>HelloWindow</code> class defines a <code>config</code> method that configures the window. <code>config()</code> is a special method
+   that is called by GUITk before the window is created. It is used to configure the window's title, size, and
+   widgets. Your window class must define a <code>config()</code> method.</li>
+<li>Widgets are added to your window using a layout manager. Creating an instance of a layout manager within your
+   <code>config()</code> method adds it to the window. The <code>HelloWindow</code> class uses an <code>HLayout()</code> layout manager which
+    arranges widgets horizontally.</li>
+<li>Widgets, such as <code>Label</code> (static text), <code>Entry</code> (text entry box), and <code>Button</code>, are added to the window by
+   creating instances of them within the context of the layout manager.</li>
+<li>Every widget has an optional key, which is a unique identifier for the widget. In this example, the "Ok" button
+   has a key of "ok".</li>
+<li>Events (such as a button press) are handled using the <code>@on()</code> decorator. The <code>@on()</code> decorator is used to
+   register a callback function that is called when the event occurs. In this example, the <code>on_ok()</code> function
+    is called when the user presses Return or clicks the "Ok" button (because the button has a key of "ok" which
+    the <code>on_ok()</code> function is registered to handle).</li>
+</ul>
+<h2 id="creating-a-window">Creating a Window</h2>
+<p>Every GUITk app must have at least one class that subclasses <code>guitk.Window</code>. This class is the starting point
+for your app's main window. An app may have multiple windows but one of them must be the main window. The main
+window is created by calling the <code>run()</code> method on the window class. The <code>run()</code> method starts the main event
+loop and displays the window.</p>
+<p>The <code>Window</code> class has a <code>config()</code> method that is called by GUITk before the window is created. You must define
+a <code>config()</code> method in your window class in order to display any widgets in the window (and without widgets, your
+window would be a pretty boring GUI). The config method will be automatically called by GUITk before the window
+is displayed. You should not need to create an <code>__init__()</code> method in your window class as all configuration
+is done in the <code>config()</code> method.</p>
+<p>Here is a minimal window class:</p>
+<!--[[[cog
+import os
+os.system("python3 utils/screenshot.py docs/examples/minimal_window.py MinimalWindow docs/images/minimal_window.py.png --overwrite")
+]]]-->
+<!--[[[end]]]-->
+<p><img alt="minimal_window.py example" src="https://raw.githubusercontent.com/RhetTbull/guitk/main/docs/images/minimal_window.py.png" title="Minimal Window example" /></p>
+<!--* The code is updated with mdpp which is run from project root so include paths are relative to project root -->
+
+<pre><code class="language-python">&quot;&quot;&quot;Minimal example of a GUITk Window&quot;&quot;&quot;
+
+import guitk as ui
+
+
+class MinimalWindow(ui.Window):
+    def config(self):
+        with ui.VLayout():
+            ui.Label(&quot;Hello World!&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    MinimalWindow().run()
+</code></pre>
+<h3 id="window-configuration">Window Configuration</h3>
+<p>The <code>config()</code> method is used to configure the window. When subclassing <code>guitk.Window</code>, you must define a <code>config()</code> method.
+You do not need to call the <code>config()</code> method yourself nor should you call the superclass <code>config()</code> method. GUITk will call
+<code>config()</code> for you before the window is created.</p>
+<p>In <code>config()</code>, you can set the title and size of the window and create your layout by creating an instance of GUITk Layout Manager.</p>
+<p>For example, here is a window with a title and size:</p>
+<pre><code class="language-python">class MyWindow(guitk.Window):
+    def config(self):
+        self.title = &quot;My Window&quot;
+        self.size = (400, 300)
+</code></pre>
+<p>Window size (in pixels) can be set as a tuple of (width, height) or as a string in the form "widthxheight" (e.g. "400x300").
+Consistent with tkinter, the window size can also be set by setting <code>self.geometry</code>:</p>
+<pre><code class="language-python">class MyWindow(guitk.Window):
+    def config(self):
+        self.title = &quot;My Window&quot;
+        self.geometry = &quot;400x300&quot;
+</code></pre>
+<p>Layouts are covered in more detail in the next section.</p>
+<h3 id="window-methods">Window Methods</h3>
+<p>In addition to the <code>config()</code> method, you can define the following methods in your window class and if defined, they will be called by GUITk:</p>
+<p><code>setup(self) -&gt; None</code> - called after the window is created (after <code>config()</code>) but before it is displayed. This is a good place to initialize your app's state.
+If you need to access any of the underlying tkinter widgets, you can do so in <code>setup()</code> as the widgets will have been created by this point.</p>
+<p><code>teardown(self) -&gt; None</code> - called when the window is closed. This is a good place to clean up any resources used by your app.</p>
+<p><code>handle_event(self, event: guitk.Event) -&gt; None</code> - called when an event occurs. This is a good place to handle events that are not handled by widgets or by the <code>@on()</code> decorator.
+The GUITk event system is covered in more detail in a later section.</p>
+<p>Here's an example of a window with a title and size and the <code>setup()</code>, <code>teardown()</code>, and <code>handle_event()</code> methods defined:</p>
+<!--* The code is updated with mdpp which is run from project root so include paths are relative to project root -->
+
+<pre><code class="language-python">&quot;&quot;&quot;Hello World example using guitk &quot;&quot;&quot;
+
+import guitk as ui
+
+
+class HelloWorld(ui.Window):
+    # subclass guitk.Window as the starting point for your app's main window
+    def config(self):
+        # Your Window class needs to define a config() method that describes the layout, title, etc for your app
+        # config() is called by the Window class when the Window is being created
+
+        # Title for the window
+        self.title = &quot;Hello, World&quot;
+
+        # optionally set size as a tuple of (width, height)
+        self.size = (320, 240)
+
+        # you can also use self.geometry for consistency with tkinter
+        # self.geometry = &quot;320x240&quot;
+
+        # Define the window's contents
+        # guitk.Label corresponds to a tkinter.ttk.Label, etc.
+        # optionally provide a unique key to each element to easily reference the element later
+        # use a HLayout or VLayout class to define the layout of the window
+        # HLayout arranges widgets horizontally, VLayout arranges widgets vertically
+        with ui.VLayout():
+            # use a VLayout to stack the widgets vertically
+            # standard tkinter layout options such as sticky and weight are supported
+            ui.Label(&quot;What's your name?&quot;, sticky=&quot;ew&quot;, anchor=&quot;center&quot;, weightx=1)
+            # each widget can be assigned a key, which should be unique, to easily reference the widget later
+            # set focus=True so the Entry box has focus when the window is displayed
+            ui.Entry(key=&quot;entry_name&quot;, focus=True, weightx=1, sticky=&quot;ew&quot;)
+            ui.Label(&quot;&quot;, width=40, key=&quot;output&quot;)
+            with ui.HStack():
+                # align these two buttons in a horizontal row using HStack
+                ui.Button(&quot;Ok&quot;)
+                ui.Button(&quot;Quit&quot;)
+
+    # Every Window class has 3 special methods that can be overridden to provide custom behavior
+    # you do not need to provide any of these methods if you do not need to customize the default behavior
+    # (the default behavior is to do nothing)
+    # These special methods are: setup(), teardown(), and handle_event()
+
+    def setup(self):
+        &quot;&quot;&quot;Perform any initialization needed before the Window is displayed&quot;&quot;&quot;
+        # your setup() method is called by the Window class after config() just before the Window is displayed
+        # use this to initialize any internal state you need
+        # you do not need to provide a setup() method if no initialization is needed
+        print(&quot;setup&quot;)
+
+    def teardown(self):
+        &quot;&quot;&quot;Perform any cleanup needed before destroying the window&quot;&quot;&quot;
+        # your teardown() method is called by the Window class after the Window is closed
+        # use this to clean up before the Window is destroyed
+        # you do not need to provide a teardown() method if no cleanup is needed
+        print(&quot;teardown&quot;)
+
+    def handle_event(self, event: ui.Event):
+        &quot;&quot;&quot;handle_event() is called by the Window class when an event occurs&quot;&quot;&quot;
+        # you do not need to provide a handle_event() method if you prefer to use
+        # the @on decorator to bind functions to events (see below)
+        # handle_event() is a useful place to put code that needs to run for every event
+        # or for use during debugging
+        print(f&quot;handle_event: {event}&quot;)
+
+    @ui.on(key=&quot;Quit&quot;)
+    def on_quit(self):
+        # return the value of the Entry box
+        self.quit(self[&quot;entry_name&quot;].value)
+
+    @ui.on(key=&quot;Ok&quot;)
+    @ui.on(event_type=ui.EventType.EntryReturn)
+    def on_ok(self):
+        # User pressed the OK button or the Return key inside the Entry box
+        # the @on decorator can be used to bind a function to an event
+        # @on can be repeated to bind the function to multiple events
+        # set the output Label to the value of the Entry box
+        # individual widgets can be accessed by their key; the window object acts as a dictionary of widgets
+        greeting = f&quot;Hello {self['entry_name'].value}! Thanks for trying guitk.&quot;
+
+        # if you prefer, you can use get() instead of the dictionary syntax
+        self.get(&quot;output&quot;).value = greeting
+
+
+if __name__ == &quot;__main__&quot;:
+    # instantiate your Window class and run it
+    name = HelloWorld().run()
+    print(f&quot;Hello {name}&quot;)
+</code></pre>
+<h3 id="starting-the-app">Starting the App</h3>
+<p>Once you have defined your window class, you can start the app by calling the <code>run()</code> method on the window class:</p>
+<pre><code class="language-python">MyWindow.run()
+</code></pre>
+<p>This creates the window and starts the tkinter event loop. The <code>run()</code> method does not return until the window is closed.
+Child windows may be created in your class by creating an instance of a window class, for example, <code>child = MyChildWindow()</code>, but you
+should call <code>run()</code> only on the main window.</p>
+<h2 id="layouts">Layouts</h2>
+<h2 id="events">Events</h2>
+<h2 id="todo-finish-tutorial">TODO: finish tutorial</h2>
+<p>This tutorial is a work in progress. More to come soon...</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.fe8b6f2b.min.js"></script>
+      
+    
+  </body>
+</html>
