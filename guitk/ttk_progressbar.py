@@ -94,6 +94,8 @@ class Progressbar(BaseWidget):
             sticky=sticky,
             tooltip=tooltip,
             value_type=tk.DoubleVar,
+            weightx=weightx,
+            weighty=weighty,
         )
         self.widget_type = "ttk.Progressbar"
         self.key = key or "Progressbar"
