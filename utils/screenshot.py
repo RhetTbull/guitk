@@ -30,11 +30,22 @@ def get_display_resolution():
     """Hack to get display resolution on macOS"""
 
     command = 'system_profiler SPDisplaysDataType | grep "UI Looks like"'
-    output = subprocess.check_output(command, shell=True).decode("utf-8")
-    resolution = output.split(":")[1].strip()
-    resolution = resolution.split("@")[0]
-    width, height = resolution.split(" x ")
-    return int(width), int(height)
+    try:
+        output = subprocess.check_output(command, shell=True).decode("utf-8")
+        resolution = output.split(":")[1].strip()
+        resolution = resolution.split("@")[0]
+        width, height = resolution.split(" x ")
+        return int(width), int(height)
+    except subprocess.CalledProcessError:
+        # Resolution: 2560 x 1600 Retina
+        command = 'system_profiler SPDisplaysDataType | grep "Resolution:"'
+        output = subprocess.check_output(command, shell=True).decode("utf-8")
+        resolution = output.split(":")[1].strip()
+        width, height = resolution.split(" x ")
+        if " " in height:
+            # " Retina"
+            height = height.split(" ")[0]
+        return int(width), int(height)
 
 
 def load_class(pyfile: str, class_name: str):
